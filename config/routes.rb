@@ -1,4 +1,11 @@
 Shelltube::Application.routes.draw do
+
+  resources :records
+  resources :users
+  resources :authentications
+
+  match '/auth/:provider/callback' => 'authentications#create'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

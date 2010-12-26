@@ -1,0 +1,7 @@
+%h2 ShellCasts
+
+%ul
+  = @records.each do |record|
+    %li
+      %h3= record.title
+      %p= record.description
