@@ -1,0 +1,8 @@
+%h1= @user.nickname
+
+- if @user.records.any?
+  %ul
+    - @user.records.each do |record|
+      %li= link_to record.title, record
+- else
+  %p User have no records yet...

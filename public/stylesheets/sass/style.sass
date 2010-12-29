@@ -2,6 +2,22 @@ body
   :padding 0 80px
   :font 14px "Ubuntu", "Trebuchet MS", sans-serif
 
+header
+  :overflow auto
+  :padding 0
+  h1
+    :float left
+    :padding 0
+    :margin 0
+    :font-size 4em
+  menu
+    :padding 0
+    :text-align right
+    li
+      :display inline-block
+      :padding 5px
+      :margin 0
+
 #player-hover.enabled
   :-webkit-transition-property background
   :-webkit-transition-duration 5s
@@ -10,7 +26,6 @@ body
 
 #player-hover.disabled
   :background rgba(0,0,0,0)
-
 
 #player
   h1.title
@@ -24,7 +39,7 @@ body
       :width 0.2em
       :border 1px
     td.cursor
-      :border 1px white solid
+      :background-color white
   input[type=range]
     :margin-bottom -10px
   progress

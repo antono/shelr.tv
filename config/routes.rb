@@ -17,6 +17,7 @@ Shelltube::Application.routes.draw do
   resources :authentications
 
   match '/auth/:provider/callback' => 'authentications#create'
+  root :to => "records#index"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -67,7 +68,6 @@ Shelltube::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  # root :to => "welcome#index"
 
   # See how all your routes lay out with "rake routes"
 

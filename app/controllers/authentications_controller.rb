@@ -1,6 +1,10 @@
 class AuthenticationsController < ApplicationController
   def index
-    @authentications = current_user.authentications if current_user
+    if logged_in?
+      @authentications = current_user.authentications 
+    else
+      redirect_to login_url
+    end
   end
 
   def logout
@@ -14,11 +18,17 @@ class AuthenticationsController < ApplicationController
 
   def create
     omniauth = request.env["omniauth.auth"]
+    logger.debug(omniauth.to_yaml)
     authentication = Authentication.find_by_provider_and_uid(omniauth['provider'], omniauth['uid'])
     if authentication
       session[:user_id] = authentication.user_id
-      flash[:notice] = "Signed in successfully."
-      redirect_to authentications_url
+      if authentication.user.activated?
+        flash[:notice] = "Signed in successfully."
+        redirect_to user_path(authentication.user)
+      else
+        flash[:notice] = "Please fill Your profile to continue."
+        redirect_to edit_user_path(authentication.user)
+      end
     elsif current_user
       current_user.authentications.create!(:provider => omniauth['provider'], :uid => omniauth['uid'])
       flash[:notice] = "Authentication successful."
@@ -29,9 +39,9 @@ class AuthenticationsController < ApplicationController
       if user.save
         session[:user_id] = user.id
         flash[:notice] = "Signed in successfully."
-        redirect_to authentications_url
+        redirect_to edit_user_path(user)
       else
-        session[:omniauth] = omniauth.except('extra')
+        flash[:notice] = "Failed "
         redirect_to authentications_url
       end
     end

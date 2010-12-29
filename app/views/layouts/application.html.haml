@@ -2,20 +2,23 @@
 %html
   %head
     %title Shelltube
+    = stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Ubuntu&subset=cyrillic,latin'
     = stylesheet_link_tag 'sgr'
     = stylesheet_link_tag 'style'
-    = javascript_include_tag :defaults
+
     = javascript_include_tag 'vt100js/vt100.js'
     = javascript_include_tag 'vt100js/vt100-html.js'
     = javascript_include_tag 'jsdeferred.js'
     = javascript_include_tag 'player.js'
     = csrf_meta_tag
 %body
-  %menu
-    - if logged_in?
-      = current_user.id
-      = button_to 'logout', logout_url
-    - else
-      = button_to 'Login With Twitter', '/auth/twitter'
+  %header
+    %h1 Shell Ninjas
+    %menu
+      - if logged_in?
+        %li= link_to current_user.nickname, current_user
+        %li= link_to 'logout', logout_url
+      - else
+        %li= button_to 'Login with Twitter', '/auth/twitter'
   %section
     = yield

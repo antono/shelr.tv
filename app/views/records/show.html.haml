@@ -9,6 +9,11 @@
     %button.toggle{ disabled: 'disabled' } play
     %input{type: 'range', value: 0, class: 'speed' }
 
+%menu
+  %li= button_to 'destroy', @record, method: 'delete'
+
+
+
 :javascript
   window.addEventListener('load', function() {
     var cv = new VT.Canvas.HTML(document.getElementsByClassName('container')[0])
