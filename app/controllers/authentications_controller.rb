@@ -3,6 +3,15 @@ class AuthenticationsController < ApplicationController
     @authentications = current_user.authentications if current_user
   end
 
+  def logout
+    session.delete(:user_id)
+    redirect_to '/'
+  end
+
+  def login
+    redirect_to '/auth/twitter'
+  end
+
   def create
     omniauth = request.env["omniauth.auth"]
     authentication = Authentication.find_by_provider_and_uid(omniauth['provider'], omniauth['uid'])

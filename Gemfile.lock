@@ -76,6 +76,8 @@ GEM
       rack-openid (~> 1.2.0)
       ruby-openid-apps-discovery
     oauth (0.4.4)
+    oauth-plugin (0.4.0.pre3)
+      oauth (>= 0.4.4)
     oauth2 (0.1.0)
       faraday (~> 0.5.0)
       multi_json (~> 0.0.4)
@@ -140,8 +142,9 @@ PLATFORMS
 DEPENDENCIES
   haml
   mocha
+  oauth-plugin (>= 0.4.0.pre1)
   omniauth
-  rails (= 3.0.3)
+  rails
   rspec
   rspec-rails
   sqlite3-ruby

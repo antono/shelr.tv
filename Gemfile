@@ -1,12 +1,9 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.3'
+gem 'rails'
 gem 'haml'
 gem 'omniauth'
-
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
+gem 'oauth-plugin', ">=0.4.0.pre1"
 gem 'sqlite3-ruby', :require => 'sqlite3'
 
 # Use unicorn as the web server
