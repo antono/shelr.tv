@@ -2,6 +2,9 @@ body
   :padding 0 80px
   :font 14px "Ubuntu", "Trebuchet MS", sans-serif
 
+.hidden
+  :display none
+
 header
   :overflow auto
   :padding 0
@@ -10,6 +13,9 @@ header
     :padding 0
     :margin 0
     :font-size 4em
+    :text-shadow 2px 2px 2px gray
+    a
+      :text-decoration none
   menu
     :padding 0
     :text-align right
@@ -18,6 +24,14 @@ header
       :padding 5px
       :margin 0
 
+.profile
+  label
+    display: inline-block
+    width: 100px
+  .desc
+    color: gray
+
+// Player styling
 #player-hover.enabled
   :-webkit-transition-property background
   :-webkit-transition-duration 5s
@@ -44,3 +58,7 @@ header
     :margin-bottom -10px
   progress
     :height 30px
+  nav
+    li
+      :display inline-block
+      :margin 0

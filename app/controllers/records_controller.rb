@@ -12,7 +12,8 @@ class RecordsController < ApplicationController
     respond_with @record
   end
 
-  def new
+  def edit
+    @record = Record.find(params[:id])
   end
 
   def create

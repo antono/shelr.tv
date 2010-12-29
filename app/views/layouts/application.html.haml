@@ -13,7 +13,7 @@
     = csrf_meta_tag
 %body
   %header
-    %h1 Shell Ninjas
+    %h1= link_to 'Shell Ninjas', root_url, alt: 'Shell Ninjas Secrets...'
     %menu
       - if logged_in?
         %li= link_to current_user.nickname, current_user

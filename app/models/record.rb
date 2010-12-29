@@ -6,4 +6,8 @@ class Record < ActiveRecord::Base
     new(title: meta['title'], meta: bundle[:meta], typescript: bundle[:data], timing: bundle[:timing])
   end
 
+  def editable_by?(user)
+    id == user.id
+  end
+
 end

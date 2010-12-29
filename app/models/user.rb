@@ -10,6 +10,10 @@ class User < ActiveRecord::Base
     authentications.build(:provider => omniauth['provider'], :uid => omniauth['uid'])
   end
 
+  def editable_by?(user)
+    id == user.id
+  end
+
   private
 
   def activate_if_nickname_present

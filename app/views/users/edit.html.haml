@@ -1,6 +1,16 @@
 %h1 Edit Profile
 
-= form_for @user do |f|
-  = f.label :nickname
-  = f.text_field :nickname
-  = f.submit 'Save'
+.profile
+  = form_for @user do |f|
+    %p
+      = f.label :nickname, 'Ninja Name'
+      = f.text_field :nickname
+      %span.desc
+        Displayed to other users
+    %p
+      = f.label :email, 'Email'
+      = f.text_field :email
+      %span.desc
+        Used for Gravatar
+    %p.submit
+      = f.submit 'Save'
