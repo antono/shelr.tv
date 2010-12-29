@@ -1,0 +1,33 @@
+body
+  :padding 0 80px
+  :font 14px "Ubuntu", "Trebuchet MS", sans-serif
+
+#player-hover.enabled
+  :-webkit-transition-property background; 
+  :-webkit-transition-duration 5s
+  :-webkit-transition-timing-function default
+  :background-color rgba(0,0,0,0.7)
+
+#player-hover.disabled
+  :background rgba(0,0,0,0)
+
+
+#player
+  h1.title
+    :display none
+  table.canvas
+    :overflow hidden
+    :padding 10px
+    :font-family "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Monaco", monospace
+    td
+      :padding 1px 0 1px 0
+      :width 0.2em
+      :border 1px
+    td.cursor
+      :border 1px white solid
+  input[type=range]
+    :margin-bottom -10px
+  progress
+    :height 30px
+
+// SGR (Select Graphic Rendition) colors
