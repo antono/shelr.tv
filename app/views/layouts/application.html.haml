@@ -2,8 +2,13 @@
 %html
   %head
     %title Shelltube
-    = stylesheet_link_tag :all
+    = stylesheet_link_tag 'sgr'
+    = stylesheet_link_tag 'style'
     = javascript_include_tag :defaults
+    = javascript_include_tag 'vt100js/vt100.js'
+    = javascript_include_tag 'vt100js/vt100-html.js'
+    = javascript_include_tag 'jsdeferred.js'
+    = javascript_include_tag 'player.js'
     = csrf_meta_tag
 %body
   %menu

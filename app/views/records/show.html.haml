@@ -1,0 +1,18 @@
+%h1= @record.title
+%p= @record.description
+
+#player.sgr
+  %h1.title
+  .container
+  %progress
+  %nav.controls
+    %button.toggle{ disabled: 'disabled' } play
+    %input{type: 'range', value: 0, class: 'speed' }
+
+:javascript
+  window.addEventListener('load', function() {
+    var cv = new VT.Canvas.HTML(document.getElementsByClassName('container')[0])
+    var vt = new VT.Core(cv);
+    window.player = new SC.Player(document.getElementById('player'), vt);
+    window.player.load('#{record_path(@record.id, :format => :json)}');
+  });

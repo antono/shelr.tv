@@ -3,5 +3,5 @@
 %ul
   - @records.each do |record|
     %li
-      %h3= record.title
+      %h3= link_to record.title, record
       %p= record.description
