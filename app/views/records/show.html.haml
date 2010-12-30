@@ -5,6 +5,6 @@
   = @record.title
   by
   = link_to @record.user.nickname, @record.user
-%p= @record.description
+%p= @record.description_html
 
 = player_for(@record)

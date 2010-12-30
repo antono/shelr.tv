@@ -20,6 +20,10 @@ class Record
     read_attribute(:title).blank? ? 'untitled' : read_attribute(:title)
   end
 
+  def description_html
+    Maruku.new(description).to_html.html_safe
+  end
+
   def tags=(tags)
     write_attribute(:tags, tags.split(",").map(&:strip))
   end

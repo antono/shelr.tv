@@ -5,7 +5,8 @@
     - if record.user
       by
       = link_to record.user.nickname, record.user
-  %p.desc= record.description
+  .desc
+    = record.description_html
   - unless record.tags.blank?
     %p.tags
       %strong Tags:
