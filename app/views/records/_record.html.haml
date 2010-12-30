@@ -1,11 +1,13 @@
-%h3
-  = link_to record.title, record
-  - if record.user
-    by
-    = link_to record.user.nickname, record.user
-%p= record.description
-- unless record.tags.blank?
-  %p
-    %strong Tags:
-    - record.tags.split(",").map(&:strip).each do |tag|
-      = link_to tag, records_path(:tags => [tag])
+.record
+  = link_to image_tag(record.user.avatar_url(80)), record.user, :class => 'avatar'
+  %h3.title
+    = link_to record.title, record
+    - if record.user
+      by
+      = link_to record.user.nickname, record.user
+  %p.desc= record.description
+  - unless record.tags.blank?
+    %p.tags
+      %strong Tags:
+      - record.tags.split(",").map(&:strip).each do |tag|
+        = link_to tag, records_path(:tags => [tag])

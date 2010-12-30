@@ -5,6 +5,25 @@ body
 .hidden
   :display none
 
+.records
+  :padding-left 0
+  .record
+    :background #eee
+    :padding 15px
+    :margin 10px 0
+    :overflow auto
+    :width 70%
+    .avatar
+      :display block
+      :float left
+    .title
+      :margin 0 0 0 90px
+    .desc
+      :margin-left 90px
+    .tags
+      :margin-left 90px
+
+
 header
   :overflow hidden
   :padding 0
@@ -78,3 +97,34 @@ footer
     li
       :display inline-block
       :margin 0
+
+// Pagination
+.pagination
+  padding: 0
+  margin: 0
+  margin-top: 3em
+  a
+    :background #ccc
+    :padding 10px
+    :margin 2px
+    :border 1px solid #aaaadd
+    :text-decoration none
+    &:hover, &:active
+      :border 1px solid #000099
+      :color #000
+  em
+    :background #ccc
+    :padding 10px
+    :margin 2px
+    :border 1px solid #aaaadd
+    :text-decoration none
+    :font-weight bold
+    &:hover
+      :border 1px solid #000099
+      :color #000
+  span.disabled
+    :display none
+    :padding 2px 5px 2px 5px
+    :margin 2px
+    :border 1px solid #eee
+    :color #ddd

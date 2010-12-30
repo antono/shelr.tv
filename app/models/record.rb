@@ -13,7 +13,7 @@ class Record
   referenced_in :user
 
   def self.per_page
-    10
+    5
   end
 
   def title

@@ -156,3 +156,4 @@ DEPENDENCIES
   rake (= 0.8.7)
   rspec
   rspec-rails
+  will_paginate (~> 3.0.pre2)

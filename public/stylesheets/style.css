@@ -5,6 +5,24 @@ body {
 .hidden {
   display: none; }
 
+.records {
+  padding-left: 0; }
+  .records .record {
+    background: #eeeeee;
+    padding: 15px;
+    margin: 10px 0;
+    overflow: auto;
+    width: 70%; }
+    .records .record .avatar {
+      display: block;
+      float: left; }
+    .records .record .title {
+      margin: 0 0 0 90px; }
+    .records .record .desc {
+      margin-left: 90px; }
+    .records .record .tags {
+      margin-left: 90px; }
+
 header {
   overflow: hidden;
   padding: 0; }
@@ -73,3 +91,33 @@ footer {
 #player nav li {
   display: inline-block;
   margin: 0; }
+
+.pagination {
+  padding: 0;
+  margin: 0;
+  margin-top: 3em; }
+  .pagination a {
+    background: #cccccc;
+    padding: 10px;
+    margin: 2px;
+    border: 1px solid #aaaadd;
+    text-decoration: none; }
+    .pagination a:hover, .pagination a:active {
+      border: 1px solid #000099;
+      color: black; }
+  .pagination em {
+    background: #cccccc;
+    padding: 10px;
+    margin: 2px;
+    border: 1px solid #aaaadd;
+    text-decoration: none;
+    font-weight: bold; }
+    .pagination em:hover {
+      border: 1px solid #000099;
+      color: black; }
+  .pagination span.disabled {
+    display: none;
+    padding: 2px 5px 2px 5px;
+    margin: 2px;
+    border: 1px solid #eeeeee;
+    color: #dddddd; }

@@ -1,6 +1,8 @@
 %h2 ShellCasts
 
-%ul
+%ul.records
   - @records.each do |record|
     %li
       = render :partial => 'records/record', locals: { record: record }
+
+= will_paginate @records
