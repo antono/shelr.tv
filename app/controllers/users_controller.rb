@@ -31,7 +31,6 @@ class UsersController < ApplicationController
 
   def authenticate
     omniauth = request.env["omniauth.auth"]
-    logger.debug(omniauth.to_yaml)
     user = User.where(twitter_id: omniauth['uid']).first
     if user
       flash[:notice] = "Signed in successfully."
@@ -39,7 +38,9 @@ class UsersController < ApplicationController
       redirect_to user_path(id: user.id.to_s)
     else
       user_info = omniauth['user_info']
-      user = User.new(nickname: user_info['nickname'], twitter_id: omniauth['uid'])
+      logger.debug(omniauth['uid'])
+      user = User.new(nickname: user_info['nickname'])
+      user.twitter_id = omniauth['uid'] # mass assignemnt not allowed
       if user.save
         session[:user_id] = user.id.to_s
         flash[:notice] = "Signed in successfully."

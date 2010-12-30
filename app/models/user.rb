@@ -8,11 +8,12 @@ class User
   field :nickname,      type: String,  unique: true
   field :records_count, type: Integer, default: 0
   field :api_key,       type: String,  unique: true
-  field :twitter_id,    type: Integer, unique: true
+  field :twitter_id,    type: String, unique: true
   field :website,       type: String
 
   attr_accessible :nickname, :email, :website
 
+  validates_uniqueness_of :nickname, :api_key, :twitter_id
   validates_length_of :nickname, maximum: 20
 
   references_many :records

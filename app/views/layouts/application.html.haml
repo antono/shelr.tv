@@ -20,6 +20,10 @@
         %li= link_to 'logout', logout_url
       - else
         %li= button_to 'Login with Twitter', '/auth/twitter'
+  %section.flashes
+    - [:error, :notice].each do |type|
+      - unless flash[type].blank?
+        %div{ class: type }= flash[type]
   %section
     = yield
   %footer
