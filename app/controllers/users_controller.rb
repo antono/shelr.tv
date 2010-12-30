@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
 
+  before_filter :login_required, except: [:show, :login, :authenticate]
 
   def show
     @user = User.where(nickname: params[:id]).first
