@@ -19,4 +19,5 @@
       = f.label :api_key, 'API Key'
       = f.text_field :api_key, disabled: true
     %p.submit
+      = button_to_function 'Cancel', 'history.back()'
       = f.submit 'Save'

@@ -35,16 +35,15 @@ class UsersController < ApplicationController
     if user
       flash[:notice] = "Signed in successfully."
       session[:user_id] = user.id.to_s
-      redirect_to user_path(id: user.id.to_s)
+      redirect_to user_path(user)
     else
       user_info = omniauth['user_info']
-      logger.debug(omniauth['uid'])
       user = User.new(nickname: user_info['nickname'])
       user.twitter_id = omniauth['uid'] # mass assignemnt not allowed
       if user.save
         session[:user_id] = user.id.to_s
         flash[:notice] = "Signed in successfully."
-        redirect_to edit_user_path(id: user.id.to_s)
+        redirect_to edit_user_path(user)
       else
         flash[:notice] = "Failed "
         redirect_to root_url
