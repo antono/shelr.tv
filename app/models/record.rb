@@ -7,10 +7,13 @@ class Record
   field :typescript,   type: String
   field :timing,       type: String
   field :tags,         type: Array
+  field :created_at,   type: DateTime
 
   attr_accessible :title, :description, :typescript, :timing, :tags
 
   referenced_in :user
+
+  after_create :timestamp!
 
   def self.per_page
     5
@@ -36,5 +39,9 @@ class Record
     return false if usr.nil?
     return true  if usr.nickname == 'antono'
     self.user.id.to_s == usr.id.to_s
+  end
+
+  def timestamp!
+    write_attribute(:created_at, Time.now)
   end
 end
