@@ -1,0 +1,65 @@
+body {
+  padding: 0 80px;
+  font: 14px "Ubuntu", "Trebuchet MS", sans-serif; }
+
+.hidden {
+  display: none; }
+
+header {
+  overflow: auto;
+  padding: 0; }
+  header h1 {
+    float: left;
+    padding: 0;
+    margin: 0;
+    font-size: 4em;
+    text-shadow: 2px 2px 2px gray; }
+    header h1 a {
+      text-decoration: none; }
+  header menu {
+    padding: 0;
+    text-align: right; }
+    header menu li {
+      display: inline-block;
+      padding: 5px;
+      margin: 0; }
+
+footer {
+  padding: 25px 0;
+  color: gray;
+  font-size: small; }
+
+.edit_record label, .edit_user label {
+  display: inline-block;
+  width: 100px; }
+.edit_record .desc, .edit_user .desc {
+  color: gray; }
+
+#player-hover.enabled {
+  -webkit-transition-property: background;
+  -webkit-transition-duration: 5s;
+  -webkit-transition-timing-function: default;
+  background-color: rgba(0, 0, 0, 0.7); }
+
+#player-hover.disabled {
+  background: rgba(0, 0, 0, 0); }
+
+#player h1.title {
+  display: none; }
+#player table.canvas {
+  overflow: hidden;
+  padding: 10px;
+  font-family: "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Monaco", monospace; }
+  #player table.canvas td {
+    padding: 1px 0 1px 0;
+    width: 0.2em;
+    border: 1px; }
+  #player table.canvas td.cursor {
+    background-color: white; }
+#player input[type=range] {
+  margin-bottom: -10px; }
+#player progress {
+  height: 30px; }
+#player nav li {
+  display: inline-block;
+  margin: 0; }
