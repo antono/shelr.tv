@@ -1,22 +1,39 @@
-class User < ActiveRecord::Base
-  has_many :authentications, :dependent => :destroy
-  has_many :client_applications
-  has_many :tokens, class_name: 'OauthToken', order: "authorized_at desc", include: [:client_application]
-  has_many :records, :dependent => :destroy
+require 'digest/md5'
 
-  before_save :activate_if_nickname_present
+class User
 
-  def apply_omniauth(omniauth)
-    authentications.build(:provider => omniauth['provider'], :uid => omniauth['uid'])
+  include Mongoid::Document
+
+  field :email,         type: String,  unique: true
+  field :nickname,      type: String,  unique: true
+  field :records_count, type: Integer, default: 0
+  field :api_key,       type: String,  unique: true
+  field :twitter_id,    type: Integer, unique: true
+  field :website,       type: String
+
+  attr_accessible :nickname, :email, :website
+
+  validates_length_of :nickname, maximum: 20
+
+  references_many :records
+
+  before_create :generate_api_key
+
+  def to_param
+    nickname
   end
 
   def editable_by?(user)
-    id == user.id
+    return false if user.nil?
+    self.id == user.id
   end
 
-  private
-
-  def activate_if_nickname_present
-    self.activated = true unless self.nickname.blank?
+  def generate_api_key
+    self.api_key = Digest::MD5.hexdigest(rand(1000).to_s)
   end
+
+  def generate_api_key!
+    generate_api_key && save
+  end
+
 end

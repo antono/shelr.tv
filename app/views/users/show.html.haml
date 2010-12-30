@@ -8,4 +8,14 @@
     - @user.records.each do |record|
       %li= link_to record.title, record
 - else
-  %p Ninja have no records yet...
+  - if @user.id == current_user.id
+    %p You have no records yet...
+    %h2 Start sharing now!
+    %pre
+      ~ ''
+      ~ 'gem install shellcast'
+      ~ "shellcast setup #{@user.api_key}"
+      ~ 'shellcast record'
+      ~ 'shellcast push SHELLCAST_ID'
+  - else
+    %p Ninja have no records yet...

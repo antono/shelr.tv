@@ -3,22 +3,32 @@ class RecordsController < ApplicationController
   respond_to :html, :json
 
   def index
-    @records = Record.all
+    if params[:tags]
+      @records = Record.where(:tags.in => params[:tags]).paginate(page: params[:page])
+    else
+      @records = Record.paginate(page: params[:page])
+    end
     respond_with @records
   end
 
   def show
-    @record = Record.find(params[:id])
+    @record = Record.criteria.id(params[:id]).first
     respond_with @record
   end
 
   def edit
-    @record = Record.find(params[:id])
+    @record = Record.criteria.id(params[:id]).first
   end
 
   def create
-    record = Record.from_bundle(params)
+    user = User.where(api_key: params[:api_key]).first unless params[:api_key].blank?
+    user = User.where(nickname: 'Anonymous').first unless user
+
+    record = Record.new(JSON.parse(params[:record]))
+
     if record.save
+      user.records << record
+      user.save
       logger.debug(record)
     else
       logger.debug(record.errors)
@@ -26,6 +36,17 @@ class RecordsController < ApplicationController
   end
 
   def update
+    @record = Record.criteria.id(params[:id]).first
+    if @record.editable_by?(current_user)
+      if @record.update_attributes(params[:record])
+        flash[:notice] = 'Record was succesfully updated.'
+      else
+        flash[:error] = 'You cannot edit this record.'
+      end
+    else
+      flash[:error] = 'You cannot edit this record.'
+    end
+    redirect_to @record
   end
 
   def destroy

@@ -1,12 +1,13 @@
 Shelltube::Application.routes.draw do
 
-  resources :users
   resources :records
-  resources :authentications
+  resources :users do
+    get :authenticate
+  end
 
-  match '/auth/:provider/callback' => 'authentications#create'
-  match '/login',  :to => 'authentications#login',  :as => :login
-  match '/logout', :to => 'authentications#logout', :as => :logout
+  match '/auth/twitter/callback' => 'users#authenticate'
+  match '/logout' => 'users#logout', as: 'logout'
+  match '/login'  => 'users#login', as: 'login'
 
   root :to => "records#index"
 

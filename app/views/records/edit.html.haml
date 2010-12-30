@@ -1,3 +1,17 @@
-%h1
-  Edit record:
+%h2
+  Edit:
   = @record.title
+
+= form_for @record do |f|
+  %p
+    = f.label :title
+    = f.text_field :title
+  %p
+    = f.label :description
+    = f.text_field :description
+  %p
+    = f.label :tags
+    = f.text_field :tags
+  %p
+    = f.submit 'Save'
+

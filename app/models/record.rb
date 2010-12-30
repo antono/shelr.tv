@@ -1,13 +1,35 @@
-class Record < ActiveRecord::Base
-  belongs_to :user
+class Record
 
-  def self.from_bundle(bundle)
-    meta = JSON.parse(bundle['meta'])
-    new(title: meta['title'], meta: bundle[:meta], typescript: bundle[:data], timing: bundle[:timing])
+  include Mongoid::Document
+
+  field :title,        type: String
+  field :description,  type: String
+  field :typescript,   type: String
+  field :timing,       type: String
+  field :tags,         type: Array
+
+  attr_accessible :title, :description, :typescript, :timing, :tags
+
+  referenced_in :user
+
+  def self.per_page
+    10
+  end
+
+  def title
+    read_attribute(:title).blank? ? 'untitled' : read_attribute(:title)
+  end
+
+  def tags=(tags)
+    write_attribute(:tags, tags.split(",").map(&:strip))
+  end
+
+  def tags
+    read_attribute(:tags).try(:join, ", ")
   end
 
   def editable_by?(user)
-    id == user.id
+    return false if user.nil?
+    user.id == user.id
   end
-
 end

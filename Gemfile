@@ -1,9 +1,11 @@
 source 'http://rubygems.org'
 
-gem 'rails'
+gem 'actionpack'
 gem 'haml'
 gem 'omniauth'
-gem 'sqlite3-ruby', :require => 'sqlite3'
+gem 'mongoid', '~> 2.0.0.beta.20'
+gem 'mongoid_param'
+gem 'bson_ext'
 
 group :development, :test do
   gem 'rspec'

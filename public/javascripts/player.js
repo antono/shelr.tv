@@ -42,7 +42,8 @@ SC.Player.prototype.load = function(path) {
   }).error(function(error){
     alert(error);
   }).next(function(resp){
-    player.record = resp.record;
+    console.log(resp)
+    player.record = resp;
     player.setTiming(player.record.timing);
     player.setData(player.record.typescript);
     player.createTimeline();

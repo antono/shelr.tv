@@ -1,23 +1,7 @@
-%h1= @record.title
+%h1
+  = @record.title
+  by
+  = link_to @record.user.nickname, @record.user
 %p= @record.description
 
-#player.sgr
-  %h1.title
-  .container
-  %progress
-  %nav.controls
-    %li
-      %button.toggle{ disabled: 'disabled' } play
-    %li{ style: 'display: none' }
-      %input.speed{type: 'range', value: 0 }
-    %li= button_to 'edit', edit_record_path(@record), method: 'get'
-    %li= button_to 'destroy', @record, method: 'delete', confirm: 'Really Destroy?'
-
-
-:javascript
-  window.addEventListener('load', function() {
-    var cv = new VT.Canvas.HTML(document.getElementsByClassName('container')[0])
-    var vt = new VT.Core(cv);
-    window.player = new SC.Player(document.getElementById('player'), vt);
-    window.player.load('#{record_path(@record.id, :format => :json)}');
-  });
+= player_for(@record)

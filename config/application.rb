@@ -1,6 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
-require 'rails/all'
+require "action_controller/railtie"
+require "active_resource/railtie"
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
@@ -9,8 +10,7 @@ Bundler.require(:default, Rails.env) if defined?(Bundler)
 module Shelltube
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
+    # Application configuration should go into files in config/initializers # -- all .rb files in that directory are automatically loaded.
 
     # Custom directories with classes and modules you want to be autoloadable.
     # config.autoload_paths += %W(#{config.root}/extras)
@@ -39,6 +39,8 @@ module Shelltube
       g.template_engine :haml
       g.test_framework :rspec, :fixture => false, :views => false
     end
+
+    config.secret_token = 'Veni Vidi Vici! Venis Vidas Venkos!'
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
