@@ -31,9 +31,13 @@ header {
       margin: 0; }
 
 footer {
-  padding: 25px 0;
-  color: gray;
-  font-size: small; }
+  padding: 25px 0; }
+  footer nav li {
+    display: inline-block;
+    padding: 0 10px 0 0; }
+  footer .copy {
+    color: gray;
+    font-size: small; }
 
 .edit_record label, .edit_user label {
   display: inline-block;
