@@ -1,3 +1,6 @@
+- content_for :title do
+  = @user.nickname + ' < '
+
 %h1
   = @user.nickname
   - if @user.editable_by?(current_user)
