@@ -9,7 +9,7 @@
       %li
         = render :partial => 'records/record', locals: { record: record }
 - else
-  - if @user.id.to_s == current_user.id.to_s
+  - if current_user && @user.id == current_user.id
     %p You have no records yet...
     %h2 Start sharing now!
     %pre
@@ -19,6 +19,4 @@
       ~ 'shellcast record'
       ~ 'shellcast push SHELLCAST_ID'
   - else
-    %p= @user.id.to_s
-    %p= current_user.id.to_s
     %p Ninja have no records yet...
