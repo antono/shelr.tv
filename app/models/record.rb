@@ -28,8 +28,8 @@ class Record
     read_attribute(:tags).try(:join, ", ")
   end
 
-  def editable_by?(user)
-    return false if user.nil?
-    user.id == user.id
+  def editable_by?(usr)
+    return false if usr.nil?
+    self.user.id.to_s == usr.id.to_s
   end
 end
