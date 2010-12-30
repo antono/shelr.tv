@@ -1,0 +1,3 @@
+[submodule "public/javascripts/vt100js"]
+	path = public/javascripts/vt100js
+	url = git://github.com/antono/vt100js.git
