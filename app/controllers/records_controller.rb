@@ -29,9 +29,9 @@ class RecordsController < ApplicationController
     if record.save
       user.records << record
       user.save
-      logger.debug(record)
+      render json: { ok: true,  id: record.id.to_s, message: 'Record published!' }
     else
-      logger.debug(record.errors)
+      render json: { ok: false, message: 'Cannot publish record :(' }
     end
   end
 
