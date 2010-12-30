@@ -156,5 +156,6 @@ DEPENDENCIES
   mongoid_param
   omniauth
   rails
+  rake
   rspec
   rspec-rails
