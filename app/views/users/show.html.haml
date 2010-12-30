@@ -6,7 +6,8 @@
 - if @user.records.any?
   %ul
     - @user.records.each do |record|
-      %li= link_to record.title, record
+      %li
+        = render :partial => 'records/record', locals: { record: record }
 - else
   - if @user.id.to_s == current_user.id.to_s
     %p You have no records yet...

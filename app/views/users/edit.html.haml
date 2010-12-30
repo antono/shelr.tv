@@ -1,23 +1,22 @@
 %h1 Profile
 
-.profile
-  = form_for @user do |f|
-    %p
-      = f.label :nickname, 'Ninja Name'
-      = f.text_field :nickname
-      %span.desc
-        Displayed to other users
-    %p
-      = f.label :email, 'Email'
-      = f.text_field :email
-      %span.desc
-        Used for Gravatar
-    %p
-      = f.label :website, 'URL'
-      = f.text_field :website
-    %p
-      = f.label :api_key, 'API Key'
-      = f.text_field :api_key, disabled: true
-    %p.submit
-      = button_to_function 'Cancel', 'history.back()'
-      = f.submit 'Save'
+= form_for @user do |f|
+  %p
+    = f.label :nickname, 'Ninja Name'
+    = f.text_field :nickname
+    %span.desc
+      Displayed to other users
+  %p
+    = f.label :email, 'Email'
+    = f.text_field :email
+    %span.desc
+      Used for Gravatar
+  %p
+    = f.label :website, 'URL'
+    = f.text_field :website
+  %p
+    = f.label :api_key, 'API Key'
+    = f.text_field :api_key, disabled: true
+  %p.submit
+    = button_to_function 'Cancel', 'history.back()'
+    = f.submit 'Save'

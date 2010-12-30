@@ -13,5 +13,6 @@
     = f.label :tags
     = f.text_field :tags
   %p
+    = button_to_function 'Cancel', 'history.back()'
     = f.submit 'Save'
 
