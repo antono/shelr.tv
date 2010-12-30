@@ -12,6 +12,7 @@
     = javascript_include_tag 'vt100js/vt100-html.js'
     = javascript_include_tag 'jsdeferred.js'
     = javascript_include_tag 'player.js'
+    %link{ href: "/favicon.png", rel: "icon", type: "image/png" }
     = csrf_meta_tag
 %body
   <a href="http://github.com/red-brigade/shellcast"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://assets0.github.com/img/5d21241b64dc708fcbb701f68f72f41e9f1fadd6?repo=&url=http%3A%2F%2Fs3.amazonaws.com%2Fgithub%2Fribbons%2Fforkme_left_red_aa0000.png&path=" alt="Fork me on GitHub"></a>
@@ -21,6 +22,10 @@
       = render partial: 'shared/terminal'
       = link_to 'Shell Ninjas', root_url, alt: 'Shell Ninjas Secrets...'
     %menu
+      %li
+        = link_to "Report Bug", 'https://github.com/red-brigade/shellcast/issues'
+      %li
+        = link_to "Contribute", 'https://github.com/red-brigade/shellcast'
       - if logged_in?
         %li= link_to current_user.nickname, current_user
         %li= link_to 'logout', logout_url
@@ -33,11 +38,6 @@
   %section
     = yield
   %footer
-    %nav
-      %li
-        = link_to "Report Bug", 'https://github.com/red-brigade/shellcast/issues'
-      %li
-        = link_to "Contribute", 'https://github.com/red-brigade/shellcast'
     %p.copy
       &copy; 2010
       %a{ href: 'http://red-brigade.biz/' } Red Brigade
