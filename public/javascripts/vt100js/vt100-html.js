@@ -107,10 +107,10 @@ VT.Canvas.HTML.prototype.NEL = function() {
     if (!this.cursorIsAtTheEdge('bottom')) {
         this.CR();
         this.LF();
-        this.clearCursor();
     } else {
         this.scrollUp();
     }
+    this.clearCursor();
 }
 
 // IND — Index
