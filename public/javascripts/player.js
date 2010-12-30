@@ -112,9 +112,9 @@ SC.Player.prototype.play = function() {
         var txt;
         if (chunk && player.playing) {
             txt = chunk[1];
+            player.vt.pushChars(txt)
             setTimeout(function() {
                 player.updateScrollPosition(+1);
-                player.vt.pushChars(txt)
                 scheduleChunked(timeline);
             }, chunk[0] + player.speedup);
         } else {
