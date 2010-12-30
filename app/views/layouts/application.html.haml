@@ -15,7 +15,9 @@
     = csrf_meta_tag
 %body
   %header
-    %h1= link_to 'Shell Ninjas', root_url, alt: 'Shell Ninjas Secrets...'
+    %h1
+      = render partial: 'shared/terminal'
+      = link_to 'Shell Ninjas', root_url, alt: 'Shell Ninjas Secrets...'
     %menu
       - if logged_in?
         %li= link_to current_user.nickname, current_user
@@ -29,5 +31,9 @@
   %section
     = yield
   %footer
+    %nav
+      %li
+        = link_to "Report Bug", 'https://github.com/red-brigade/shellcast/issues'
+        = link_to "Contribute", 'https://github.com/red-brigade/shellcast'
     &copy; 2010
     %a{ href: 'http://red-brigade.biz/' } Red Brigade
