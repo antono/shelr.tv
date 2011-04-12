@@ -2,8 +2,8 @@ SC = (typeof SC === 'undefined' ? {} : SC);
 
 Deferred.define(SC);
 
-SC.Player = function(element,vt) {
-    this.vt      = vt;
+SC.Player = function(element, term) {
+    this.vt      = term;
     this.data    = null;
     this.timing  = null;
     this.element = element;

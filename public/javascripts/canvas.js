@@ -1,8 +1,6 @@
-VT = typeof VT == 'undefined' ? {} : VT;
+var Canvas = {};
 
-VT.Canvas = {};
-
-VT.Canvas.HTML = function(el, options) {
+Canvas.HTML = function(el, options) {
     this.container = el;
     this.options = options || {};
     this.cols = this.options.cols || 80;
@@ -24,11 +22,12 @@ VT.Canvas.HTML = function(el, options) {
     }
 }
 
-VT.Canvas.HTML.prototype.print = function(chr) {
+Canvas.HTML.prototype.print = function(chr) {
     var cell = this.getCurrentCell();
     var pos = this.cursorPosition;
-    // this.applySGRStyles(cell, sgr);
+    this.clearCursor();
     cell.innerHTML = chr;
+    this.applySGRStyles(cell, this.state.SGR);
     this.cursorNext();
     this.drawCursor();
 }
@@ -39,7 +38,7 @@ VT.Canvas.HTML.prototype.print = function(chr) {
 //
 //
 
-VT.Canvas.HTML.prototype.initHtmlElement = function() {
+Canvas.HTML.prototype.initHtmlElement = function() {
     var row, cell;
     this.screen = {};
     this.element = document.createElement('table');
@@ -66,7 +65,7 @@ VT.Canvas.HTML.prototype.initHtmlElement = function() {
     }
 }
 
-VT.Canvas.HTML.prototype.cursorIsAtTheEdge = function(edge, position) {
+Canvas.HTML.prototype.cursorIsAtTheEdge = function(edge, position) {
     var cPos = position || this.cursorPosition;
     switch(edge) {
         case 'top':     return cPos[0] <= 0;
@@ -76,7 +75,7 @@ VT.Canvas.HTML.prototype.cursorIsAtTheEdge = function(edge, position) {
     }
 }
 
-VT.Canvas.HTML.prototype.getHtmlOffsets = function() {
+Canvas.HTML.prototype.getHtmlOffsets = function() {
     var el = this.element;
     return {
         offsetWidth:    el.offsetWidth,
@@ -87,27 +86,27 @@ VT.Canvas.HTML.prototype.getHtmlOffsets = function() {
     }
 }
 
-VT.Canvas.HTML.prototype.getDisplayLength = function() {
+Canvas.HTML.prototype.getDisplayLength = function() {
     return ( this.cols * this.rows ); 
 }
 
-VT.Canvas.HTML.prototype.cursorOffsetToPosition = function(offset) {
+Canvas.HTML.prototype.cursorOffsetToPosition = function(offset) {
     return [Math.floor(offset / this.cols), offset % this.cols];
 }
 
-VT.Canvas.HTML.prototype.cursorPositionToOffset = function(pos) {
+Canvas.HTML.prototype.cursorPositionToOffset = function(pos) {
     return (pos[0] * this.cols) + pos[1];
 }
 
-VT.Canvas.HTML.prototype.getCursorOffset = function() {
+Canvas.HTML.prototype.getCursorOffset = function() {
     return ((this.cursorPosition[0] + 1) * this.cols) - (this.cols - this.cursorPosition[1]);
 }
 
-VT.Canvas.HTML.prototype.getEndOfLineOffset = function() {
+Canvas.HTML.prototype.getEndOfLineOffset = function() {
     return this.getCursorOffset() + (this.cols - this.cursorPosition[1]) - 1;
 }
 
-VT.Canvas.HTML.prototype.cursorNext = function() {
+Canvas.HTML.prototype.cursorNext = function() {
     if (this.cursorIsAtTheEdge('right')) {
         this.NEL();
     } else {
@@ -117,19 +116,19 @@ VT.Canvas.HTML.prototype.cursorNext = function() {
 
 // NEL — Next Line
 // http://vt100.net/docs/vt510-rm/NEL
-VT.Canvas.HTML.prototype.NEL = function() {
+Canvas.HTML.prototype.NEL = function() {
     if (!this.cursorIsAtTheEdge('bottom')) {
-        this.CR();
         this.LF();
     } else {
         this.scrollUp();
     }
+    this.CR();
     this.clearCursor();
 }
 
 // IND — Index
 // http://vt100.net/docs/vt510-rm/IND
-VT.Canvas.HTML.prototype.IND = function() {
+Canvas.HTML.prototype.IND = function() {
     console.log('IND')
     if (!this.cursorIsAtTheEdge('bottom')) {
         this.cursorPosition[0] += 1;
@@ -138,7 +137,7 @@ VT.Canvas.HTML.prototype.IND = function() {
     }
 }
 
-VT.Canvas.HTML.prototype.scrollUp = function() {
+Canvas.HTML.prototype.scrollUp = function() {
     var cell, nextLineCell;
     // scroll up
     for (var r = 0; r <= this.rows; r++) {
@@ -158,7 +157,7 @@ VT.Canvas.HTML.prototype.scrollUp = function() {
 
 // ED — Erase in Display
 // http://vt100.net/docs/vt510-rm/ED
-VT.Canvas.HTML.prototype.ED = function(ps) {
+Canvas.HTML.prototype.ED = function(ps) {
     var start, stop, cup, cell;
     switch (ps) {
         case 0:
@@ -185,13 +184,13 @@ VT.Canvas.HTML.prototype.ED = function(ps) {
 
 // d = VPA — Vertical Line Position Absolute
 // http://vt100.net/docs/vt510-rm/VPA
-VT.Canvas.HTML.prototype.VPA = function(coords) {
+Canvas.HTML.prototype.VPA = function(coords) {
     //
 }
 
 // K = EL — Erase in Line
 // http://vt100.net/docs/vt510-rm/EL
-VT.Canvas.HTML.prototype.EL = function(mode) {
+Canvas.HTML.prototype.EL = function(mode) {
     var start, stop;
     switch (mode) {
         case 0:
@@ -213,40 +212,40 @@ VT.Canvas.HTML.prototype.EL = function(mode) {
 // r = DECSTBM — Set Top and Bottom Margins
 // This control function sets the top and bottom margins for the
 // current page. You cannot perform scrolling outside the margins.
-VT.Canvas.HTML.prototype.DECSTBM = function(tm, bm) {
+Canvas.HTML.prototype.DECSTBM = function(tm, bm) {
     this.state.DECSTBM = [tm, bm];
 }
 
 // X = ECH — Erase Character
 // http://vt100.net/docs/vt510-rm/ECH
-VT.Canvas.HTML.prototype.ECH = function(num, cup) {
+Canvas.HTML.prototype.ECH = function(num, cup) {
     this.getCellAt(cup).innerHTML = "&nbsp";
 }
 
-VT.Canvas.HTML.prototype.CR = function() {
+Canvas.HTML.prototype.CR = function() {
     this.cursorPosition[1] = 0;
 }
 
-VT.Canvas.HTML.prototype.LF = function() {
+Canvas.HTML.prototype.LF = function() {
     this.cursorPosition[0] += 1;
 }
 
 // CUP - CUP – CUrsor Position
-VT.Canvas.HTML.prototype.CUP = function(coords) {
+Canvas.HTML.prototype.CUP = function(coords) {
     //console.log('CUP:' + coords)
     this.cursorPosition = coords;
     this.log.nextChar = true;
 }
 
-VT.Canvas.HTML.prototype.getCurrentCell = function(pos) {
+Canvas.HTML.prototype.getCurrentCell = function(pos) {
     return this.getCellAt(this.cursorPosition);
 }
 
-VT.Canvas.HTML.prototype.getCellAt = function(pos) {
+Canvas.HTML.prototype.getCellAt = function(pos) {
     return this.screen[pos[0]][pos[1]].cell;
 }
 
-VT.Canvas.HTML.prototype.push = function(chr, sgr) {
+Canvas.HTML.prototype.push = function(chr, sgr) {
     var cell = this.getCurrentCell();
     var pos = this.cursorPosition;
     this.applySGRStyles(cell, sgr);
@@ -255,12 +254,12 @@ VT.Canvas.HTML.prototype.push = function(chr, sgr) {
     this.drawCursor();
 }
 
-VT.Canvas.HTML.prototype.drawCursor = function(chr, sgr) {
+Canvas.HTML.prototype.drawCursor = function(chr, sgr) {
     var cell = this.getCurrentCell();
     if (this.mode.DECTCEM) cell.classList.add('cursor');
 }
 
-VT.Canvas.HTML.prototype.clearCursor = function(chr, sgr) {
+Canvas.HTML.prototype.clearCursor = function(chr, sgr) {
     var cursor = this.container.getElementsByClassName('cursor')[0];
     if (cursor) cursor.classList.remove('cursor');
 }
@@ -270,38 +269,38 @@ VT.Canvas.HTML.prototype.clearCursor = function(chr, sgr) {
 // If the cursor is already at the edge of the screen, this has no effect.
 
 // A - CUU – CUrsor Up
-VT.Canvas.HTML.prototype.CUU = function(code) {
+Canvas.HTML.prototype.CUU = function(code) {
     if (!this.cursorIsAtTheEdge('top')) {
         this.cursorPosition[0] -= 1;
     }
 }
 
 // B - CUD – CUrsor Down
-VT.Canvas.HTML.prototype.CUD = function(code) {
+Canvas.HTML.prototype.CUD = function(code) {
     if (!this.cursorIsAtTheEdge('bottom')) {
         this.cursorPosition[0] += 1;
     }
 }
 
 // C - CUF – CUrsor Froward
-VT.Canvas.HTML.prototype.CUF = function(code) {
+Canvas.HTML.prototype.CUF = function(code) {
     if (!this.cursorIsAtTheEdge('right')) {
         this.cursorPosition[1] += 1;
     }
 }
 
 // D - CUB – CUrsor Back
-VT.Canvas.HTML.prototype.CUB = function(code) {
+Canvas.HTML.prototype.CUB = function(code) {
     if (!this.cursorIsAtTheEdge('left')) {
         this.cursorPosition[1] -= 1;
     }
 }
 
-VT.Canvas.HTML.prototype.clearSGRStyles = function(cell, grState) {
+Canvas.HTML.prototype.clearSGRStyles = function(cell, grState) {
     cell.removeAttribute('class');
 }
 
-VT.Canvas.HTML.prototype.applySGRStyles = function(cell, grState) {
+Canvas.HTML.prototype.applySGRStyles = function(cell, grState) {
     var attr, el;
     cell.setAttribute('class', '');
     for (key in grState) {
@@ -321,4 +320,50 @@ VT.Canvas.HTML.prototype.applySGRStyles = function(cell, grState) {
                 break;
         }
     }
+}
+
+// SGR - Select Graphic Rendition
+Canvas.HTML.prototype.SGR = function(codes) {
+    var sgrCodes = [];
+    var sgrCode, cssClass, brightness;
+    var canvas = this;
+
+    codes.forEach(function(sgrCode) {
+        sgrCode = parseInt(sgrCode);
+        switch (sgrCode) {
+            case NaN: canvas.state.SGR = canvas.defaultState.SGR;  break;
+            case 0:   canvas.state.SGR.brightness = sgrCode;     break;
+            case 1:   canvas.state.SGR.brightness = sgrCode;     break;
+            case 2:   canvas.state.SGR.faint      = true;        break;
+            case 3:   canvas.state.SGR.italic     = true;        break;
+            case 4:   canvas.state.SGR.underline  = true;        break;
+            case 5:   canvas.state.SGR.blink      = true;        break;
+            case 6:   canvas.state.SGR.blinkfast  = true;        break;
+            case 7:  break; // mage: Negative
+            case 8:  break; // Conceal (not widely supported)
+            case 9:  break; // Crossed-out (not widely supported)
+            case 10: break; // Primary font
+            case 22: break; // neither bright, bold nor faint
+            case 25:
+                canvas.state.SGR.blink = false;
+                canvas.state.SGR.blinkfast = false;
+                break;
+            case 39:
+                canvas.state.SGR.fgColor = canvas.defaultState.SGR.fgColor;
+                break;
+            case 49:
+                canvas.state.SGR.bgColor = canvas.defaultState.SGR.bgColor;
+                break;
+            default:
+                console.log(sgrCode);
+                if (sgrCode >= 30 && sgrCode <= 37) {
+                    canvas.state.SGR.fgColor = (canvas.state.SGR.brightness === 1 ? 'b' : 'n') + sgrCode;
+                } else if (sgrCode >= 40 && sgrCode <= 47) {
+                    canvas.state.SGR.bgColor = (canvas.state.SGR.brightness === 1 ? 'b' : 'n') + sgrCode;
+                }
+        }
+        sgrCodes.push(sgrCode)
+    })
+
+    return sgrCodes;
 }
