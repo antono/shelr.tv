@@ -7,7 +7,7 @@ defaults: &defaults
   #     port: 27019
 
 development:
-  <<: *defaults
+  host: localhost
   database: shelltube_development
 
 test:
