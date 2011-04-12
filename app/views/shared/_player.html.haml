@@ -13,8 +13,7 @@
 
 :javascript
   window.addEventListener('load', function() {
-    var cv = new VT.Canvas.HTML(document.getElementsByClassName('container')[0])
-    var vt = new VT.Core(cv);
-    window.player = new SC.Player(document.getElementById('player'), vt);
+    var term = new Term(document.getElementsByClassName('container')[0]);
+    window.player = new SC.Player(document.getElementById('player'), term);
     window.player.load('#{record_path(@record.id, :format => :json)}');
   });

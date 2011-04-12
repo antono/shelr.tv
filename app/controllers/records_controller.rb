@@ -12,12 +12,12 @@ class RecordsController < ApplicationController
   end
 
   def show
-    @record = Record.criteria.id(params[:id]).first
+    @record = Record.find(params[:id])
     respond_with @record
   end
 
   def edit
-    @record = Record.criteria.id(params[:id]).first
+    @record = Record.find(params[:id])
   end
 
   def create
@@ -36,7 +36,7 @@ class RecordsController < ApplicationController
   end
 
   def update
-    @record = Record.criteria.id(params[:id]).first
+    @record = Record.find(params[:id])
     if @record.editable_by?(current_user)
       if @record.update_attributes(params[:record])
         flash[:notice] = 'Record was succesfully updated.'
