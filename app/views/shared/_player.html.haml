@@ -12,8 +12,9 @@
       %li= button_to 'destroy', @record, method: 'delete', confirm: 'Really Destroy?'
 
 :javascript
-  window.addEventListener('load', function() {
+  var onLoad = function() {
     var term = new Term(document.getElementsByClassName('container')[0]);
     window.player = new SC.Player(document.getElementById('player'), term);
     window.player.load('#{record_path(@record.id, :format => :json)}');
-  });
+  }
+  window.addEventListener('load', onLoad, true);

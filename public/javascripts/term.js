@@ -3,9 +3,9 @@ var Term = {};
 var Term = function(container) {
   var term = this;
   this.parser = new Parser(function(parser, action, chr) {
-    term[action](chr);
+    term[action](chr)
   });
-  this.parser.doDebug = true;
+  this.parser.doDebug = false;
   this.canvas = new Canvas.HTML(container);
 }
 
@@ -24,12 +24,38 @@ Term.prototype.print = function(chr) {
 //
 Term.prototype.execute = function(chr) {
   switch (chr) {
+    case "\r":
+      console.log('execute: \\r')
+      this.canvas.CR();
+      break;
     case "\n":
-      this.canvas.NEL();
+      console.log('execute: \\n')
+      this.canvas.LF();
+      break;
     default:
-      console.log('exec not handled: ' + chr + ' int: ' + parseInt(chr).toString());
+      console.log('exec not handled: ' + chr + ' int: ' + chr);
       break;
   }
+
+}
+
+Term.prototype.esc_dispatch = function(fn) {
+  var params = this.parser.params;
+  var ichars = this.parser.intermediateChars;
+  var qm = ((ichars[0] === '?') ? true : false);
+  console.log('ESC dispatch: ' + fn + ' int: ' + parseInt(fn).toString());
+  console.log(params);
+
+  switch (fn) {
+    case 'A': this.CUU(parseInt(code)); break;
+    case 'B': // ESC B -- Cursor down.
+      this.canvas.CUD(1);
+      break;
+    default:
+      console.error('ESC dispatch unhandled: ' + fn);
+      break;
+  }
+
 
 }
 
@@ -37,12 +63,14 @@ Term.prototype.csi_dispatch = function(fn) {
   var params = this.parser.params;
   var ichars = this.parser.intermediateChars;
   var qm = ((ichars[0] === '?') ? true : false);
-  console.log('csi dispatch: ' + fn + ' int: ' + parseInt(fn).toString());
+  console.log('csi dispatch: ' + fn);
   console.log(params);
 
   switch (fn) {
     case 'A': this.CUU(parseInt(code)); break;
-    case 'B': this.CUD(parseInt(code)); break;
+    case 'B': // Cursor Down param times
+      this.canvas.CUD(parseInt(params[0]));
+      break;
     case 'C': this.CUF(parseInt(code)); break;
     case 'D': this.CUB(parseInt(code)); break;
     case 'm':
@@ -51,32 +79,36 @@ Term.prototype.csi_dispatch = function(fn) {
       break;
     case 'H':
       //console.log(code + command);
-      this.CUP(params[0]); break;
+      //debugger;
+      this.canvas.CUP(params); break;
     case 'K':
       //console.log(code + command);
-      this.EL(parseInt(code));
+      this.canvas.EL(parseInt(params[0]));
       break;
     case 'J':
-        //console.log(code + command)
-      qm ? code : this.ED(code);
+      //debugger;
+      qm ? 'FIXME' : this.canvas.ED(parseInt(params[0]));
       break;
     case 'c': this.DA1(code); break;
-    case 'd': this.VPA(code); break;
+    case 'd':
+      //debugger;
+      this.canvas.VPA(parseInt(params[0]));
+      break;
     case 'l':
-      console.log(code + command);
-      qm ? this.DECRST(code) : this.RM(code);
+      /// FIXME qm ? this.DECRST(code) : this.canvas.IRM(code);
       break;
     case 'h':
-      console.log(params[0] + fn);
-      qm ? this.canvas.DECSET(params[0]) : 1
+      console.log(params.join(';') + fn);
+      qm ? this.canvas.DECSET(params) : console.error('h unhandled')
       break;
     case 'r':
-      console.log(code + command);
-      this.DECSTBM(code);
+      console.log(params, fn);
+      // Set Scrolling Region 
+      this.canvas.DECSTBM(params);
       break;
     default:
-      console.log('csi_dispatch unhandled: ' + fn);
-      console.log('params: ' + fn);
+      console.error('csi_dispatch unhandled: ' + fn);
+      console.error('params: ' + fn);
       break;
   }
 

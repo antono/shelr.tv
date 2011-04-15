@@ -18,8 +18,12 @@ var Parser = function(cb) {
     this.doDebug = false;
 }
 
-Parser.prototype.debug = function(data) {
-  if (this.doDebug) console.log(data);
+Parser.prototype.debug = function(data, force) {
+  if (this.doDebug) {
+    console.log(data);
+  } else if (force) {
+    console.log(data);
+  }
 }
 
 // State Definitions
@@ -33,6 +37,7 @@ Parser.prototype.handleAction = function(action, chr) {
     switch(action) {
         case 'print':
         case 'execute':
+          console.log('Handling action: ' + action + ' with char: ' + chr);
         case 'csi_dispatch':
         case 'hook':
         case 'put':
@@ -42,8 +47,8 @@ Parser.prototype.handleAction = function(action, chr) {
         case 'osc_end':
         case 'esc_dispatch':
           if (action === 'csi_dispatch') console.log('Handling action: ' + action + ' with char: ' + chr);
-            this.callback(action, chr);
-            break;
+          this.callback(action, chr);
+          break;
         case 'ignore': break;
         case 'collect':
             this.debug('Intermediate chars number: ' + this.numIntermediateChars);

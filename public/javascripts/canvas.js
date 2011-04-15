@@ -8,14 +8,14 @@ Canvas.HTML = function(el, options) {
     this.initHtmlElement();
     this.cursorPosition = [0, 0];
     this.defaultState = {
-        RM: 2, // keyboard action mode
+        IRM: 2, // keyboard action mode
         SGR: {
-            birghtness: 0,
+            brightness: 0,
             fgColor: 'n37',
             bgColor: 'n40'
         }
     };
-    this.state = this.defaultState;
+    this.state = JSON.parse(JSON.stringify(this.defaultState));
     this.log = {};
     this.mode = {
         DECTCEM: true
@@ -117,13 +117,9 @@ Canvas.HTML.prototype.cursorNext = function() {
 // NEL — Next Line
 // http://vt100.net/docs/vt510-rm/NEL
 Canvas.HTML.prototype.NEL = function() {
-    if (!this.cursorIsAtTheEdge('bottom')) {
-        this.LF();
-    } else {
-        this.scrollUp();
-    }
-    this.CR();
-    this.clearCursor();
+  this.CR();
+  this.LF();
+  // this.clearCursor(); // rly here?
 }
 
 // IND — Index
@@ -184,15 +180,18 @@ Canvas.HTML.prototype.ED = function(ps) {
 
 // d = VPA — Vertical Line Position Absolute
 // http://vt100.net/docs/vt510-rm/VPA
-Canvas.HTML.prototype.VPA = function(coords) {
-    //
+Canvas.HTML.prototype.VPA = function(colNum) {
+  console.log(this.cursorPosition)
+  this.cursorPosition[0] = (colNum || 0);
 }
 
 // K = EL — Erase in Line
 // http://vt100.net/docs/vt510-rm/EL
 Canvas.HTML.prototype.EL = function(mode) {
+    console.log('EL: ', this.cursorPosition)
     var start, stop;
     switch (mode) {
+        case NaN:
         case 0:
             start = this.getCursorOffset();
             stop  = this.getEndOfLineOffset();
@@ -212,8 +211,8 @@ Canvas.HTML.prototype.EL = function(mode) {
 // r = DECSTBM — Set Top and Bottom Margins
 // This control function sets the top and bottom margins for the
 // current page. You cannot perform scrolling outside the margins.
-Canvas.HTML.prototype.DECSTBM = function(tm, bm) {
-    this.state.DECSTBM = [tm, bm];
+Canvas.HTML.prototype.DECSTBM = function(values) {
+    this.state.DECSTBM = [values[0], values[1]]; // [topMargin, bottomMargin]
 }
 
 // X = ECH — Erase Character
@@ -227,13 +226,17 @@ Canvas.HTML.prototype.CR = function() {
 }
 
 Canvas.HTML.prototype.LF = function() {
+  if (!this.cursorIsAtTheEdge('bottom')) {
     this.cursorPosition[0] += 1;
+  } else {
+    this.scrollUp();
+  }
 }
 
 // CUP - CUP – CUrsor Position
 Canvas.HTML.prototype.CUP = function(coords) {
     //console.log('CUP:' + coords)
-    this.cursorPosition = coords;
+    this.cursorPosition = [coords[0] || 0, coords[1] || 0];
     this.log.nextChar = true;
 }
 
@@ -276,10 +279,13 @@ Canvas.HTML.prototype.CUU = function(code) {
 }
 
 // B - CUD – CUrsor Down
-Canvas.HTML.prototype.CUD = function(code) {
+// Cursor Down P s Times (default = 1) (CUD).
+Canvas.HTML.prototype.CUD = function(times) {
+  for (var i = 0; i < ( times || 1 ); i++) {
     if (!this.cursorIsAtTheEdge('bottom')) {
         this.cursorPosition[0] += 1;
     }
+  }
 }
 
 // C - CUF – CUrsor Froward
@@ -296,31 +302,6 @@ Canvas.HTML.prototype.CUB = function(code) {
     }
 }
 
-Canvas.HTML.prototype.clearSGRStyles = function(cell, grState) {
-    cell.removeAttribute('class');
-}
-
-Canvas.HTML.prototype.applySGRStyles = function(cell, grState) {
-    var attr, el;
-    cell.setAttribute('class', '');
-    for (key in grState) {
-        attr = grState[key];
-        switch (key) {
-            case 'fgColor':
-            case 'bgColor':
-                //console.log('->>>' + attr)
-                if (attr !== '') cell.classList.add(attr);
-                break;
-            case 'faint':
-            case 'italic':
-            case 'underline':
-            case 'blink':
-            case 'blinkfast':
-                cell.classList.add(key);
-                break;
-        }
-    }
-}
 
 // SGR - Select Graphic Rendition
 Canvas.HTML.prototype.SGR = function(codes) {
@@ -328,10 +309,15 @@ Canvas.HTML.prototype.SGR = function(codes) {
     var sgrCode, cssClass, brightness;
     var canvas = this;
 
+    if (codes.length === 0) {
+      canvas.state.SGR = JSON.parse(JSON.stringify(canvas.defaultState));
+      return;
+    }
+
     codes.forEach(function(sgrCode) {
         sgrCode = parseInt(sgrCode);
         switch (sgrCode) {
-            case NaN: canvas.state.SGR = canvas.defaultState.SGR;  break;
+           case NaN: canvas.state.SGR = JSON.parse(JSON.stringify(canvas.defaultState)); break;
             case 0:   canvas.state.SGR.brightness = sgrCode;     break;
             case 1:   canvas.state.SGR.brightness = sgrCode;     break;
             case 2:   canvas.state.SGR.faint      = true;        break;
@@ -367,3 +353,33 @@ Canvas.HTML.prototype.SGR = function(codes) {
 
     return sgrCodes;
 }
+
+Canvas.HTML.prototype.applySGRStyles = function(cell, grState) {
+    var attr, el;
+    cell.setAttribute('class', '');
+    for (key in grState) {
+        attr = grState[key];
+        switch (key) {
+            case 'fgColor':
+            case 'bgColor':
+                if (attr !== '') cell.classList.add(attr);
+                break;
+            case 'faint':
+            case 'italic':
+            case 'underline':
+            case 'blink':
+            case 'blinkfast':
+                cell.classList.add(key);
+                break;
+        }
+    }
+}
+
+Canvas.HTML.prototype.clearSGRStyles = function(cell, grState) {
+    cell.removeAttribute('class');
+}
+
+Canvas.HTML.prototype.DECSET = function(params) {
+  // TODO
+}
+

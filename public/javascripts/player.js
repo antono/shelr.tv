@@ -22,7 +22,7 @@ SC.Player.prototype.initSpeedControl = function() {
     speed.setAttribute('value', 0);
     speed.addEventListener('change', function(e) {
         player.speedup = (e.target.value * -1);
-    })
+    }, true)
 }
 
 SC.Player.prototype.initProgress = function() {
@@ -32,7 +32,7 @@ SC.Player.prototype.initProgress = function() {
         this.vt.canvas.getHtmlOffsets().offsetWidth + "px");
     this.progress.addEventListener('click', function(e) {
         console.log(e)
-    })
+    }, true)
 }
 
 SC.Player.prototype.load = function(path) {
@@ -92,7 +92,7 @@ SC.Player.prototype.enableButtons = function(data) {
         button = this.buttons[i];
         button.addEventListener('click', function(ev){
             player[ev.target.className]();
-        })
+        }, false);
         button.removeAttribute('disabled');
     }
 }
@@ -163,12 +163,12 @@ SC.Player.prototype.initHover = function(content) {
         } else {
             ev.stopPropagation();
         }
-    })
+    }, false)
     this.hover.addEventListener('mouseover', function(ev) {
         if (!player.playing)  {
             player.hoverHide();
         }
-    });
+    }, false);
 }
 
 SC.Player.prototype.hoverShow = function(content) {
