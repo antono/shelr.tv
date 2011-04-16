@@ -17,3 +17,6 @@
 
 .desc
   = @record.description_html
+
+.desc
+  %input{ :type => :text, :value => "shellcast play #{record_path(@record, :only_path => false, :format => :json)}", :style => 'width: 500px' }
