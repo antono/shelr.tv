@@ -1,18 +1,23 @@
 body {
-  padding: 0 80px;
   font: 14px "Ubuntu", "Trebuchet MS", sans-serif; }
+
+#wrapper {
+  width: 700px;
+  margin: 0 auto; }
 
 .hidden {
   display: none; }
 
 .records {
   padding-left: 0; }
+  .records .record:first-child {
+    border-radius: 3px; }
   .records .record {
+    display: block;
     background: #eeeeee;
     padding: 15px;
-    margin: 10px 0;
-    overflow: auto;
-    width: 70%; }
+    border-bottom: 1px #aaaaaa solid;
+    overflow: auto; }
     .records .record .avatar {
       display: block;
       float: left; }
@@ -33,20 +38,36 @@ header {
     font-size: 4em;
     text-shadow: 2px 2px 2px gray; }
     header h1 a {
+      color: #254117;
       display: block;
       text-decoration: none;
       margin: 1em 0 0 3em;
       width: 10em; }
+      header h1 a sup {
+        color: gray;
+        font-size: 0.2em;
+        font-weight: normal;
+        margin-left: -40px;
+        vertical-align: top;
+        text-shadow: 1px 1px 1px #cccccc; }
     header h1 svg {
       margin: 0 15px 0 0;
       float: left; }
-  header menu {
-    padding: 0;
-    text-align: right; }
-    header menu li {
-      display: inline-block;
-      padding: 5px;
-      margin: 0; }
+
+menu.top {
+  position: absolute;
+  top: 0;
+  display: block;
+  border: 1px solid #aaaaaa;
+  background: #eeeeee;
+  padding: 0;
+  border-radius: 4px;
+  margin-left: 230px;
+  margin-top: -3px; }
+  menu.top li {
+    display: inline-block;
+    padding: 5px;
+    margin: 0; }
 
 footer {
   padding: 25px 0; }
@@ -72,52 +93,58 @@ footer {
 #player-hover.disabled {
   background: rgba(0, 0, 0, 0); }
 
-#player h1.title {
-  display: none; }
-#player table.canvas {
-  overflow: hidden;
-  padding: 10px;
-  font-family: "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Monaco", monospace; }
-  #player table.canvas td {
-    padding: 1px 0 1px 0;
-    width: 0.2em;
-    border: 1px; }
-  #player table.canvas td.cursor {
-    background-color: white; }
-#player input[type=range] {
-  margin-bottom: -10px; }
-#player progress {
-  height: 30px; }
-#player nav li {
-  display: inline-block;
-  margin: 0; }
+#player {
+  width: 100%; }
+  #player input.cmdline {
+    border: 1px solid #aaaaaa;
+    font-size: 1.4em;
+    padding: 3px;
+    margin: 0;
+    border-radius: 2px; }
+  #player table.canvas {
+    overflow: hidden;
+    padding: 10px;
+    font-family: "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Monaco", monospace; }
+    #player table.canvas td {
+      padding: 1px 0 1px 0;
+      width: 0.2em;
+      border: 1px; }
+    #player table.canvas td.cursor {
+      background-color: white; }
+  #player input[type=range] {
+    margin-bottom: -10px; }
+  #player progress {
+    height: 30px; }
+  #player nav li {
+    display: inline-block;
+    margin: 0; }
 
 .pagination {
   padding: 0;
-  margin: 0;
-  margin-top: 3em; }
+  margin: 0; }
   .pagination a {
     background: #cccccc;
-    padding: 10px;
+    padding: 5px;
     margin: 2px;
-    border: 1px solid #aaaadd;
+    border: 1px solid #999999;
     text-decoration: none; }
     .pagination a:hover, .pagination a:active {
-      border: 1px solid #000099;
+      border: 1px solid #777777;
       color: black; }
   .pagination em {
-    background: #cccccc;
-    padding: 10px;
+    display: none;
+    background: #aaaaaa;
+    padding: 5px;
     margin: 2px;
-    border: 1px solid #aaaadd;
-    text-decoration: none;
-    font-weight: bold; }
+    border: 1px solid #777777;
+    text-decoration: none; }
     .pagination em:hover {
-      border: 1px solid #000099;
+      border: 1px solid #999999;
       color: black; }
   .pagination span.disabled {
     display: none;
-    padding: 2px 5px 2px 5px;
+    background: #cccccc;
+    padding: 5px;
     margin: 2px;
-    border: 1px solid #eeeeee;
-    color: #dddddd; }
+    border: 1px solid #999999;
+    text-decoration: none; }

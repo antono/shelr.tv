@@ -1,5 +1,6 @@
+
 #player.sgr
-  %h1.title
+  %input{ :type => :text, :value => "shellcast play #{record_path(@record, :only_path => false, :format => :json)}", :class => 'cmdline' }
   .container
   %progress
   %nav.controls

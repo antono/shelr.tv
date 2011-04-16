@@ -2,7 +2,5 @@
 
 %ul.records
   - @records.each do |record|
-    %li
-      = render :partial => 'records/record', locals: { record: record }
-
-= will_paginate @records
+    = render :partial => 'records/record', locals: { record: record }
+  %li.record= will_paginate @records

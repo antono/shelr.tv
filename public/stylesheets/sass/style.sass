@@ -1,18 +1,23 @@
 body
-  :padding 0 80px
   :font 14px "Ubuntu", "Trebuchet MS", sans-serif
+
+#wrapper
+  :width 700px
+  :margin 0 auto
 
 .hidden
   :display none
 
 .records
   :padding-left 0
+  .record:first-child
+    :border-radius 3px
   .record
+    :display block
     :background #eee
     :padding 15px
-    :margin 10px 0
+    :border-bottom 1px #aaa solid
     :overflow auto
-    :width 70%
     .avatar
       :display block
       :float left
@@ -22,6 +27,8 @@ body
       :margin-left 90px
     .tags
       :margin-left 90px
+
+
 
 
 header
@@ -34,20 +41,38 @@ header
     :font-size 4em
     :text-shadow 2px 2px 2px gray
     a
+      :color #254117
       :display block
       :text-decoration none
       :margin 1em 0 0 3em
       :width 10em
+      sup
+        :color gray
+        :font-size 0.2em
+        :font-weight normal
+        :margin-left -40px
+        :vertical-align top
+        :text-shadow 1px 1px 1px #ccc
     svg
       :margin 0 15px 0 0
       :float left
-  menu
-    :padding 0
-    :text-align right
-    li
-      :display inline-block
-      :padding 5px
-      :margin 0
+
+menu.top
+  :position absolute
+  :top 0
+  :display block
+  :border 1px solid #aaa
+  :background #eee
+  :padding 0
+  :border-radius 4px
+  :margin-left 230px
+  :margin-top -3px
+  li
+    :display inline-block
+    :padding 5px
+    :margin 0
+  li.search
+    input
 
 footer
   :padding 25px 0
@@ -77,8 +102,13 @@ footer
   :background rgba(0,0,0,0)
 
 #player
-  h1.title
-    :display none
+  :width 100%
+  input.cmdline
+    :border 1px solid #aaa
+    :font-size 1.4em
+    :padding 3px
+    :margin 0
+    :border-radius 2px
   table.canvas
     :overflow hidden
     :padding 10px
@@ -102,29 +132,29 @@ footer
 .pagination
   padding: 0
   margin: 0
-  margin-top: 3em
   a
     :background #ccc
-    :padding 10px
+    :padding 5px
     :margin 2px
-    :border 1px solid #aaaadd
+    :border 1px solid #999
     :text-decoration none
     &:hover, &:active
-      :border 1px solid #000099
+      :border 1px solid #777
       :color #000
   em
-    :background #ccc
-    :padding 10px
+    :display none
+    :background #aaa
+    :padding 5px
     :margin 2px
-    :border 1px solid #aaaadd
+    :border 1px solid #777
     :text-decoration none
-    :font-weight bold
     &:hover
-      :border 1px solid #000099
+      :border 1px solid #999
       :color #000
   span.disabled
     :display none
-    :padding 2px 5px 2px 5px
+    :background #ccc
+    :padding 5px
     :margin 2px
-    :border 1px solid #eee
-    :color #ddd
+    :border 1px solid #999
+    :text-decoration none

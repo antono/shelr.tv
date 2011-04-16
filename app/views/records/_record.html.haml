@@ -1,12 +1,13 @@
-.record
+%li.record
   = link_to image_tag(record.user.avatar_url(80)), record.user, :class => 'avatar'
   %h3.title
     = link_to record.title, record
-    - if record.user
-      by
-      = link_to record.user.nickname, record.user
   .desc
     = record.description_html
+  - if record.user
+    .desc
+      %strong Ninja:
+      = link_to record.user.nickname, record.user
   - unless record.tags.blank?
     %p.tags
       %strong Tags:

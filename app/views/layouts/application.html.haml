@@ -18,29 +18,33 @@
 %body
   <a href="http://github.com/red-brigade/shellcast"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://assets0.github.com/img/5d21241b64dc708fcbb701f68f72f41e9f1fadd6?repo=&url=http%3A%2F%2Fs3.amazonaws.com%2Fgithub%2Fribbons%2Fforkme_left_red_aa0000.png&path=" alt="Fork me on GitHub"></a>
 
-  %header
-    %h1
-      = render partial: 'shared/terminal'
-      = link_to 'Shell Ninjas', root_url, alt: 'Shell Ninjas Secrets...'
-    %menu
-      %li
-        = link_to "Report Bug", 'https://github.com/red-brigade/shellcast/issues'
-      %li
-        = link_to "Contribute", 'https://github.com/red-brigade/shellcast'
+  #wrapper
+    %header
+      %h1
+        = render partial: 'shared/terminal'
+        = link_to 'Shell Ninjas <sup>Alpha</sup>'.html_safe, root_url, alt: 'Shell Ninjas Secrets...'
+    %menu.top
+      %li= link_to 'Ninjas', users_path
+      %li= link_to 'ShellCasts', records_path
       - if logged_in?
+        %li |
         %li= link_to current_user.nickname, current_user
         %li= link_to 'logout', logout_url
       - else
-        %li= button_to 'Login with Twitter', '/auth/twitter'
-  %section.flashes
-    - [:error, :notice].each do |type|
-      - unless flash[type].blank?
-        %div{ class: type }= flash[type]
-  %section
-    = yield
-  %footer
-    %p.copy
-      &copy; 2010
-      %a{ href: 'http://red-brigade.biz/' } Red Brigade
+        %li= link_to 'Login with Twitter', '/auth/twitter'
+      %li.search
+        - form_tag '/search', :method => :get do
+          = search_field_tag :q, '', :placeholder => 'Search'
+        %div{ style: 'width: 100%' }
+    %section.flashes
+      - [:error, :notice].each do |type|
+        - unless flash[type].blank?
+          %div{ class: type }= flash[type]
+    %section
+      = yield
+    %footer
+      %p.copy
+        &copy; 2010
+        %a{ href: 'http://red-brigade.biz/' } Red Brigade
 
-  = render partial: 'shared/analytics'
+    = render partial: 'shared/analytics'

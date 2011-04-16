@@ -8,9 +8,10 @@ SC.Player = function(element, term) {
     this.timing  = null;
     this.element = element;
     this.speedup = 0;
-    this.initProgress();
     this.initSpeedControl();
     this.initHover();
+    this.initProgress();
+    this.initCmdline();
 }
 
 SC.Player.prototype.initSpeedControl = function() {
@@ -32,6 +33,14 @@ SC.Player.prototype.initProgress = function() {
         this.vt.canvas.getHtmlOffsets().offsetWidth + "px");
     this.progress.addEventListener('click', function(e) {
         console.log(e)
+    }, true)
+}
+
+SC.Player.prototype.initCmdline = function() {
+    this.cmdline = this.element.getElementsByClassName('cmdline')[0];
+    this.cmdline.setAttribute("style", "width:" + ( this.vt.canvas.getHtmlOffsets().offsetWidth - 8) + "px");
+    this.cmdline.addEventListener('click', function(e) {
+      e.target.select();
     }, true)
 }
 
