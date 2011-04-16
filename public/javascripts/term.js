@@ -43,14 +43,15 @@ Term.prototype.esc_dispatch = function(fn) {
   var params = this.parser.params;
   var ichars = this.parser.intermediateChars;
   var qm = ((ichars[0] === '?') ? true : false);
-  console.log('ESC dispatch: ' + fn + ' int: ' + parseInt(fn).toString());
-  console.log(params);
+  //console.log('ESC dispatch: ' + fn + ' int: ' + parseInt(fn).toString());
+  //console.log(params);
 
   switch (fn) {
     case 'A': this.CUU(parseInt(code)); break;
     case 'B': // ESC B -- Cursor down.
       this.canvas.CUD(1);
       break;
+    case 'M': // ESC M
     default:
       console.error('ESC dispatch unhandled: ' + fn);
       break;
@@ -63,8 +64,8 @@ Term.prototype.csi_dispatch = function(fn) {
   var params = this.parser.params;
   var ichars = this.parser.intermediateChars;
   var qm = ((ichars[0] === '?') ? true : false);
-  console.log('csi dispatch: ' + fn);
-  console.log(params);
+  //console.log('csi dispatch: ' + fn);
+  //console.log(params);
 
   switch (fn) {
     case 'A': this.CUU(parseInt(code)); break;
@@ -98,11 +99,11 @@ Term.prototype.csi_dispatch = function(fn) {
       /// FIXME qm ? this.DECRST(code) : this.canvas.IRM(code);
       break;
     case 'h':
-      console.log(params.join(';') + fn);
+      //console.log(params.join(';') + fn);
       qm ? this.canvas.DECSET(params) : console.error('h unhandled')
       break;
     case 'r':
-      console.log(params, fn);
+      //console.log(params, fn);
       // Set Scrolling Region 
       this.canvas.DECSTBM(params);
       break;

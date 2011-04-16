@@ -36,8 +36,8 @@ Parser.prototype.handleAction = function(action, chr) {
     this.debug('Handling action: ' + action + ' with char: ' + chr);
     switch(action) {
         case 'print':
-        case 'execute':
           console.log('Handling action: ' + action + ' with char: ' + chr);
+        case 'execute':
         case 'csi_dispatch':
         case 'hook':
         case 'put':
@@ -46,13 +46,12 @@ Parser.prototype.handleAction = function(action, chr) {
         case 'osc_put':
         case 'osc_end':
         case 'esc_dispatch':
-          if (action === 'csi_dispatch') console.log('Handling action: ' + action + ' with char: ' + chr);
+          // if (action === 'csi_dispatch') console.log('Handling action: ' + action + ' with char: ' + chr);
           this.callback(action, chr);
           break;
         case 'ignore': break;
         case 'collect':
             this.debug('Intermediate chars number: ' + this.numIntermediateChars);
-
             if ((this.numIntermediateChars + 1) > this.MAX_INTERMEDIATE_CHARS) {
                 this.ignoreFlagged = true;
             } else {
@@ -71,7 +70,7 @@ Parser.prototype.handleAction = function(action, chr) {
                 if (!this.params[curPos]) this.params[curPos] = "";
                 this.params[curPos] += chr;
             }
-            console.log('params', this.params)
+            // console.log('params', this.params)
             break;
         case 'clear':
             this.numIntermediateChars = 0;
@@ -122,11 +121,15 @@ Parser.prototype.pushChar = function(chr) {
 
     transition = Parser.transitions['ANYWHERE'][charCode] || Parser.transitions[this.state][charCode];
 
-    action   = transition[0];
-    newState = transition[1];
-    
-    if (action)   this.handleAction(action, chr);
-    if (newState) this.changeState(newState);
+    if (transition) {
+      action   = transition[0];
+      newState = transition[1];
+      
+      if (action)   this.handleAction(action, chr);
+      if (newState) this.changeState(newState);
+    } else {
+      console.error('No transition for char: ', chr)
+    }
 }
 
 
