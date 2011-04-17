@@ -24,8 +24,6 @@
         = render partial: 'shared/terminal'
         = link_to 'Shell Ninjas <sup>Alpha</sup>'.html_safe, root_url, alt: 'Shell Ninjas Secrets...'
     %menu.top
-      %li= link_to 'Ninjas', users_path
-      %li= link_to 'ShellCasts', records_path
       - if logged_in?
         %li |
         %li= link_to current_user.nickname, current_user

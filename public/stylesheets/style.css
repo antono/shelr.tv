@@ -1,5 +1,19 @@
 body {
-  font: 14px "Ubuntu", "Trebuchet MS", sans-serif; }
+  font: 14px "Ubuntu", "Trebuchet MS", sans-serif;
+  color: #333333; }
+
+h1.aligned {
+  margin-left: 150px; }
+
+a {
+  color: #333333;
+  -webkit-transition: color;
+  -webkit-transition-timing-function: ease-out;
+  -webkit-transition-duration: 300ms; }
+  a:hover {
+    color: #513a7b; }
+  a:active {
+    color: red; }
 
 #wrapper {
   width: 700px;
@@ -8,40 +22,70 @@ body {
 .hidden {
   display: none; }
 
+.user.big {
+  box-shadow: 1px 1px 5px #bbbbbb;
+  background: #e0eaf8;
+  padding: 15px;
+  overflow: auto;
+  border: 1px solid #cccccc; }
+  .user.big .avatar {
+    float: left; }
+  .user.big .desc {
+    margin-bottom: 5px;
+    margin-left: 100px; }
+    .user.big .desc strong {
+      display: inline-block;
+      width: 100px;
+      font-weight: normal;
+      font-size: 0.9em;
+      text-align: right;
+      padding-right: 15px;
+      color: #999999; }
+  .user.big .about {
+    margin-left: 320px; }
+
 .records {
+  box-shadow: 1px 1px 5px #cccccc;
   padding-left: 0; }
   .records .record:first-child {
-    border-radius: 3px; }
+    -moz-border-radius-top: 8px;
+    -webkit-border-top-radius: 8px;
+    border-top-radius: 8px; }
+  .records .record:last-child {
+    border-bottom: 1px #cccccc solid; }
   .records .record {
     display: block;
     background: #eeeeee;
     padding: 15px;
-    border-bottom: 1px #aaaaaa solid;
+    border: 1px #cccccc solid;
+    border-bottom: none;
     overflow: auto; }
     .records .record .avatar {
       display: block;
       float: left; }
+      .records .record .avatar img {
+        box-shadow: 1px 1px 5px #777777; }
     .records .record .title {
-      margin: 0 0 0 90px; }
-    .records .record .desc {
-      margin-left: 90px; }
-    .records .record .tags {
-      margin-left: 90px; }
+      margin: 0; }
+    .records .record .desc, .records .record .tags, .records .record h3.title {
+      margin-left: 140px; }
 
 header {
   overflow: hidden;
-  padding: 0; }
+  padding: 0;
+  margin-bottom: 20px; }
   header h1 {
     float: left;
     padding: 0;
     margin: 0;
     font-size: 4em;
-    text-shadow: 2px 2px 2px gray; }
+    text-shadow: 1px 1px 5px #aaaaaa; }
     header h1 a {
-      color: #254117;
+      -webkit-mask-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(black), to(rgba(0, 0, 0, 0.7)));
+      color: #333333;
       display: block;
       text-decoration: none;
-      margin: 1em 0 0 3em;
+      margin: 1em 0 0 150px;
       width: 10em; }
       header h1 a sup {
         color: gray;
@@ -51,7 +95,7 @@ header {
         vertical-align: top;
         text-shadow: 1px 1px 1px #cccccc; }
     header h1 svg {
-      margin: 0 15px 0 0;
+      margin: 0 0 0 0;
       float: left; }
 
 menu.top {
@@ -61,16 +105,17 @@ menu.top {
   border: 1px solid #aaaaaa;
   background: #eeeeee;
   padding: 0;
-  border-radius: 4px;
-  margin-left: 230px;
-  margin-top: -3px; }
+  margin-left: 400px;
+  margin-top: -3px;
+  border-radius: 5px;
+  box-shadow: 1px 1px 5px #cccccc; }
   menu.top li {
     display: inline-block;
     padding: 5px;
     margin: 0; }
 
 footer {
-  padding: 25px 0; }
+  padding: 0; }
   footer nav li {
     display: inline-block;
     padding: 0 10px 0 0; }
@@ -80,7 +125,9 @@ footer {
 
 .edit_record label, .edit_user label {
   display: inline-block;
-  width: 100px; }
+  width: 135px;
+  text-align: right;
+  padding-right: 10px; }
 .edit_record .desc, .edit_user .desc {
   color: gray; }
 

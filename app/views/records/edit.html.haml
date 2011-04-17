@@ -1,4 +1,4 @@
-%h2
+%h1.aligned
   Edit:
   = @record.title
 
@@ -7,12 +7,13 @@
     = f.label :title
     = f.text_field :title
   %p
-    = f.label :description
-    = f.text_area :description
+    = f.label :description, '&nbsp;'.html_safe
+    = f.text_area :description, :rows => 5
   %p
     = f.label :tags
     = f.text_field :tags
   %p
+    = f.label :description, '&nbsp;'.html_safe
     = button_to_function 'Cancel', 'history.back()'
     = f.submit 'Save'
 

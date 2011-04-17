@@ -1,20 +1,20 @@
 - content_for :title do
   = 'ShellCast: "' + @record.title + '" < '
 
-%h1
-  = @record.title
-  by
-  = link_to @record.user.nickname, @record.user
-
 = player_for(@record)
 
+%p.desc
+  %strong Title:
+  = @record.title
+%p.desc
+  %strong Ninja:
+  = link_to @record.user.nickname, @record.user
+
 - unless @record.tags.blank?
-  .tags
-    %p
-      %strong Tags:
-      - @record.tags.split(",").map(&:strip).each do |tag|
-        = link_to tag, records_path(:tags => [tag])
+  %p.tags
+    %strong Tags:
+    - @record.tags.split(",").map(&:strip).each do |tag|
+      = link_to tag, records_path(:tags => [tag])
 
 .desc
   = @record.description_html
-

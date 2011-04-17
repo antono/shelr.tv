@@ -1,5 +1,19 @@
 body
   :font 14px "Ubuntu", "Trebuchet MS", sans-serif
+  :color #333
+
+h1.aligned
+  :margin-left 150px
+
+a
+  color: #333
+  -webkit-transition: color
+  -webkit-transition-timing-function: ease-out
+  -webkit-transition-duration: 300ms
+  &:hover
+    color: #513a7b
+  &:active
+    color: red
 
 #wrapper
   :width 700px
@@ -8,43 +22,74 @@ body
 .hidden
   :display none
 
+.user
+  &.big
+    box-shadow: 1px 1px 5px #bbb
+    :background #E0EAF8 
+    :padding 15px
+    :overflow auto
+    :border 1px solid #ccc
+    .avatar
+      :float left
+    .desc
+      strong
+        :display inline-block
+        :width 100px
+        :font-weight normal
+        :font-size 0.9em
+        :text-align right
+        :padding-right 15px
+        :color #999
+      :margin-bottom 5px
+      :margin-left 100px
+    .about
+      :margin-left 320px
+
+
 .records
+  box-shadow: 1px 1px 5px #ccc
   :padding-left 0
   .record:first-child
-    :border-radius 3px
+    :-moz-border-radius-top 8px
+    :-webkit-border-top-radius 8px
+    :border-top-radius 8px
+  .record:last-child
+    :border-bottom 1px #ccc solid
   .record
     :display block
     :background #eee
     :padding 15px
-    :border-bottom 1px #aaa solid
+    :border 1px #ccc solid
+    :border-bottom none
     :overflow auto
     .avatar
       :display block
       :float left
+      img
+        box-shadow: 1px 1px 5px #777
     .title
-      :margin 0 0 0 90px
-    .desc
-      :margin-left 90px
-    .tags
-      :margin-left 90px
-
-
+      :margin 0
+    .desc, .tags, h3.title
+      :margin-left 140px
 
 
 header
   :overflow hidden
   :padding 0
+  :margin-bottom 20px
   h1
     :float left
     :padding 0
     :margin 0
     :font-size 4em
-    :text-shadow 2px 2px 2px gray
+    :text-shadow 1px 1px 5px #aaa
     a
-      :color #254117
+      -webkit-mask-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(0,0,0,1)), to(rgba(0,0,0,0.7)))
+      // :color #4a268e
+      :color #333
       :display block
       :text-decoration none
-      :margin 1em 0 0 3em
+      :margin 1em 0 0 150px 
       :width 10em
       sup
         :color gray
@@ -54,7 +99,7 @@ header
         :vertical-align top
         :text-shadow 1px 1px 1px #ccc
     svg
-      :margin 0 15px 0 0
+      :margin 0 0 0 0
       :float left
 
 menu.top
@@ -64,9 +109,10 @@ menu.top
   :border 1px solid #aaa
   :background #eee
   :padding 0
-  :border-radius 4px
-  :margin-left 230px
+  :margin-left 400px
   :margin-top -3px
+  :border-radius 5px
+  :box-shadow 1px 1px 5px #ccc
   li
     :display inline-block
     :padding 5px
@@ -75,7 +121,7 @@ menu.top
     input
 
 footer
-  :padding 25px 0
+  :padding 0
   nav
     li
       :display inline-block
@@ -87,7 +133,9 @@ footer
 .edit_record, .edit_user
   label
     display: inline-block
-    width: 100px
+    width: 135px
+    text-align: right
+    padding-right: 10px
   .desc
     color: gray
 

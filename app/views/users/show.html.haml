@@ -1,17 +1,41 @@
 - content_for :title do
   = @user.nickname + ' < '
 
-%h1
-  Shell secrets of 
-  = @user.nickname
+.user.big
+
+  = link_to(image_tag(@user.avatar_url(100)), @user, :class => 'avatar')
+
+  .desc
+    %strong Nick
+    = link_to @user.nickname
+
+  - unless @user.website.blank?
+    .desc
+      %strong Website
+      = link_to @user.website, @user.website
+
+  - unless @user.twitter_name.blank?
+    .desc
+      %strong Twitter
+      = link_to @user.twitter_name, @user.twitter_name
+  .desc
+    %strong Member Since
+    = @user.created_at.strftime("%Y-%m-%d")
+
+  - unless @user.about.blank?
+    .desc
+      %strong About
+      = @user.about
+
   - if @user.editable_by?(current_user)
-    %sup= link_to 'edit', edit_user_path(@user)
+    .desc
+      %strong It's You!
+      = link_to 'Edit Your Profile', edit_user_path(@user)
 
 - if @user.records.any?
   %ul.records
     - @user.records.each do |record|
-      %li
-        = render :partial => 'records/record', locals: { record: record }
+      = render :partial => 'records/record', locals: { record: record, show_user: false }
 - else
   - if current_user && @user.id == current_user.id
     %p You have no records yet...

@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 gem 'rake', '0.8.7'
 gem 'rails'
-gem 'haml', '= 3.0.0'
+gem 'haml'
 gem 'maruku'
 gem 'omniauth'
 gem 'mongoid', '~> 2.0.1'

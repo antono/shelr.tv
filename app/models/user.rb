@@ -8,11 +8,13 @@ class User
   field :nickname,      type: String,  unique: true
   field :records_count, type: Integer, default: 0
   field :api_key,       type: String,  unique: true
-  field :twitter_id,    type: String, unique: true
+  field :twitter_id,    type: String,  unique: true
+  field :twitter_name,  type: String,  unique: false # or we can block new users from registering
   field :website,       type: String
+  field :about,         type: String
   field :created_at,    type: DateTime
 
-  attr_accessible :nickname, :email, :website
+  attr_accessible :nickname, :email, :website, :about
 
   validates_uniqueness_of :nickname, :api_key, :twitter_id
   validates_length_of :nickname, maximum: 20

@@ -13,7 +13,8 @@ class Record
 
   referenced_in :user
 
-  after_create :timestamp!
+  after_create :timestamp!, :increment_counters!
+  after_destroy :decrement_counters!
 
   def self.per_page
     5
@@ -43,5 +44,13 @@ class Record
 
   def timestamp!
     write_attribute(:created_at, Time.now)
+  end
+
+  def increment_counters!
+    self.user.inc(:records_count, 1)
+  end
+
+  def decrement_counters!
+    self.user.inc(:records_count, -1)
   end
 end

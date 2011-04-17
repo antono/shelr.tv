@@ -38,7 +38,7 @@ class UsersController < ApplicationController
       redirect_to user_path(user)
     else
       user_info = omniauth['user_info']
-      user = User.new(nickname: user_info['nickname'])
+      user = User.new(nickname: user_info['nickname'], twitter_name: user_info['nickname'])
       user.twitter_id = omniauth['uid'] # mass assignemnt not allowed
       if user.save
         session[:user_id] = user.id.to_s

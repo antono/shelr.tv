@@ -1,5 +1,3 @@
-%h2 ShellCasts
-
 %ul.records
   - @records.each do |record|
     = render :partial => 'records/record', locals: { record: record }

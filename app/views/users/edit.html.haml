@@ -1,4 +1,4 @@
-%h1 Profile
+%h1.aligned Profile
 
 = form_for @user do |f|
   %p
@@ -10,13 +10,18 @@
     = f.label :email, 'Email'
     = f.text_field :email
     %span.desc
-      Used for Gravatar
+      Used for
+      %a{ href: 'http://gravatar.com' } Gravatar
   %p
-    = f.label :website, 'URL'
+    = f.label :website, 'Website'
     = f.text_field :website
+  %p
+    = f.label :about, '&nbsp;'.html_safe
+    = f.text_area :about, :placeholder => 'Few lines about You', :rows => 4
   %p
     = f.label :api_key, 'API Key'
     = f.text_field :api_key, disabled: true
   %p.submit
+    %label
     = button_to_function 'Cancel', 'history.back()'
     = f.submit 'Save'
