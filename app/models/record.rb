@@ -47,10 +47,10 @@ class Record
   end
 
   def increment_counters!
-    self.user.inc(:records_count, 1)
+    # FIXME self.user.inc(:records_count, 1)
   end
 
   def decrement_counters!
-    self.user.inc(:records_count, -1)
+    # FIXME self.user.inc(:records_count, -1)
   end
 end

@@ -48,10 +48,6 @@ a {
 .records {
   box-shadow: 1px 1px 5px #bbbbbb;
   padding-left: 0; }
-  .records .record:first-child {
-    border-top: 1px #cccccc solid; }
-  .records .record:last-child {
-    border-bottom: 1px #cccccc solid; }
   .records .record {
     display: block;
     background: #eeeeee;
@@ -60,6 +56,14 @@ a {
     border-top: 1px #cccccc dotted;
     border-bottom: none;
     overflow: auto; }
+    .records .record:hover {
+      background: #fafafa;
+      box-shadow: inside -1px -1px 5px #444444; }
+    .records .record:first-child {
+      border-top: 1px #cccccc solid; }
+    .records .record:last-child {
+      border-bottom: 1px #cccccc solid;
+      background: #eeeeee; }
     .records .record .userinfo, .records .record .shell {
       text-align: center;
       width: 110px;

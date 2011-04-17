@@ -50,10 +50,6 @@ a
 .records
   box-shadow: 1px 1px 5px #bbb
   :padding-left 0
-  .record:first-child
-    :border-top 1px #ccc solid
-  .record:last-child
-    :border-bottom 1px #ccc solid
   .record
     :display block
     :background #eee
@@ -62,6 +58,14 @@ a
     :border-top 1px #ccc dotted
     :border-bottom none
     :overflow auto
+    &:hover
+      :background #fafafa
+      box-shadow: inside -1px -1px 5px #444
+    &:first-child
+      :border-top 1px #ccc solid
+    &:last-child
+      :border-bottom 1px #ccc solid
+      :background #eee
     .userinfo, .shell
       :text-align center
       :width 110px
