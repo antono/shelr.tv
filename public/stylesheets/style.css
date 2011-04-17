@@ -1,6 +1,7 @@
 body {
   font: 14px "Ubuntu", "Trebuchet MS", sans-serif;
-  color: #333333; }
+  color: #333333;
+  background: url(/images/bg.png); }
 
 h1.aligned {
   margin-left: 150px; }
@@ -45,12 +46,10 @@ a {
     margin-left: 320px; }
 
 .records {
-  box-shadow: 1px 1px 5px #cccccc;
+  box-shadow: 1px 1px 5px #bbbbbb;
   padding-left: 0; }
   .records .record:first-child {
-    -moz-border-radius-top: 8px;
-    -webkit-border-top-radius: 8px;
-    border-top-radius: 8px; }
+    border-top: 1px #cccccc solid; }
   .records .record:last-child {
     border-bottom: 1px #cccccc solid; }
   .records .record {
@@ -58,11 +57,18 @@ a {
     background: #eeeeee;
     padding: 15px;
     border: 1px #cccccc solid;
+    border-top: 1px #cccccc dotted;
     border-bottom: none;
     overflow: auto; }
-    .records .record .avatar {
-      display: block;
+    .records .record .userinfo, .records .record .shell {
+      text-align: center;
+      width: 110px;
+      overflow: hidden;
       float: left; }
+      .records .record .userinfo:hover, .records .record .shell:hover {
+        overflow: visible; }
+    .records .record .avatar {
+      display: block; }
       .records .record .avatar img {
         box-shadow: 1px 1px 5px #777777; }
     .records .record .title {
@@ -86,7 +92,7 @@ header {
       display: block;
       text-decoration: none;
       margin: 1em 0 0 150px;
-      width: 10em; }
+      width: 500px; }
       header h1 a sup {
         color: gray;
         font-size: 0.2em;
@@ -104,6 +110,7 @@ menu.top {
   display: block;
   border: 1px solid #aaaaaa;
   background: #eeeeee;
+  opacity: 0.7;
   padding: 0;
   margin-left: 400px;
   margin-top: -3px;

@@ -11,10 +11,11 @@ class User
   field :twitter_id,    type: String,  unique: true
   field :twitter_name,  type: String,  unique: false # or we can block new users from registering
   field :website,       type: String
+  field :bitcoin,       type: String
   field :about,         type: String
   field :created_at,    type: DateTime
 
-  attr_accessible :nickname, :email, :website, :about
+  attr_accessible :nickname, :email, :website, :about, :bitcoin
 
   validates_uniqueness_of :nickname, :api_key, :twitter_id
   validates_length_of :nickname, maximum: 20

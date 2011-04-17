@@ -18,6 +18,11 @@
     .desc
       %strong Twitter
       = link_to @user.twitter_name, @user.twitter_name
+
+  - unless @user.bitcoin.blank?
+    .desc
+      %strong Bitcoin
+      = @user.bitcoin
   .desc
     %strong Member Since
     = @user.created_at.strftime("%Y-%m-%d")

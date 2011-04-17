@@ -1,6 +1,7 @@
 body
   :font 14px "Ubuntu", "Trebuchet MS", sans-serif
   :color #333
+  :background url(/images/bg.png)
 
 h1.aligned
   :margin-left 150px
@@ -47,12 +48,10 @@ a
 
 
 .records
-  box-shadow: 1px 1px 5px #ccc
+  box-shadow: 1px 1px 5px #bbb
   :padding-left 0
   .record:first-child
-    :-moz-border-radius-top 8px
-    :-webkit-border-top-radius 8px
-    :border-top-radius 8px
+    :border-top 1px #ccc solid
   .record:last-child
     :border-bottom 1px #ccc solid
   .record
@@ -60,11 +59,18 @@ a
     :background #eee
     :padding 15px
     :border 1px #ccc solid
+    :border-top 1px #ccc dotted
     :border-bottom none
     :overflow auto
+    .userinfo, .shell
+      :text-align center
+      :width 110px
+      :overflow hidden
+      :float left
+      &:hover
+        :overflow visible
     .avatar
       :display block
-      :float left
       img
         box-shadow: 1px 1px 5px #777
     .title
@@ -90,7 +96,7 @@ header
       :display block
       :text-decoration none
       :margin 1em 0 0 150px 
-      :width 10em
+      :width 500px
       sup
         :color gray
         :font-size 0.2em
@@ -108,6 +114,7 @@ menu.top
   :display block
   :border 1px solid #aaa
   :background #eee
+  :opacity 0.7
   :padding 0
   :margin-left 400px
   :margin-top -3px
