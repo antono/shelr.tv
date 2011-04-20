@@ -75,8 +75,6 @@ a
         :overflow visible
     .avatar
       :display block
-      img
-        box-shadow: 1px 1px 5px #777
     .title
       :margin 0
     .desc, .tags, h3.title
@@ -162,12 +160,27 @@ footer
 
 #player
   :width 100%
+  .header
+    height: 32px
+    line-height: 32px
+    color: white
+    background: url(/images/term/bg-gradient.png)
+    -moz-border-radius-topleft: 5px
+    -moz-border-radius-topright: 5px
+    -webkit-border-top-left-radius: 5px
+    -webkit-border-top-right-radius: 5px
+    img
+      margin: 6px 10px 0 10px
+      float: left
+    h1
+      display: block
+      font-size: 12px
   input.cmdline
-    :border 1px solid #aaa
-    :font-size 1.4em
-    :padding 3px
-    :margin 0
-    :border-radius 2px
+    display: none
+    border: 1px solid #aaa
+    font-size: 1.4em
+    padding: 3px
+    margin: 0
   table.canvas
     :overflow hidden
     :padding 10px
@@ -180,12 +193,28 @@ footer
       :background-color white
   input[type=range]
     :margin-bottom -10px
-  progress
-    :height 30px
   nav
+    height: 30px
+    border-top: 1px solid #444
+    background: black
     li
-      :display inline-block
-      :margin 0
+      display: block
+      margin: 0
+      float: left
+      height: 30px
+    .sc-button
+      cursor: pointer
+      line-height: 30px
+      width: 30px
+      img
+        margin: 4px
+    .sc-settings
+      display: none
+    .progress
+      .progress-inner
+        display: block
+        width: 50%
+        background: blue
 
 // Pagination
 .pagination
@@ -217,3 +246,12 @@ footer
     :margin 2px
     :border 1px solid #999
     :text-decoration none
+
+
+hr
+  height: 1px
+  border: 0
+  border-top: 1px #aaa solid
+#disqus_thread
+  #dsq-footer, .dsq-trackback-url, #dsq-account-dropdown, #dsq-reply h3
+    display: none

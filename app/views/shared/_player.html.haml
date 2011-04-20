@@ -1,16 +1,25 @@
 
+
 #player.sgr
-  %input{ :type => :text, :value => "shellcast play #{record_path(@record, :only_path => false, :format => :json)}", :class => 'cmdline' }
+  .header
+    %img{ src: '/images/term/buttons.png'}
+    %h1= @record.title
   .container
-  %progress
+  %input{ :type => :text, :value => "shellcast play #{record_path(@record, :only_path => false, :format => :json)}", :class => 'cmdline' }
   %nav.controls
-    %li
-      %button.toggle{ disabled: 'disabled' } play
-    %li{ style: 'display: none' }
-      %input.speed{type: 'range', value: 0 }
-    - if @record.editable_by?(current_user)
-      %li= button_to 'edit', edit_record_path(@record), method: 'get'
-      %li= button_to 'destroy', @record, method: 'delete', confirm: 'Really Destroy?'
+    %li.sc-button.toggle{ :'data-action' => 'play' }
+      %img{ src: '/images/term/playback-start.png' }
+    %li.sc-button{ :'data-action' => 'settings' }
+      %img{ src: '/images/term/properties.png' }
+      %ul.sc-settings
+        %li Play in Your terminal
+        - if @record.editable_by?(current_user)
+          %li= link_to 'edit', edit_record_path(@record), method: 'get'
+          %li= link_to 'destroy', @record, method: 'delete', confirm: 'Really Destroy?'
+    -#%li
+    -#  %input.speed{ type: 'range', value: 0 }
+    %li.progress
+      .progress-inner
 
 :javascript
   var onLoad = function() {

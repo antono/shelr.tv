@@ -8,8 +8,9 @@ SC.Player = function(element, term) {
     this.timing  = null;
     this.element = element;
     this.speedup = 0;
-    this.initSpeedControl();
+    //this.initSpeedControl();
     this.initHover();
+    this.initHeader();
     this.initProgress();
     this.initCmdline();
 }
@@ -27,10 +28,10 @@ SC.Player.prototype.initSpeedControl = function() {
 }
 
 SC.Player.prototype.initProgress = function() {
-    this.progress = this.element.getElementsByTagName('progress')[0];
-    this.progress.setAttribute('value', 0)
+    this.progress = this.element.getElementsByClassName('progress')[0];
+    this.progress.setAttribute('data-percent', 0);
     this.progress.setAttribute("style", "width:" +
-        this.vt.canvas.getHtmlOffsets().offsetWidth + "px");
+         ( this.vt.canvas.getHtmlOffsets().offsetWidth - 60 ) + "px");
     this.progress.addEventListener('click', function(e) {
         console.log(e)
     }, true)
@@ -39,6 +40,14 @@ SC.Player.prototype.initProgress = function() {
 SC.Player.prototype.initCmdline = function() {
     this.cmdline = this.element.getElementsByClassName('cmdline')[0];
     this.cmdline.setAttribute("style", "width:" + ( this.vt.canvas.getHtmlOffsets().offsetWidth - 8) + "px");
+    this.cmdline.addEventListener('click', function(e) {
+      e.target.select();
+    }, true)
+}
+
+SC.Player.prototype.initHeader = function() {
+    this.cmdline = this.element.getElementsByClassName('header')[0];
+    this.cmdline.setAttribute("style", "width:" + ( this.vt.canvas.getHtmlOffsets().offsetWidth) + "px");
     this.cmdline.addEventListener('click', function(e) {
       e.target.select();
     }, true)
@@ -96,19 +105,23 @@ SC.Player.prototype.createTimeline = function(data) {
 SC.Player.prototype.enableButtons = function(data) {
     var button;
     var player = this;
-    this.buttons = this.element.getElementsByTagName('button');
+    this.buttons = this.element.getElementsByClassName('sc-button');
     for (var i = 0; i < this.buttons.length; i++) {
         button = this.buttons[i];
         button.addEventListener('click', function(ev){
-            player[ev.target.className]();
-        }, false);
+            var action = ev.currentTarget.getAttribute('data-action');
+            if (action) player[action]();
+        }, true);
         button.removeAttribute('disabled');
     }
 }
 
 SC.Player.prototype.play = function() {
     var player = this;
-    this.element.getElementsByClassName('toggle')[0].innerHTML = 'pause'
+    var button = this.element.getElementsByClassName('toggle')[0]
+    button.setAttribute('data-action', 'pause')
+    button.getElementsByTagName('img')[0].setAttribute('src', '/images/term/playback-pause.png')
+
     player.hoverHide();
     if (player.playing) return;
     if (player.timelinePosition == 0) player.vt.clear();
@@ -123,7 +136,7 @@ SC.Player.prototype.play = function() {
             txt = chunk[1];
             player.vt.pushChars(txt)
             setTimeout(function() {
-                player.updateScrollPosition(+1);
+                player.updateTimelinePosition(+1);
                 scheduleChunked(timeline);
             }, chunk[0] + player.speedup);
         } else {
@@ -140,7 +153,9 @@ SC.Player.prototype.play = function() {
 }
 
 SC.Player.prototype.pause = function() {
-    this.element.getElementsByClassName('toggle')[0].innerHTML = 'play'
+    var button = this.element.getElementsByClassName('toggle')[0];
+    button.getElementsByTagName('img')[0].setAttribute('src', '/images/term/playback-start.png')
+    button.setAttribute('data-action', 'play');
     this.playing = false;
 }
 
@@ -148,7 +163,13 @@ SC.Player.prototype.toggle = function() {
     this.playing ? this.pause() : this.play();
 }
 
-SC.Player.prototype.updateScrollPosition = function(val) {
+SC.Player.prototype.settings = function() {
+    var settings = this.element.getElementsByClassName('cmdline')[0];
+    this.settingsVisible = !this.settingsVisible;
+    settings.setAttribute('style', this.settingsVisible ? 'display:block' : 'display:none' )
+}
+
+SC.Player.prototype.updateTimelinePosition = function(val) {
     this.timelinePosition = this.timelinePosition + val;
     this.progress.setAttribute('value', this.timelinePosition);
 }

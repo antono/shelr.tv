@@ -73,8 +73,6 @@ a {
         overflow: visible; }
     .records .record .avatar {
       display: block; }
-      .records .record .avatar img {
-        box-shadow: 1px 1px 5px #777777; }
     .records .record .title {
       margin: 0; }
     .records .record .desc, .records .record .tags, .records .record h3.title {
@@ -153,12 +151,27 @@ footer {
 
 #player {
   width: 100%; }
+  #player .header {
+    height: 32px;
+    line-height: 32px;
+    color: white;
+    background: url(/images/term/bg-gradient.png);
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px; }
+    #player .header img {
+      margin: 6px 10px 0 10px;
+      float: left; }
+    #player .header h1 {
+      display: block;
+      font-size: 12px; }
   #player input.cmdline {
+    display: none;
     border: 1px solid #aaaaaa;
     font-size: 1.4em;
     padding: 3px;
-    margin: 0;
-    border-radius: 2px; }
+    margin: 0; }
   #player table.canvas {
     overflow: hidden;
     padding: 10px;
@@ -171,11 +184,27 @@ footer {
       background-color: white; }
   #player input[type=range] {
     margin-bottom: -10px; }
-  #player progress {
-    height: 30px; }
-  #player nav li {
-    display: inline-block;
-    margin: 0; }
+  #player nav {
+    height: 30px;
+    border-top: 1px solid #444444;
+    background: black; }
+    #player nav li {
+      display: block;
+      margin: 0;
+      float: left;
+      height: 30px; }
+    #player nav .sc-button {
+      cursor: pointer;
+      line-height: 30px;
+      width: 30px; }
+      #player nav .sc-button img {
+        margin: 4px; }
+    #player nav .sc-settings {
+      display: none; }
+    #player nav .progress .progress-inner {
+      display: block;
+      width: 50%;
+      background: blue; }
 
 .pagination {
   padding: 0;
@@ -206,3 +235,11 @@ footer {
     margin: 2px;
     border: 1px solid #999999;
     text-decoration: none; }
+
+hr {
+  height: 1px;
+  border: 0;
+  border-top: 1px #aaaaaa solid; }
+
+#disqus_thread #dsq-footer, #disqus_thread .dsq-trackback-url, #disqus_thread #dsq-account-dropdown, #disqus_thread #dsq-reply h3 {
+  display: none; }
