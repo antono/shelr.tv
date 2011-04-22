@@ -409,7 +409,7 @@ Canvas.HTML.prototype.applySGRStyles = function(cell) {
     }
 }
 
-Canvam.HTML.prototype.clearSGRStyles = function(cell, grState) {
+Canvas.HTML.prototype.clearSGRStyles = function(cell, grState) {
     cell.removeAttribute('class');
 }
 
