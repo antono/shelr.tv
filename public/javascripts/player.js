@@ -12,6 +12,7 @@ SC.Player = function(element, term) {
     this.initHover();
     this.initHeader();
     this.initProgress();
+    this.initControls();
     this.initCmdline();
 }
 
@@ -37,20 +38,22 @@ SC.Player.prototype.initProgress = function() {
     }, true)
 }
 
+SC.Player.prototype.initControls = function() {
+    this.controls = this.element.getElementsByClassName('controls')[0];
+    this.controls.setAttribute("style", "width:" + this.vt.canvas.getHtmlOffsets().offsetWidth + "px");
+    this.controls.addEventListener('click', function(e) { console.log(e) }, true);
+}
+
 SC.Player.prototype.initCmdline = function() {
     this.cmdline = this.element.getElementsByClassName('cmdline')[0];
-    this.cmdline.setAttribute("style", "width:" + ( this.vt.canvas.getHtmlOffsets().offsetWidth - 8) + "px");
-    this.cmdline.addEventListener('click', function(e) {
-      e.target.select();
-    }, true)
+    console.log('cmdline', this.cmdline)
+    this.cmdline.setAttribute("style", "width:" + ( this.vt.canvas.getHtmlOffsets().offsetWidth - 6 ) + "px");
+    this.cmdline.addEventListener('click', function(e) { e.target.select() }, true)
 }
 
 SC.Player.prototype.initHeader = function() {
-    this.cmdline = this.element.getElementsByClassName('header')[0];
-    this.cmdline.setAttribute("style", "width:" + ( this.vt.canvas.getHtmlOffsets().offsetWidth) + "px");
-    this.cmdline.addEventListener('click', function(e) {
-      e.target.select();
-    }, true)
+    this.header = this.element.getElementsByClassName('header')[0];
+    this.header.setAttribute("style", "width:" + this.vt.canvas.getHtmlOffsets().offsetWidth + "px");
 }
 
 SC.Player.prototype.load = function(path) {
@@ -165,8 +168,7 @@ SC.Player.prototype.toggle = function() {
 
 SC.Player.prototype.settings = function() {
     var settings = this.element.getElementsByClassName('cmdline')[0];
-    this.settingsVisible = !this.settingsVisible;
-    settings.setAttribute('style', this.settingsVisible ? 'display:block' : 'display:none' )
+    settings.classList[settings.classList.contains('hidden') ? 'remove' : 'add']('hidden');
 }
 
 SC.Player.prototype.updateTimelinePosition = function(val) {

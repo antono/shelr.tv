@@ -26,6 +26,7 @@ Canvas.HTML.prototype.print = function(chr) {
     var cell = this.getCurrentCell();
     var pos = this.cursorPosition;
     this.clearCursor();
+    if (chr === ' ') chr = '&nbsp;'
     cell.innerHTML = chr;
     this.applySGRStyles(cell);
     this.cursorNext();
@@ -41,21 +42,23 @@ Canvas.HTML.prototype.print = function(chr) {
 Canvas.HTML.prototype.initHtmlElement = function() {
     var row, cell;
     this.screen = {};
-    this.element = document.createElement('table');
+    this.element = document.createElement('div');
     this.container.appendChild(this.element)
-    this.element.setAttribute('border', 0);
-    this.element.setAttribute('cellpadding', 0);
-    this.element.setAttribute('cellspacing', 0);
+    //this.element.setAttribute('border', 0);
+    //this.element.setAttribute('cellpadding', 0);
+    //this.element.setAttribute('cellspacing', 0);
     this.element.classList.add('canvas');
     this.element.classList.add('n40');
     this.element.classList.add('b30');
     for (var r = 0; r <= this.rows; r++) {
-        row = document.createElement('tr');
+        row = document.createElement('div');
+        row.classList.add('row')
         row.setAttribute('id', 'r' + r);
         this.element.appendChild(row);
         this.screen[r] = {}
         for (var c = 0; c <= this.cols; c++) {
-            cell = document.createElement('td');
+            cell = document.createElement('span');
+            cell.classList.add('cell');
             cell.setAttribute('id', 'r' + r + 'c' + c)
             cell.innerHTML = "&nbsp;";
             row.appendChild(cell);
@@ -177,14 +180,14 @@ Canvas.HTML.prototype.ED = function(ps) {
 // d = VPA — Vertical Line Position Absolute
 // http://vt100.net/docs/vt510-rm/VPA
 Canvas.HTML.prototype.VPA = function(colNum) {
-  console.log(this.cursorPosition)
+  // console.log(this.cursorPosition)
   this.cursorPosition[0] = (colNum || 0);
 }
 
 // K = EL — Erase in Line
 // http://vt100.net/docs/vt510-rm/EL
 Canvas.HTML.prototype.EL = function(mode) {
-    console.log('EL: ', this.cursorPosition, mode)
+    // console.log('EL: ', this.cursorPosition, mode)
     var start, stop;
     switch (mode) {
         case NaN:
@@ -199,7 +202,7 @@ Canvas.HTML.prototype.EL = function(mode) {
     }
     //console.log('start: ' + this.cursorOffsetToPosition(start))
     //console.log('stop: ' + this.cursorOffsetToPosition(stop))
-    console.log('EL(' + mode + '): ' + [start, stop]);
+    //console.log('EL(' + mode + '): ' + [start, stop]);
     for (var i = start; i < stop; i++) {
         cup  = this.cursorOffsetToPosition(i);
         cell = this.getCellAt(cup);
@@ -218,7 +221,7 @@ Canvas.HTML.prototype.DECSTBM = function(values) {
 // X = ECH — Erase Character
 // http://vt100.net/docs/vt510-rm/ECH
 Canvas.HTML.prototype.ECH = function(num, cup) {
-  console.log('ECH')
+  // console.log('ECH')
   this.getCellAt(cup).innerHTML = "&nbsp";
 }
 
@@ -228,11 +231,11 @@ Canvas.HTML.prototype.CR = function() {
 }
 
 Canvas.HTML.prototype.LF = function() {
-  console.log('LF')
+  // console.log('LF')
   if (!this.cursorIsAtTheEdge('bottom')) {
     this.cursorPosition[0] += 1;
   } else {
-    console.log('LF: scroll')
+    // console.log('LF: scroll')
     this.scrollUp();
   }
 }
@@ -240,7 +243,7 @@ Canvas.HTML.prototype.LF = function() {
 // NEL — Next Line
 // http://vt100.net/docs/vt510-rm/NEL
 Canvas.HTML.prototype.NEL = function() {
-  console.log('NEL')
+  // console.log('NEL')
   this.CR();
   this.LF();
 }
@@ -339,13 +342,13 @@ Canvas.HTML.prototype.SGR = function(codes) {
             case 6:   canvas.state.SGR.blinkfast  = true;        break;
             case 7:  // image: Negative
                 //debugger;
-                console.log('before swap:', canvas.state.SGR.fgColor, canvas.state.SGR.bgColor);
+                // console.log('before swap:', canvas.state.SGR.fgColor, canvas.state.SGR.bgColor);
                 var fgc, bgc;
                 bgc = canvas.state.SGR.fgColor[2];
                 fgc = canvas.state.SGR.bgColor[2];
                 canvas.state.SGR.fgColor = canvas.state.SGR.fgColor.replaceAt(2, fgc); 
                 canvas.state.SGR.bgColor = canvas.state.SGR.bgColor.replaceAt(2, bgc);
-                console.log('after swap:', canvas.state.SGR.fgColor, canvas.state.SGR.bgColor);
+                // console.log('after swap:', canvas.state.SGR.fgColor, canvas.state.SGR.bgColor);
                 break;
             case 8:  break; // Conceal (not widely supported)
             case 9:  break; // Crossed-out (not widely supported)
@@ -353,13 +356,13 @@ Canvas.HTML.prototype.SGR = function(codes) {
             case 22: break; // neither bright, bold nor faint
             case 27: // image positive
                 //debugger;
-                console.log('before swap:', canvas.state.SGR.fgColor, canvas.state.SGR.bgColor);
+                // console.log('before swap:', canvas.state.SGR.fgColor, canvas.state.SGR.bgColor);
                 var fgc, bgc;
                 bgc = canvas.state.SGR.fgColor[2];
                 fgc = canvas.state.SGR.bgColor[2];
                 canvas.state.SGR.fgColor = canvas.state.SGR.fgColor.replaceAt(2, fgc); 
                 canvas.state.SGR.bgColor = canvas.state.SGR.bgColor.replaceAt(2, bgc);
-                console.log('after swap:', canvas.state.SGR.fgColor, canvas.state.SGR.bgColor);
+                // console.log('after swap:', canvas.state.SGR.fgColor, canvas.state.SGR.bgColor);
                 break;
             case 25:
                 canvas.state.SGR.blink = false;

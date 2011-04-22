@@ -6,6 +6,9 @@ body
 h1.aligned
   :margin-left 150px
 
+.hidden
+  display: none
+
 a
   color: #333
   -webkit-transition: color
@@ -160,6 +163,7 @@ footer
 
 #player
   :width 100%
+  display: inline-block
   .header
     height: 32px
     line-height: 32px
@@ -176,20 +180,22 @@ footer
       display: block
       font-size: 12px
   input.cmdline
-    display: none
-    border: 1px solid #aaa
+    border: 0
+    border-top: 1px solid #444
     font-size: 1.4em
     padding: 3px
     margin: 0
-  table.canvas
+    background: #111
+    color: #aaa
+  .canvas
     :overflow hidden
     :padding 10px
     :font-family "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Monaco", monospace
-    td
+    .row
       :padding 1px 0 1px 0
       :width 0.2em
       :border 1px
-    td.cursor
+    span.cursor
       :background-color white
   input[type=range]
     :margin-bottom -10px

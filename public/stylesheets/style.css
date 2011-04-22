@@ -6,6 +6,9 @@ body {
 h1.aligned {
   margin-left: 150px; }
 
+.hidden {
+  display: none; }
+
 a {
   color: #333333;
   -webkit-transition: color;
@@ -150,7 +153,8 @@ footer {
   background: rgba(0, 0, 0, 0); }
 
 #player {
-  width: 100%; }
+  width: 100%;
+  display: inline-block; }
   #player .header {
     height: 32px;
     line-height: 32px;
@@ -167,20 +171,22 @@ footer {
       display: block;
       font-size: 12px; }
   #player input.cmdline {
-    display: none;
-    border: 1px solid #aaaaaa;
+    border: 0;
+    border-top: 1px solid #444444;
     font-size: 1.4em;
     padding: 3px;
-    margin: 0; }
-  #player table.canvas {
+    margin: 0;
+    background: #111111;
+    color: #aaaaaa; }
+  #player .canvas {
     overflow: hidden;
     padding: 10px;
     font-family: "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Monaco", monospace; }
-    #player table.canvas td {
+    #player .canvas .row {
       padding: 1px 0 1px 0;
       width: 0.2em;
       border: 1px; }
-    #player table.canvas td.cursor {
+    #player .canvas span.cursor {
       background-color: white; }
   #player input[type=range] {
     margin-bottom: -10px; }

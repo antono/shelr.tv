@@ -33,10 +33,10 @@ if (!window) (Parser.transitions = require('./transitions'));
 // Action Handling
 // http://vt100.net/emu/dec_ansi_parser#ACTIONS
 Parser.prototype.handleAction = function(action, chr) {
-    this.debug('Handling action: ' + action + ' with char: ' + chr);
+    //this.debug('Handling action: ' + action + ' with char: ' + chr);
     switch(action) {
         case 'print':
-          console.log('Handling action: ' + action + ' with char: ' + chr);
+          //console.log('Handling action: ' + action + ' with char: ' + chr);
         case 'execute':
         case 'csi_dispatch':
         case 'hook':
@@ -80,7 +80,7 @@ Parser.prototype.handleAction = function(action, chr) {
             this.intermediateChars = [];
             break;
         default:
-            this.callback('error', 0);
+            console.error('Action unhandled', action, chr);
             break;
     }
 }
@@ -128,7 +128,7 @@ Parser.prototype.pushChar = function(chr) {
       if (action)   this.handleAction(action, chr);
       if (newState) this.changeState(newState);
     } else {
-      console.error('No transition for char: ', chr)
+      this.handleAction('print', chr);
     }
 }
 
