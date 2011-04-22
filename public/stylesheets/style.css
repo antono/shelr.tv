@@ -143,14 +143,19 @@ footer {
 .edit_record .desc, .edit_user .desc {
   color: gray; }
 
-#player-hover.enabled {
-  -webkit-transition-property: background;
-  -webkit-transition-duration: 5s;
-  -webkit-transition-timing-function: default;
-  background-color: rgba(0, 0, 0, 0.7); }
-
-#player-hover.disabled {
-  background: rgba(0, 0, 0, 0); }
+#player-hover {
+  text-align: center;
+  color: white;
+  font-size: 3em; }
+  #player-hover p {
+    padding: 20px; }
+  #player-hover.enabled {
+    -webkit-transition-property: background;
+    -webkit-transition-duration: 5s;
+    -webkit-transition-timing-function: default;
+    background-color: rgba(0, 0, 0, 0.7); }
+  #player-hover.disabled {
+    background: rgba(0, 0, 0, 0); }
 
 #player {
   width: 100%;

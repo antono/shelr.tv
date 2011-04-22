@@ -14,6 +14,19 @@ SC.Player = function(element, term) {
     this.initProgress();
     this.initControls();
     this.initCmdline();
+    var player = this;
+    this.vt.parser.errback = function() {
+      player.onError();
+    }
+}
+
+SC.Player.prototype.onError = function() {
+  this.pause()
+  this.vt.clear()
+  this.hoverShow();
+  this.hover.innerHTML = "<img src='/images/harakiri.png' alt='So sorry...'/><br/>"
+  this.hover.innerHTML += "We cannot emulate this in HTML yet. Terminals are hard! <br/> Use commandline client instead!<br/> <br/> &darr; &darr; &darr;"
+  this.cmdline.classList.remove('hidden');
 }
 
 SC.Player.prototype.initSpeedControl = function() {
@@ -167,8 +180,7 @@ SC.Player.prototype.toggle = function() {
 }
 
 SC.Player.prototype.settings = function() {
-    var settings = this.element.getElementsByClassName('cmdline')[0];
-    settings.classList[settings.classList.contains('hidden') ? 'remove' : 'add']('hidden');
+    this.cmdline.classList[this.cmdline.classList.contains('hidden') ? 'remove' : 'add']('hidden');
 }
 
 SC.Player.prototype.updateTimelinePosition = function(val) {
@@ -226,6 +238,7 @@ SC.Player.prototype.hoverHide = function() {
     this.hover.style.height = 0;
     this.hover.classList.remove('enabled');
     this.hover.classList.add('disabled');
+    this.hover.innerHTML = ''
 }
 
 //

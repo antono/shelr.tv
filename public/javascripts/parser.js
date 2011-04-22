@@ -3,7 +3,7 @@
 // VT.Parser - an implementation of Paul Williams' DEC compatible state machine parser
 // http://vt100.net/emu/dec_ansi_parser
 
-var Parser = function(cb) {
+var Parser = function(cb, eb) {
     this.MAX_INTERMEDIATE_CHARS = 2;
     this.numIntermediateChars = 0;
     this.intermediateChars = [];
@@ -15,6 +15,7 @@ var Parser = function(cb) {
     this.callback = function(action,chr) {
         cb(parser, action, chr);
     }
+    this.errback = eb;
     this.doDebug = false;
 }
 
@@ -80,6 +81,7 @@ Parser.prototype.handleAction = function(action, chr) {
             this.intermediateChars = [];
             break;
         default:
+            this.callback('error', chr)
             console.error('Action unhandled', action, chr);
             break;
     }
@@ -105,7 +107,12 @@ Parser.prototype.changeState = function(newState) {
 Parser.prototype.pushChars = function(string) {
     if (string === undefined || string === "") return;
     for (var i = 0; i < string.length; i++) {
+      try {
         this.pushChar(string[i]);
+      } catch(e) {
+        this.errback();
+        throw e;
+      }
     }
 }
 
@@ -124,11 +131,10 @@ Parser.prototype.pushChar = function(chr) {
     if (transition) {
       action   = transition[0];
       newState = transition[1];
-      
       if (action)   this.handleAction(action, chr);
       if (newState) this.changeState(newState);
     } else {
-      this.handleAction('print', chr);
+      this.handleAction(print, chr);
     }
 }
 
