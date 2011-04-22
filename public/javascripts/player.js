@@ -24,8 +24,10 @@ SC.Player.prototype.onError = function() {
   this.pause()
   this.vt.clear()
   this.hoverShow();
-  this.hover.innerHTML = "<img src='/images/harakiri.png' alt='So sorry...'/><br/>"
-  this.hover.innerHTML += "We cannot emulate this in HTML yet. Terminals are hard! <br/> Use commandline client instead!<br/> <br/> &darr; &darr; &darr;"
+  this.hover.classList.add('error');
+  this.hoverHide = function() {}
+  this.hover.innerHTML = "<br/><div class='img'><img src='/images/harakiri.png' alt='So sorry...'/></div>切腹"
+  this.hover.innerHTML += "<p>Sorry we cannot emulate this shellcast in HTML.<br/> Use commandline client instead!<br/> <span class='donate'> And consider small <a href='http://weusecoins.com' target='_blank'>bitcoin</a> donation to fix this: 17tKDsdjKiS9bmnpH93NBeJnykWgLYbntL  </span>  <br/> &darr; &darr; &darr;</p>"
   this.cmdline.classList.remove('hidden');
 }
 

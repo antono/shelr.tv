@@ -134,7 +134,7 @@ Parser.prototype.pushChar = function(chr) {
       if (action)   this.handleAction(action, chr);
       if (newState) this.changeState(newState);
     } else {
-      this.handleAction(print, chr);
+      this.handleAction('print', chr);
     }
 }
 

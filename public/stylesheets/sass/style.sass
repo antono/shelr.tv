@@ -155,14 +155,27 @@ footer
 #player-hover
   text-align: center
   color: white
-  font-size: 3em
+  font-size: 2em
   p
     padding: 20px
+    .donate
+      font-size: 0.5em
+      color: gray
   &.enabled
     :-webkit-transition-property background
     :-webkit-transition-duration 5s
     :-webkit-transition-timing-function default
     :background-color rgba(0,0,0,0.7)
+    &.error
+      a
+        color: #aaa
+      .img
+        width: 126px
+        height: 126px
+        background: #eee
+        padding: 10px
+        margin: 0 auto
+        border-radius: 10px
   &.disabled
     :background rgba(0,0,0,0)
 
