@@ -8,11 +8,11 @@ defaults: &defaults
 
 development:
   host: localhost
-  database: shelltube_development
+  database: shelr-dev
 
 test:
   <<: *defaults
-  database: shelltube_test
+  database: shelr-test
 
 # set these environment variables on your prod server
 production:
