@@ -29,10 +29,10 @@ a
 .user
   &.big
     box-shadow: 1px 1px 5px #bbb
-    :background #E0EAF8 
-    :padding 15px
-    :overflow auto
-    :border 1px solid #ccc
+    background: #E0EAF8 
+    padding: 15px
+    overflow: auto
+    border: 1px solid #ccc
     .avatar
       :float left
     .desc
@@ -44,8 +44,17 @@ a
         :text-align right
         :padding-right 15px
         :color #999
-      :margin-bottom 5px
-      :margin-left 100px
+        float: left
+      margin-bottom: 5px
+      margin-left: 100px
+      .long      
+        margin-left: 115px
+        p
+          padding-left: 0
+          margin-top: 0
+          margin-bottom: 7px
+          &:last-child
+            margin-bottom: 0
     .about
       :margin-left 320px
 
@@ -83,6 +92,13 @@ a
     .desc, .tags, h3.title
       :margin-left 140px
 
+.tags
+  a
+    display: inline-block
+    padding-left: 20px
+    line-height: 16px        
+    background: transparent url(/images/tag-icon.png) center left no-repeat
+    text-decoration: none        
 
 header
   :overflow hidden
@@ -141,6 +157,11 @@ footer
   .copy
     :color gray
     :font-size small
+    .left
+      -webkit-transform: rotate(180deg)
+      -moz-transform: rotate(180deg)
+      transform: rotate(180deg)
+      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2)
 
 .edit_record, .edit_user
   label
@@ -181,8 +202,9 @@ footer
 
 
 #player
-  :width 100%
+  width: 100%
   display: inline-block
+  margin-bottom: 15px  
   .header
     height: 32px
     line-height: 32px
@@ -277,6 +299,7 @@ hr
   height: 1px
   border: 0
   border-top: 1px #aaa solid
+
 #disqus_thread
   #dsq-footer, .dsq-trackback-url, #dsq-account-dropdown, #dsq-reply h3
     display: none

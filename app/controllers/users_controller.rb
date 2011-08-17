@@ -7,12 +7,18 @@ class UsersController < ApplicationController
   end
 
   def edit
-    @user = current_user
+    @user = User.where(nickname: params[:id]).first
   end
 
   def update
-    current_user.update_attributes(params[:user])
-    redirect_to current_user
+    @user = User.where(nickname: params[:id]).first
+    if @user.editable_by?(current_user)
+      flash[:notice] = "Updated!"
+      @user.update_attributes(params[:user])
+    else
+      flash[:error] = "Heh. No Way, man :)"
+    end
+    redirect_to @user
   end
 
 

@@ -1,0 +1,50 @@
+.user.big
+
+  = link_to(image_tag(user.avatar_url(100)), user, :class => 'avatar')
+  
+  .desc
+    %strong Nick
+    = link_to sanitize(user.nickname), user
+
+  
+  - if defined?(record)
+    .desc
+      %strong Description
+      .long=sanitize record.description_html
+      
+    - unless record.tags.blank?
+      .desc.tags
+        %strong Tags
+        .tags.long
+        - record.tags.split(",").map(&:strip).each do |tag|
+          = link_to sanitize(tag), records_path(:tags => [tag])
+
+  - else
+    
+    - unless user.website.blank?
+      .desc
+        %strong Website
+        = link_to sanitize(user.website), user.website
+
+    - unless user.twitter_name.blank?
+      .desc
+        %strong Twitter
+        = link_to sanitize(user.twitter_name), user.twitter_name
+
+    - unless user.bitcoin.blank?
+      .desc
+        %strong Bitcoin
+        =sanitize user.bitcoin
+    .desc
+      %strong Member Since
+      = user.created_at.strftime("%Y-%m-%d")
+
+    - unless user.about.blank?
+      .desc
+        %strong About
+        =sanitize user.about
+
+    - if user.editable_by?(current_user)
+      .desc
+        %strong It's You!
+        = link_to 'Edit Your Profile', edit_user_path(user)

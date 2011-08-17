@@ -1,21 +1,8 @@
 - content_for :title do
-  = 'ShellCast: "' + @record.title + '" < '
+  = @record.title + ' &lt; '
 
 = player_for(@record)
 
-%p.desc
-  %strong Ninja:
-  = link_to @record.user.nickname, @record.user
+= render :partial => 'users/user', :locals => { :user => @record.user, :record => @record }
 
-- unless @record.tags.blank?
-  %p.tags
-    %strong Tags:
-    - @record.tags.split(",").map(&:strip).each do |tag|
-      = link_to tag, records_path(:tags => [tag])
-
-.desc
-  = @record.description_html
-
-
-%hr
 = render :partial => 'shared/disqus', :locals => { disqus_url: record_path(@record, :only_path => false), disqus_id: @record.id.to_s, disqus_title: @record.title }

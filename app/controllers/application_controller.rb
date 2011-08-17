@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user, :logged_in?, :redirect_to_target_or_default
 
-  #protect_from_forgery
+  protect_from_forgery
 
   private
 

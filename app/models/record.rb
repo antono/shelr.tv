@@ -25,7 +25,7 @@ class Record
   end
 
   def description_html
-    Maruku.new(description).to_html.html_safe
+    Maruku.new(description).to_html
   end
 
   def tags=(tags)

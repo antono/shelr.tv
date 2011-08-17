@@ -3,21 +3,20 @@
   - if show_user
     .userinfo
       = link_to(image_tag(record.user.avatar_url(100)), record.user, :class => 'avatar')
-      = link_to record.user.nickname, record.user
+      = link_to sanitize(record.user.nickname), record.user
   - else
     .shell
       = link_to image_tag('shell.png'), record
 
   %h3.title
-    = link_to record.title, record
+    = link_to sanitize(record.title), record
   .desc
-    = record.description_html
+    =sanitize record.description_html
   - unless show_user
     .desc
       %strong Ninja:
-      = link_to record.user.nickname, record.user
+      = link_to sanitize(record.user.nickname), record.user
   - unless record.tags.blank?
     %p.tags
-      %strong Tags:
       - record.tags.split(",").map(&:strip).each do |tag|
-        = link_to tag, records_path(:tags => [tag])
+        = link_to sanitize(tag), records_path(:tags => [tag])

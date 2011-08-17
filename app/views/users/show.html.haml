@@ -1,46 +1,14 @@
 - content_for :title do
   = @user.nickname + ' < '
 
-.user.big
-
-  = link_to(image_tag(@user.avatar_url(100)), @user, :class => 'avatar')
-
-  .desc
-    %strong Nick
-    = link_to @user.nickname
-
-  - unless @user.website.blank?
-    .desc
-      %strong Website
-      = link_to @user.website, @user.website
-
-  - unless @user.twitter_name.blank?
-    .desc
-      %strong Twitter
-      = link_to @user.twitter_name, @user.twitter_name
-
-  - unless @user.bitcoin.blank?
-    .desc
-      %strong Bitcoin
-      = @user.bitcoin
-  .desc
-    %strong Member Since
-    = @user.created_at.strftime("%Y-%m-%d")
-
-  - unless @user.about.blank?
-    .desc
-      %strong About
-      = @user.about
-
-  - if @user.editable_by?(current_user)
-    .desc
-      %strong It's You!
-      = link_to 'Edit Your Profile', edit_user_path(@user)
+= render :partial => 'user', :locals => { :user => @user }
 
 - if @user.records.any?
   %ul.records
-    - @user.records.each do |record|
+    - @user.records.paginate(:page => params[:page], :per_page => 5).each do |record|
       = render :partial => 'records/record', locals: { record: record, show_user: false }
+    %li.record= will_paginate @user.records.paginate(:page => params[:page], :per_page => 5)
+    
 - else
   - if current_user && @user.id == current_user.id
     %p You have no records yet...

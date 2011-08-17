@@ -1,1 +1,1 @@
-User.create(nickname: 'Anonymous')
+User.create(nickname: 'Anonymous', website: "http://thepiratebay.org/")
