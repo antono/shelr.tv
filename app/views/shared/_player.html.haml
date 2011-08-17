@@ -3,7 +3,7 @@
     %img{ src: '/images/term/buttons.png'}
     %h1= @record.title
   .container
-  %input{ :type => :text, :value => "shellcast play #{record_path(@record, :only_path => false, :format => :json)}", :class => 'cmdline hidden' }
+  %input{ :type => :text, :value => "shelr play #{record_path(@record, :only_path => false, :format => :json)}", :class => 'cmdline hidden' }
   %nav.controls
     %li.sc-button.toggle{ :'data-action' => 'play' }
       %img{ src: '/images/term/playback-start.png' }
