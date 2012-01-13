@@ -19,7 +19,7 @@ class User
 
   attr_accessible :nickname, :email, :website, :about, :bitcoin
 
-  validates_uniqueness_of :nickname, :api_key, :twitter_id
+  validates_uniqueness_of :nickname, :api_key, :twitter_uid, :github_uid
   validates_length_of :nickname, maximum: 20
 
   references_many :records
