@@ -55,7 +55,7 @@ class UsersController < ApplicationController
         flash[:notice] = "Signed in successfully."
         redirect_to edit_user_path(user)
       else
-        logger.debug user.errors.join("\n")
+        logger.debug user.errors
         flash[:notice] = "Failed"
         redirect_to root_url
       end
