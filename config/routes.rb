@@ -1,4 +1,4 @@
-Shelltube::Application.routes.draw do
+Shelr::Application.routes.draw do
 
   resources :records
   resources :users do

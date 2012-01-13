@@ -1,12 +1,18 @@
 require File.expand_path('../boot', __FILE__)
 
 require "action_controller/railtie"
+require "rails/test_unit/railtie"
+require "sprockets/railtie"
 
-# If you have a Gemfile, require the gems listed there, including any gems
-# you've limited to :test, :development, or :production.
-Bundler.require(:default, Rails.env) if defined?(Bundler)
+if defined?(Bundler)
+  # If you precompile assets before deploying to production, use this line
+  puts "=> Bundler require"
+  Bundler.require(*Rails.groups(:assets => %w(development test)))
+  # If you want your assets lazily compiled in production, use this line
+  # Bundler.require(:default, :assets, Rails.env)
+end
 
-module Shelltube
+module Shelr
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers # -- all .rb files in that directory are automatically loaded.
@@ -39,9 +45,9 @@ module Shelltube
       g.test_framework :rspec, :fixture => false, :views => false
     end
 
-    config.secret_token = 'Veni Vidi Vici! Venis Vidas Venkos!'
+    config.secret_token = ENV['SECRET_TOKEN']
 
-    # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:password]
+    # config.middleware.use OmniAuth::Strategies::GitHub,
+    #   ENV['GITHUB_ID'], ENV['GITHUB_SECRET']
   end
 end

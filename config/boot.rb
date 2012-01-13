@@ -1,19 +1,21 @@
 require 'rubygems'
-require 'bundler'
 
 # Set up gems listed in the Gemfile.
-gemfile = File.expand_path('../../Gemfile', __FILE__)
-begin
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
 
-  # For heroku
-  #def FileUtils.mkdir_p(foo)
-  #  puts foo
-  #end
+require 'bundler/setup' if File.exists?(ENV['BUNDLE_GEMFILE'])
 
-  ENV['BUNDLE_GEMFILE'] = gemfile
-  Bundler.setup
-rescue Bundler::GemNotFound => e
-  STDERR.puts e.message
-  STDERR.puts "Try running `bundle install`."
-  exit!
-end if File.exist?(gemfile)
+# require 'rubygems'
+
+# # Set up gems listed in the Gemfile.
+# gemfile = File.expand_path('../../Gemfile', __FILE__)
+
+# begin
+#   puts '=> Gemfile found'
+#   ENV['BUNDLE_GEMFILE'] = gemfile
+#   require 'bundler/setup'
+# rescue Bundler::GemNotFound => e
+#   STDERR.puts e.message
+#   STDERR.puts "Try running `bundle install`."
+#   exit!
+# end if File.exist?(gemfile)
