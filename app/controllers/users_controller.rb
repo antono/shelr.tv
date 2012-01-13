@@ -37,15 +37,15 @@ class UsersController < ApplicationController
 
   def authenticate
     omniauth = request.env["omniauth.auth"]
-    user = User.where(twitter_id: omniauth['uid']).first
+    user = User.where(github_id: omniauth['uid']).first
     if user
       flash[:notice] = "Signed in successfully."
       session[:user_id] = user.id.to_s
       redirect_to user_path(user)
     else
       user_info = omniauth['user_info']
-      user = User.new(nickname: user_info['nickname'], twitter_name: user_info['nickname'])
-      user.twitter_id = omniauth['uid'] # mass assignemnt not allowed
+      user = User.new(nickname: user_info['nickname'], github_name: user_info['nickname'])
+      user.github_id = omniauth['uid'] # mass assignemnt not allowed
       if user.save
         session[:user_id] = user.id.to_s
         flash[:notice] = "Signed in successfully."
