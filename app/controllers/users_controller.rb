@@ -48,13 +48,14 @@ class UsersController < ApplicationController
     else
       user_info = omniauth['info']
       user = User.new(nickname: user_info['nickname'])
-      user.send(uid_field + "=", omniauth['uid'])
-      user.send(name_field + "=", user_info['nickname'])
+      user.update_attribute(uid_field, omniauth['uid'])
+      user.update_attribute(name_field, user_info['nickname'])
       if user.save
         session[:user_id] = user.id.to_s
         flash[:notice] = "Signed in successfully."
         redirect_to edit_user_path(user)
       else
+        logger.debug user.to_s
         logger.debug user.errors
         flash[:notice] = "Failed"
         redirect_to root_url
