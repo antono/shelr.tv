@@ -61,6 +61,7 @@ class UsersController < ApplicationController
         flash[:notice] = "Signed in successfully."
         redirect_to edit_user_path(user)
       else
+        binding.pry
         flash[:notice] = "Failed"
         redirect_to root_url
       end
