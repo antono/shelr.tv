@@ -49,7 +49,7 @@ class UsersController < ApplicationController
       user_info = omniauth['info']
       user = User.new(nickname: user_info['nickname'])
       user.send(uid_field + "=", omniauth['uid'])
-      user.send(name + "=", user_info['nickname'])
+      user.send(name_field + "=", user_info['nickname'])
       if user.save
         session[:user_id] = user.id.to_s
         flash[:notice] = "Signed in successfully."
