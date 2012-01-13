@@ -36,16 +36,20 @@ class UsersController < ApplicationController
   end
 
   def authenticate
+    provider = params[:provider]
+    uid_field = "#{provider}_uid"
+    name_field = "#{provider}_name"
     omniauth = request.env["omniauth.auth"]
-    user = User.where(github_id: omniauth['uid']).first
+    user = User.where(uid_field => omniauth['uid']).first
     if user
       flash[:notice] = "Signed in successfully."
       session[:user_id] = user.id.to_s
       redirect_to user_path(user)
     else
       user_info = omniauth['user_info']
-      user = User.new(nickname: user_info['nickname'], github_name: user_info['nickname'])
-      user.github_id = omniauth['uid'] # mass assignemnt not allowed
+      user = User.new(nickname: user_info['nickname'])
+      user.send(uid_field + "=", omniauth['uid'])
+      user.send(name + "=", user_info['nickname'])
       if user.save
         session[:user_id] = user.id.to_s
         flash[:notice] = "Signed in successfully."

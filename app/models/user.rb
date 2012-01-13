@@ -3,19 +3,19 @@ require 'digest/md5'
 class User
 
   include Mongoid::Document
+  include Mongoid::Timestamps
 
   field :email,         type: String,  unique: true
   field :nickname,      type: String,  unique: true
   field :records_count, type: Integer, default: 0
   field :api_key,       type: String,  unique: true
-  field :github_id,     type: String,  unique: true
-  field :github_name,   type: String,  unique: true
-  field :twitter_id,    type: String,  unique: true
-  field :twitter_name,  type: String,  unique: true
+  field :twitter_name,  type: String,  unique: false
+  field :github_name,   type: String,  unique: false
+  field :github_uid,    type: String,  unique: true
+  field :twitter_uid,   type: String,  unique: true
   field :website,       type: String
   field :bitcoin,       type: String
   field :about,         type: String
-  field :created_at,    type: DateTime
 
   attr_accessible :nickname, :email, :website, :about, :bitcoin
 
@@ -24,7 +24,7 @@ class User
 
   references_many :records
 
-  before_create :generate_api_key, :timestamp!
+  before_create :generate_api_key
 
   def to_param
     nickname
@@ -51,10 +51,6 @@ class User
 
   def generate_api_key!
     generate_api_key && save
-  end
-
-  def timestamp!
-    write_attribute(:created_at, Time.now)
   end
 
 end

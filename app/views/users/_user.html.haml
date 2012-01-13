@@ -6,7 +6,6 @@
     %strong Nick
     = link_to sanitize(user.nickname), user
 
-  
   - if defined?(record)
     .desc
       %strong Description
@@ -35,6 +34,7 @@
       .desc
         %strong Bitcoin
         =sanitize user.bitcoin
+      
     .desc
       %strong Member Since
       = user.created_at.strftime("%Y-%m-%d")
