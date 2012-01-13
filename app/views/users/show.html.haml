@@ -13,11 +13,10 @@
   - if current_user && @user.id == current_user.id
     %p You have no records yet...
     %h2 Start sharing now!
-    %pre
-      ~ ''
-      ~ 'gem install shellcast'
-      ~ "shellcast setup #{@user.api_key}"
-      ~ 'shellcast record'
-      ~ 'shellcast push SHELLCAST_ID'
+    %ul
+      %li gem install shelr
+      %li= "shelr setup #{@user.api_key}"
+      %li shelr record
+      %li shelr push SHELLCAST_ID
   - else
     %p Ninja have no records yet...

@@ -29,7 +29,7 @@
         %li= link_to current_user.nickname, current_user
         %li= link_to 'logout', logout_url
       - else
-        %li= link_to 'Login with Twitter', '/auth/twitter'
+        %li= link_to 'Github Auth', '/auth/github'
       %li.search
         - form_tag '/search', :method => :get do
           = search_field_tag :q, '', :placeholder => 'Search'
