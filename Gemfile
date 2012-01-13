@@ -14,6 +14,8 @@ gem 'bson_ext'
 gem 'kaminari'
 
 group :development, :test do
+  gem 'pry'
+  gem 'pry-nav'
   gem 'rspec'
   gem 'rspec-rails'
   gem 'mocha'

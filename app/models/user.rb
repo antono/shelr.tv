@@ -6,13 +6,13 @@ class User
   include Mongoid::Timestamps
 
   field :email,         type: String,  unique: true
-  field :nickname,      type: String,  unique: true
+  field :nickname,      type: String,  unique: false
   field :records_count, type: Integer, default: 0
   field :api_key,       type: String,  unique: true
   field :twitter_name,  type: String,  unique: false
   field :github_name,   type: String,  unique: false
-  field :github_uid,    type: String,  unique: true
-  field :twitter_uid,   type: String,  unique: true
+  field :twitter_uid,   type: String,  unique: true, allow_nil: true
+  field :github_uid,    type: String,  unique: true, allow_nil: true
   field :website,       type: String
   field :bitcoin,       type: String
   field :about,         type: String
@@ -25,10 +25,6 @@ class User
   references_many :records
 
   before_create :generate_api_key
-
-  def to_param
-    nickname
-  end
 
   def avatar_url(size)
     return "/images/avatars/anonymous-#{size}.png" if nickname == 'Anonymous'

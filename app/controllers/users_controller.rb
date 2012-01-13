@@ -3,11 +3,11 @@ class UsersController < ApplicationController
   before_filter :login_required, except: [:show, :login, :authenticate]
 
   def show
-    @user = User.where(nickname: params[:id]).first
+    @user = User.find(params[:id])
   end
 
   def edit
-    @user = User.where(nickname: params[:id]).first
+    @user = User.find(params[:id])
   end
 
   def update
@@ -41,6 +41,7 @@ class UsersController < ApplicationController
     name_field = "#{provider}_name"
     omniauth = request.env["omniauth.auth"]
     user = User.where(uid_field => omniauth['uid']).first
+
     if user
       flash[:notice] = "Signed in successfully."
       session[:user_id] = user.id.to_s
@@ -50,13 +51,16 @@ class UsersController < ApplicationController
       user = User.new(nickname: user_info['nickname'])
       user.update_attribute(uid_field, omniauth['uid'])
       user.update_attribute(name_field, user_info['nickname'])
+      user.update_attribute('about', user_info['description'])
+      user.update_attribute('website', user_info['urls']
+                              .try(:values)
+                              .try(:last))
+
       if user.save
         session[:user_id] = user.id.to_s
         flash[:notice] = "Signed in successfully."
         redirect_to edit_user_path(user)
       else
-        logger.debug user.to_s
-        logger.debug user.errors
         flash[:notice] = "Failed"
         redirect_to root_url
       end

@@ -28,7 +28,14 @@
     - unless user.twitter_name.blank?
       .desc
         %strong Twitter
-        = link_to sanitize(user.twitter_name), user.twitter_name
+        - twitter_url = sanitize "http://twitter.com/#{user.github_name}"
+        = link_to twitter_url, twitter_url
+        
+    - unless user.github_name.blank?
+      .desc
+        %strong Github
+        - github_url = sanitize "http://github.com/#{user.github_name}"
+        = link_to github_url, github_url
 
     - unless user.bitcoin.blank?
       .desc
