@@ -46,8 +46,5 @@ module Shelr
     end
 
     config.secret_token = ENV['SECRET_TOKEN']
-
-    # config.middleware.use OmniAuth::Strategies::GitHub,
-    #   ENV['GITHUB_ID'], ENV['GITHUB_SECRET']
   end
 end
