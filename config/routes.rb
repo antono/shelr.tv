@@ -5,7 +5,8 @@ Shelr::Application.routes.draw do
     get :authenticate
   end
 
-  match '/auth/twitter/callback' => 'users#authenticate'
+  match '/auth/:provider/callback' => 'users#authenticate'
+
   match '/logout' => 'users#logout', as: 'logout'
   match '/login'  => 'users#login', as: 'login'
 

@@ -8,8 +8,10 @@ class User
   field :nickname,      type: String,  unique: true
   field :records_count, type: Integer, default: 0
   field :api_key,       type: String,  unique: true
+  field :github_id,     type: String,  unique: true
+  field :github_name,   type: String,  unique: true
   field :twitter_id,    type: String,  unique: true
-  field :twitter_name,  type: String,  unique: false # or we can block new users from registering
+  field :twitter_name,  type: String,  unique: true
   field :website,       type: String
   field :bitcoin,       type: String
   field :about,         type: String

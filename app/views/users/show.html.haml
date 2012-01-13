@@ -5,9 +5,9 @@
 
 - if @user.records.any?
   %ul.records
-    - @user.records.paginate(:page => params[:page], :per_page => 5).each do |record|
+    - @user.records.page(params[:page]).per(5).each do |record|
       = render :partial => 'records/record', locals: { record: record, show_user: false }
-    %li.record= will_paginate @user.records.paginate(:page => params[:page], :per_page => 5)
+    %li.record= paginate @user.records.page(params[:page]).per 5
     
 - else
   - if current_user && @user.id == current_user.id

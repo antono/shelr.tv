@@ -32,7 +32,7 @@ class UsersController < ApplicationController
   end
 
   def login
-    redirect_to '/auth/twitter'
+    redirect_to '/auth/github'
   end
 
   def authenticate
@@ -51,7 +51,7 @@ class UsersController < ApplicationController
         flash[:notice] = "Signed in successfully."
         redirect_to edit_user_path(user)
       else
-        flash[:notice] = "Failed "
+        flash[:notice] = "Failed"
         redirect_to root_url
       end
     end
