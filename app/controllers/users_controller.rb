@@ -46,7 +46,7 @@ class UsersController < ApplicationController
       session[:user_id] = user.id.to_s
       redirect_to user_path(user)
     else
-      user_info = omniauth['user_info']
+      user_info = omniauth['info']
       user = User.new(nickname: user_info['nickname'])
       user.send(uid_field + "=", omniauth['uid'])
       user.send(name + "=", user_info['nickname'])
