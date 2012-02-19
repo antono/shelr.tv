@@ -5,14 +5,14 @@
       = yield :title
       Shelr
     = stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Ubuntu&subset=cyrillic,latin'
-    = stylesheet_link_tag 'sgr'
-    = stylesheet_link_tag 'style'
-    = javascript_include_tag 'parser.js'
-    = javascript_include_tag 'canvas.js'
-    = javascript_include_tag 'term.js'
-    = javascript_include_tag 'jsdeferred.js'
-    = javascript_include_tag 'player.js'
-    = javascript_include_tag 'transitions.js'
+    = stylesheet_link_tag 'application'
+    = javascript_include_tag 'application'
+    -# = javascript_include_tag 'parser.js'
+    -# = javascript_include_tag 'canvas.js'
+    -# = javascript_include_tag 'term.js'
+    -# = javascript_include_tag 'jsdeferred.js'
+    -# = javascript_include_tag 'player.js'
+    -# = javascript_include_tag 'transitions.js'
     %link{ href: "/favicon.png", rel: "icon", type: "image/png" }
     = csrf_meta_tag
 %body

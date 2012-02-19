@@ -46,5 +46,9 @@ module Shelr
     end
 
     config.secret_token = ENV['SECRET_TOKEN']
+    
+    config.assets.enabled = true
+    config.sass.cache = false
+    config.sass.read_cache = false
   end
 end

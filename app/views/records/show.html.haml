@@ -1,8 +1,8 @@
 - content_for :title do
-  = @record.title + ' &lt; '
-
+  = @record.title + ' < '.html_safe
+  
 = player_for(@record)
 
 = render :partial => 'users/user', :locals => { :user => @record.user, :record => @record }
 
-= render :partial => 'shared/disqus', :locals => { disqus_url: record_path(@record, :only_path => false), disqus_id: @record.id.to_s, disqus_title: @record.title }
+-# = render :partial => 'shared/disqus', :locals => { disqus_url: record_path(@record, :only_path => false), disqus_id: @record.id.to_s, disqus_title: @record.title }

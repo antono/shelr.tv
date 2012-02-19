@@ -1,0 +1,118 @@
+/* line 3, ../../app/assets/stylesheets/player.sass */
+body {
+  font: 14px "Ubuntu", "Trebuchet MS", sans-serif;
+  color: #333333;
+  background: url(../images/bg.png); }
+
+/* line 8, ../../app/assets/stylesheets/player.sass */
+.hidden {
+  display: none; }
+
+/* line 11, ../../app/assets/stylesheets/player.sass */
+#player-hover {
+  text-align: center;
+  color: white;
+  font-size: 2em; }
+  /* line 15, ../../app/assets/stylesheets/player.sass */
+  #player-hover p {
+    padding: 20px; }
+    /* line 17, ../../app/assets/stylesheets/player.sass */
+    #player-hover p .donate {
+      font-size: 0.5em;
+      color: gray; }
+  /* line 20, ../../app/assets/stylesheets/player.sass */
+  #player-hover.enabled {
+    -webkit-transition-property: background;
+    -webkit-transition-duration: 5s;
+    -webkit-transition-timing-function: default;
+    background-color: rgba(0, 0, 0, 0.7); }
+    /* line 26, ../../app/assets/stylesheets/player.sass */
+    #player-hover.enabled.error a {
+      color: #aaaaaa; }
+    /* line 28, ../../app/assets/stylesheets/player.sass */
+    #player-hover.enabled.error .img {
+      width: 126px;
+      height: 126px;
+      background: #eeeeee;
+      padding: 10px;
+      margin: 0 auto;
+      border-radius: 10px; }
+  /* line 35, ../../app/assets/stylesheets/player.sass */
+  #player-hover.disabled {
+    background: rgba(0, 0, 0, 0); }
+
+/* line 39, ../../app/assets/stylesheets/player.sass */
+#player {
+  width: 100%;
+  display: inline-block;
+  margin-bottom: 15px; }
+  /* line 43, ../../app/assets/stylesheets/player.sass */
+  #player .header {
+    height: 32px;
+    line-height: 32px;
+    color: white;
+    background: url(../images/term/bg-gradient.png);
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px; }
+    /* line 52, ../../app/assets/stylesheets/player.sass */
+    #player .header img {
+      margin: 6px 10px 0 10px;
+      float: left; }
+    /* line 55, ../../app/assets/stylesheets/player.sass */
+    #player .header h1 {
+      display: block;
+      font-size: 12px; }
+  /* line 58, ../../app/assets/stylesheets/player.sass */
+  #player input.cmdline {
+    border: 0;
+    border-top: 1px solid #444444;
+    font-size: 1.4em;
+    padding: 3px;
+    margin: 0;
+    background: #111111;
+    color: #aaaaaa; }
+  /* line 66, ../../app/assets/stylesheets/player.sass */
+  #player .canvas {
+    overflow: hidden;
+    padding: 10px;
+    font-family: "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Monaco", monospace; }
+    /* line 70, ../../app/assets/stylesheets/player.sass */
+    #player .canvas .row {
+      padding: 1px 0 1px 0;
+      width: 0.2em;
+      border: 1px; }
+    /* line 74, ../../app/assets/stylesheets/player.sass */
+    #player .canvas span.cursor {
+      background-color: white; }
+  /* line 76, ../../app/assets/stylesheets/player.sass */
+  #player input[type=range] {
+    margin-bottom: -10px; }
+  /* line 78, ../../app/assets/stylesheets/player.sass */
+  #player nav {
+    height: 30px;
+    border-top: 1px solid #444444;
+    background: black; }
+    /* line 82, ../../app/assets/stylesheets/player.sass */
+    #player nav li {
+      display: block;
+      margin: 0;
+      float: left;
+      height: 30px; }
+    /* line 87, ../../app/assets/stylesheets/player.sass */
+    #player nav .sc-button {
+      cursor: pointer;
+      line-height: 30px;
+      width: 30px; }
+      /* line 91, ../../app/assets/stylesheets/player.sass */
+      #player nav .sc-button img {
+        margin: 4px; }
+    /* line 93, ../../app/assets/stylesheets/player.sass */
+    #player nav .sc-settings {
+      display: none; }
+    /* line 96, ../../app/assets/stylesheets/player.sass */
+    #player nav .progress .progress-inner {
+      display: block;
+      width: 50%;
+      background: blue; }

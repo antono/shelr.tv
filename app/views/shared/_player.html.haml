@@ -2,7 +2,7 @@
   .header
     %img{ src: '/images/term/buttons.png'}
     %h1= @record.title
-  .container
+  #term
   %input{ :type => :text, :value => "shelr play #{record_path(@record, :only_path => false, :format => :json)}", :class => 'cmdline hidden' }
   %nav.controls
     %li.sc-button.toggle{ :'data-action' => 'play' }
@@ -20,9 +20,12 @@
       .progress-inner
 
 :javascript
-  var onLoad = function() {
-    var term = new Term(document.getElementsByClassName('container')[0]);
-    window.player = new SC.Player(document.getElementById('player'), term);
+  jQuery(function() {
+    window.term = new Terminal(80, 30, function(data) {
+      console.log("Handler:", data);
+    });
+    window.term.id = 1;
+    term.open(document.getElementById('term'));
+    window.player = new VT.Player(term);
     window.player.load('#{record_path(@record.id, :format => :json)}');
-  }
-  window.addEventListener('load', onLoad, true);
+  })
