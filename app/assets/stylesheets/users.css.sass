@@ -1,0 +1,35 @@
+@import mixins
+
+.user
+  &.big
+    +wrap
+    box-shadow: 1px 1px 5px #bbb
+    background: #E0EAF8 
+    padding: 15px
+    overflow: auto
+    border: 1px solid #ccc
+    .avatar
+      float: left
+    .desc
+      strong
+        display: inline-block
+        width: 100px
+        font-weight: normal
+        font-size: 0.9em
+        text-align: right
+        padding-right: 15px
+        color: #999
+        float: left
+      margin-bottom: 5px
+      margin-left: 100px
+      .long      
+        margin-left: 115px
+        p
+          padding-left: 0
+          margin-top: 0
+          margin-bottom: 7px
+          &:last-child
+            margin-bottom: 0
+    .about
+      margin-left: 320px
+

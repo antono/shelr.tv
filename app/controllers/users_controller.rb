@@ -1,6 +1,10 @@
 class UsersController < ApplicationController
 
-  before_filter :login_required, except: [:show, :login, :authenticate]
+  before_filter :login_required, except: [:show, :login, :authenticate, :index]
+
+  def index
+    @users = User.page(params[:page]).per(10)
+  end
 
   def show
     @user = User.find(params[:id])

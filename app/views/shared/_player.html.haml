@@ -1,9 +1,9 @@
 #player.sgr
   .header
     %img{ src: '/assets/term/buttons.png'}
-    %h1= @record.title
+    %h1
+      = [@record.title, ' - ', @record.size].join
   #term
-  %input{ :type => :text, :value => "shelr play #{record_path(@record, :only_path => false, :format => :json)}", :class => 'cmdline hidden' }
   %nav.controls
     %li.sc-button.toggle{ :'data-action' => 'play' }
       %img{ src: '/assets/term/playback-start.png' }
@@ -18,6 +18,9 @@
     -#  %input.speed{ type: 'range', value: 0 }
     %li.progress
       .progress-inner
+    %br      
+    %input{ :type => :text, :value => "shelr play #{record_path(@record, :only_path => false, :format => :json)}", :class => 'cmdline hidden' }
+    
 
 :javascript
   jQuery(function() {

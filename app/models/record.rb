@@ -1,6 +1,8 @@
 class Record
 
   include Mongoid::Document
+  include Mongoid::Timestamps
+
 
   field :title,        type: String
   field :description,  type: String
@@ -10,12 +12,13 @@ class Record
   field :timing,       type: String
   field :tags,         type: Array
   field :created_at,   type: DateTime
+  field :updated_at,   type: DateTime
 
   attr_accessible :title, :description, :typescript, :timing, :tags, :columns, :rows
 
   referenced_in :user
 
-  after_create :timestamp!, :increment_counters!
+  after_create :increment_counters!
   after_destroy :decrement_counters!
 
   def self.per_page
@@ -34,6 +37,10 @@ class Record
     write_attribute(:tags, tags.split(",").map(&:strip))
   end
 
+  def size
+    [ self.columns || 80, 'x', self.rows || 24 ].join
+  end
+
   def tags
     read_attribute(:tags).try(:join, ", ")
   end
@@ -42,10 +49,6 @@ class Record
     return false if usr.nil?
     return true  if usr.nickname == 'antono'
     self.user.id.to_s == usr.id.to_s
-  end
-
-  def timestamp!
-    write_attribute(:created_at, Time.now)
   end
 
   def increment_counters!

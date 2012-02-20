@@ -1,12 +1,15 @@
-.term
+@import mixins
+
+#term
   font-family: "DejaVu Sans Mono", monospace
   font-size: 11px
   color: #f0f0f0
   background: #000
+  margin: 0 auto
+  margin: 10 auto
 
 #player
-  width: 100%
-  display: inline-block
+  margin: 0 auto
   margin-bottom: 15px  
   .header
     height: 32px
@@ -25,27 +28,17 @@
       font-size: 14px
       color: white
       line-height: 30px
-  input.cmdline
+  .cmdline
     border: 0
     border-top: 1px solid #444
     font-size: 1.4em
     padding: 3px
-    margin: 0
     background: #111
     color: #aaa
-  .canvas
-    :overflow hidden
-    :padding 10px
-    :font-family "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Monaco", monospace
-    .row
-      :padding 1px 0 1px 0
-      :width 0.2em
-      :border 1px
-    span.cursor
-      :background-color white
+    border: 0
   input[type=range]
     :margin-bottom -10px
-  nav
+  nav.controls
     height: 30px
     border-top: 1px solid #444
     background: black

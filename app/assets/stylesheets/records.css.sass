@@ -1,0 +1,43 @@
+@import mixins
+
+.records
+  +wrap
+  box-shadow: 1px 1px 5px #bbb
+  padding-left: 0
+  .record
+    display: block
+    background: #eee
+    padding: 15px
+    border: 1px #ccc solid
+    border-top: 1px #ccc dotted
+    border-bottom: none
+    overflow: auto
+    &:hover
+      background: #fafafa
+      box-shadow: inside -1px -1px 5px #444
+    &:first-child
+      border-top: 1px #ccc solid
+    &:last-child
+      border-bottom: 1px #ccc solid
+      background: #eee
+    .userinfo, .shell
+      text-align: center
+      width: 110px
+      overflow: hidden
+      float: left
+      &:hover
+        overflow: visible
+    .avatar
+      display: block
+    .title
+      margin: 0
+    .desc, .tags, h3.title
+      margin-left: 140px
+
+.tags
+  a
+    display: inline-block
+    padding-left: 20px
+    line-height: 16px        
+    background: transparent url(/assets/tag-icon.png) center left no-repeat
+    text-decoration: none        

@@ -12,8 +12,10 @@ VT.Player = function(term) {
   this.timing  = null;
   this.element = document.getElementById('player');
   this.speedup = 0;
+  this.calculateTermSize();
   //this.initSpeedControl();
   this.initHover();
+  this.initTermContainer();
   this.initHeader();
   this.initProgress();
   this.initControls();
@@ -26,7 +28,7 @@ VT.Player.prototype.onError = function() {
   this.hoverShow();
   this.hover.classList.add('error');
   this.hoverHide = function() {};
-  this.hover.innerHTML = "<br/><div class='img'><img src='/images/harakiri.png' alt='So sorry...'/></div>切腹"
+  this.hover.innerHTML = "<br/><div class='img'><img src='/assets/harakiri.png' alt='So sorry...'/></div>切腹"
   this.hover.innerHTML += "<p>Sorry we cannot emulate this shellcast in HTML.<br/>" +
     "Use commandline client instead!<br/>" +
     "<span class='donate'> And consider small <a href='http://weusecoins.com' target='_blank'>bitcoin</a> " +
@@ -59,20 +61,34 @@ VT.Player.prototype.initProgress = function() {
 
 VT.Player.prototype.initControls = function() {
   this.controls = this.element.getElementsByClassName('controls')[0];
-  // this.controls.setAttribute("style", "width:" + this.vt.canvas.getHtmlOffsets().offsetWidth + "px");
-  this.controls.addEventListener('click', function(e) { console.log(e) }, true);
+  this.controls.setAttribute("style", "width:" + this.termWidth + "px");
+  this.controls.addEventListener('click', function(e) {
+    console.log(e)
+  }, true);
 }
 
 VT.Player.prototype.initCmdline = function() {
   this.cmdline = this.element.getElementsByClassName('cmdline')[0];
-  console.log('cmdline', this.cmdline)
-  // this.cmdline.setAttribute("style", "width:" + (this.vt.canvas.getHtmlOffsets().offsetWidth - 6) + "px");
-  // this.cmdline.addEventListener('click', function(e) { e.target.select() }, true)
+  this.cmdline.setAttribute("style", "width:" + (this.termWidth - 6) + "px");
+  this.cmdline.addEventListener('click', function(e) {
+    e.target.select()
+  }, true)
+}
+
+VT.Player.prototype.calculateTermSize = function() {
+  this.termWidth = (this.term.cols * 7);
+  this.termHeight = (this.term.rows * 13);
+  this.element.setAttribute("style", "width:" + this.termWidth + "px");
 }
 
 VT.Player.prototype.initHeader = function() {
-  // this.header = this.element.getElementsByClassName('header')[0];
-  // this.header.setAttribute("style", "width:" + this.vt.canvas.getHtmlOffsets().offsetWidth + "px");
+  this.header = this.element.getElementsByClassName('header')[0];
+  this.header.setAttribute("style", "width:" + this.termWidth + "px");
+}
+
+VT.Player.prototype.initTermContainer = function() {
+  var term = document.getElementById('term');
+  term.setAttribute("style", "width:" + this.termWidth + "px");
 }
 
 VT.Player.prototype.load = function(path) {
@@ -138,7 +154,7 @@ VT.Player.prototype.play = function() {
   var player = this;
   var button = this.element.getElementsByClassName('toggle')[0]
   button.setAttribute('data-action', 'pause')
-  button.getElementsByTagName('img')[0].setAttribute('src', '/images/term/playback-pause.png')
+  button.getElementsByTagName('img')[0].setAttribute('src', '/assets/term/playback-pause.png')
 
   player.hoverHide();
   
@@ -173,7 +189,7 @@ VT.Player.prototype.play = function() {
 
 VT.Player.prototype.pause = function() {
   var button = this.element.getElementsByClassName('toggle')[0];
-  button.getElementsByTagName('img')[0].setAttribute('src', '/images/term/playback-start.png')
+  button.getElementsByTagName('img')[0].setAttribute('src', '/assets/term/playback-start.png')
   button.setAttribute('data-action', 'play');
   this.playing = false;
 }

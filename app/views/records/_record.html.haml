@@ -7,6 +7,7 @@
   - else
     .shell
       = link_to image_tag('shell.png'), record
+      %sup= record.size
 
   %h3.title
     = link_to sanitize(record.title), record
