@@ -7,12 +7,6 @@
     = stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Ubuntu&subset=cyrillic,latin'
     = stylesheet_link_tag 'application'
     = javascript_include_tag 'application'
-    -# = javascript_include_tag 'parser.js'
-    -# = javascript_include_tag 'canvas.js'
-    -# = javascript_include_tag 'term.js'
-    -# = javascript_include_tag 'jsdeferred.js'
-    -# = javascript_include_tag 'player.js'
-    -# = javascript_include_tag 'transitions.js'
     %link{ href: "/favicon.png", rel: "icon", type: "image/png" }
     = csrf_meta_tag
 %body
@@ -24,6 +18,7 @@
 
           %li{ class: "active"  }= link_to 'Records', "/records"
           %li= link_to 'Users', '/users'
+          -# %li= link_to 'Tags', '/tags'
           %li= link_to 'About', '/about'
           -# %li
           -#   = form_tag '/search', :method => :get do
@@ -39,7 +34,7 @@
   %section.flashes
     - [:error, :notice].each do |type|
       - unless flash[type].blank?
-        .alert{ class: { error: 'alert-error', notice: 'alert-success' }[type] }= flash[type]
+        .alert{ class: { error: 'alert-error', notice: 'alert-success', info: 'alert-info' }[type] }= flash[type]
 
   %section.main
     = yield
