@@ -74,44 +74,31 @@ body {
     background: #111111;
     color: #aaaaaa; }
   /* line 66, ../../app/assets/stylesheets/player.sass */
-  #player .canvas {
-    overflow: hidden;
-    padding: 10px;
-    font-family: "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Monaco", monospace; }
-    /* line 70, ../../app/assets/stylesheets/player.sass */
-    #player .canvas .row {
-      padding: 1px 0 1px 0;
-      width: 0.2em;
-      border: 1px; }
-    /* line 74, ../../app/assets/stylesheets/player.sass */
-    #player .canvas span.cursor {
-      background-color: white; }
-  /* line 76, ../../app/assets/stylesheets/player.sass */
   #player input[type=range] {
     margin-bottom: -10px; }
-  /* line 78, ../../app/assets/stylesheets/player.sass */
+  /* line 68, ../../app/assets/stylesheets/player.sass */
   #player nav {
     height: 30px;
     border-top: 1px solid #444444;
     background: black; }
-    /* line 82, ../../app/assets/stylesheets/player.sass */
+    /* line 72, ../../app/assets/stylesheets/player.sass */
     #player nav li {
       display: block;
       margin: 0;
       float: left;
       height: 30px; }
-    /* line 87, ../../app/assets/stylesheets/player.sass */
+    /* line 77, ../../app/assets/stylesheets/player.sass */
     #player nav .sc-button {
       cursor: pointer;
       line-height: 30px;
       width: 30px; }
-      /* line 91, ../../app/assets/stylesheets/player.sass */
+      /* line 81, ../../app/assets/stylesheets/player.sass */
       #player nav .sc-button img {
         margin: 4px; }
-    /* line 93, ../../app/assets/stylesheets/player.sass */
+    /* line 83, ../../app/assets/stylesheets/player.sass */
     #player nav .sc-settings {
       display: none; }
-    /* line 96, ../../app/assets/stylesheets/player.sass */
+    /* line 86, ../../app/assets/stylesheets/player.sass */
     #player nav .progress .progress-inner {
       display: block;
       width: 50%;

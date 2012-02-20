@@ -1,6 +1,5 @@
 //= require_self
 //= require base
-//= require sgr
 //= require player
-//= require style
-//= require tty
+//= require users
+//= require records

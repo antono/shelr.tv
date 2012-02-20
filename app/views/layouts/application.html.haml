@@ -16,34 +16,36 @@
     %link{ href: "/favicon.png", rel: "icon", type: "image/png" }
     = csrf_meta_tag
 %body
-  = render :partial => 'shared/forkme'
+  .navbar.navbar-fixed-top
+    .navbar-inner
+      .container
+        %a{ class: "brand", href: '/' } Shelr.tv
+        %ul{ class: "nav" }
+          %li{ class: "active" }= link_to 'Records', "/records"
+          %li= link_to 'Users', '/users'
+          %li= link_to 'About', '/about'
+          -# %li
+          -#   = form_tag '/search', :method => :get do
+          -#     = search_field_tag :q, '', :placeholder => 'Search'
+        %ul{ class: "nav pull-right" }
+          - if logged_in?
+            %li= link_to current_user.nickname, current_user
+            %li= link_to 'logout', logout_url
+          - else
+            %li= link_to 'Login via Github', '/auth/github'
+          
+  %section.flashes
+    - [:error, :notice].each do |type|
+      - unless flash[type].blank?
+        %div{ class: type }= flash[type]
 
-  #wrapper
-    %header
-      %h1
-        = render partial: 'shared/terminal'
-        = link_to 'Shelr <sup>Alpha</sup>'.html_safe, root_url, alt: 'Shell Ninjas Secrets...'
-    %menu.top
-      - if logged_in?
-        %li |
-        %li= link_to current_user.nickname, current_user
-        %li= link_to 'logout', logout_url
-      - else
-        %li= link_to 'Github Auth', '/auth/github'
-      %li.search
-        - form_tag '/search', :method => :get do
-          = search_field_tag :q, '', :placeholder => 'Search'
-        %div{ style: 'width: 100%' }
-    %section.flashes
-      - [:error, :notice].each do |type|
-        - unless flash[type].blank?
-          %div{ class: type }= flash[type]
-    %section
-      = yield
-    %footer
-      %p.copy
-        %span{ :class => 'left' } ©
-        2010
-        %a{ href: 'http://red-brigade.biz/' } Red Brigade
+  %section.main
+    = yield
 
-    = render partial: 'shared/analytics'
+  %footer
+    %p.copy
+      %span{ :class => 'left' } ©
+      2010
+      %a{ href: 'http://red-brigade.biz/' } Red Brigade
+
+  = render partial: 'shared/analytics'

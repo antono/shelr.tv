@@ -48,7 +48,8 @@ module Shelr
     config.secret_token = ENV['SECRET_TOKEN']
     
     config.assets.enabled = true
-    config.sass.cache = false
-    config.sass.read_cache = false
+    config.sass.cache = true
+    config.sass.read_cache = true
+    config.sass.cache_store = Sass::CacheStores::Memory.new
   end
 end

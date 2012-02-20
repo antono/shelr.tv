@@ -1,14 +1,14 @@
 #player.sgr
   .header
-    %img{ src: '/images/term/buttons.png'}
+    %img{ src: '/assets/term/buttons.png'}
     %h1= @record.title
   #term
   %input{ :type => :text, :value => "shelr play #{record_path(@record, :only_path => false, :format => :json)}", :class => 'cmdline hidden' }
   %nav.controls
     %li.sc-button.toggle{ :'data-action' => 'play' }
-      %img{ src: '/images/term/playback-start.png' }
+      %img{ src: '/assets/term/playback-start.png' }
     %li.sc-button{ :'data-action' => 'settings' }
-      %img{ src: '/images/term/properties.png' }
+      %img{ src: '/assets/term/properties.png' }
       %ul.sc-settings
         %li Play in Your terminal
         - if @record.editable_by?(current_user)
@@ -21,7 +21,7 @@
 
 :javascript
   jQuery(function() {
-    window.term = new Terminal(80, 30, function(data) {
+    window.term = new Terminal(#{@record.columns || 80}, #{@record.rows || 24}, function(data) {
       console.log("Handler:", data);
     });
     window.term.id = 1;

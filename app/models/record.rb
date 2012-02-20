@@ -4,12 +4,14 @@ class Record
 
   field :title,        type: String
   field :description,  type: String
+  field :columns,      type: Integer
+  field :rows,         type: Integer
   field :typescript,   type: String
   field :timing,       type: String
   field :tags,         type: Array
   field :created_at,   type: DateTime
 
-  attr_accessible :title, :description, :typescript, :timing, :tags
+  attr_accessible :title, :description, :typescript, :timing, :tags, :columns, :rows
 
   referenced_in :user
 

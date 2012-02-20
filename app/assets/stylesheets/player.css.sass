@@ -1,13 +1,73 @@
+.term
+  font-family: "DejaVu Sans Mono", monospace
+  font-size: 11px
+  color: #f0f0f0
+  background: #000
 
-
-body
-  font: 14px "Ubuntu", "Trebuchet MS", sans-serif
-  color: #333
-  background: url(../images/bg.png)
-
-.hidden
-  display: none
-
+#player
+  width: 100%
+  display: inline-block
+  margin-bottom: 15px  
+  .header
+    height: 32px
+    line-height: 32px
+    color: white
+    background: url(/assets/term/bg-gradient.png)
+    -moz-border-radius-topleft: 5px
+    -moz-border-radius-topright: 5px
+    -webkit-border-top-left-radius: 5px
+    -webkit-border-top-right-radius: 5px
+    img
+      margin: 6px 10px 0 10px
+      float: left
+    h1
+      display: block
+      font-size: 14px
+      color: white
+      line-height: 30px
+  input.cmdline
+    border: 0
+    border-top: 1px solid #444
+    font-size: 1.4em
+    padding: 3px
+    margin: 0
+    background: #111
+    color: #aaa
+  .canvas
+    :overflow hidden
+    :padding 10px
+    :font-family "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Monaco", monospace
+    .row
+      :padding 1px 0 1px 0
+      :width 0.2em
+      :border 1px
+    span.cursor
+      :background-color white
+  input[type=range]
+    :margin-bottom -10px
+  nav
+    height: 30px
+    border-top: 1px solid #444
+    background: black
+    li
+      display: block
+      margin: 0
+      float: left
+      height: 30px
+    .sc-button
+      cursor: pointer
+      line-height: 30px
+      width: 30px
+      img
+        margin: 4px
+    .sc-settings
+      display: none
+    .progress
+      .progress-inner
+        display: block
+        width: 50%
+        background: blue
+        
 #player-hover
   text-align: center
   color: white
@@ -34,56 +94,3 @@ body
         border-radius: 10px
   &.disabled
     background: rgba(0,0,0,0)
-
-
-#player
-  width: 100%
-  display: inline-block
-  margin-bottom: 15px  
-  .header
-    height: 32px
-    line-height: 32px
-    color: white
-    background: url(../images/term/bg-gradient.png)
-    -moz-border-radius-topleft: 5px
-    -moz-border-radius-topright: 5px
-    -webkit-border-top-left-radius: 5px
-    -webkit-border-top-right-radius: 5px
-    img
-      margin: 6px 10px 0 10px
-      float: left
-    h1
-      display: block
-      font-size: 12px
-  input.cmdline
-    border: 0
-    border-top: 1px solid #444
-    font-size: 1.4em
-    padding: 3px
-    margin: 0
-    background: #111
-    color: #aaa
-  input[type=range]
-    margin-bottom: -10px
-  nav
-    height: 30px
-    border-top: 1px solid #444
-    background: black
-    li
-      display: block
-      margin: 0
-      float: left
-      height: 30px
-    .sc-button
-      cursor: pointer
-      line-height: 30px
-      width: 30px
-      img
-        margin: 4px
-    .sc-settings
-      display: none
-    .progress
-      .progress-inner
-        display: block
-        width: 50%
-        background: blue
