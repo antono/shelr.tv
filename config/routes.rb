@@ -9,7 +9,8 @@ Shelr::Application.routes.draw do
 
   match '/logout' => 'users#logout', as: 'logout'
   match '/login'  => 'users#login', as: 'login'
+  match '/about'  => 'home#about', as: 'about'
 
-  root :to => "records#index"
+  root :to => "home#landing"
 
 end

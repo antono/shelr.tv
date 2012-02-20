@@ -16,18 +16,20 @@
     %link{ href: "/favicon.png", rel: "icon", type: "image/png" }
     = csrf_meta_tag
 %body
-  .navbar.navbar-fixed-top
+  .navbar
     .navbar-inner
       .container
         %a{ class: "brand", href: '/' } Shelr.tv
         %ul{ class: "nav" }
-          %li{ class: "active" }= link_to 'Records', "/records"
+
+          %li{ class: "active"  }= link_to 'Records', "/records"
           %li= link_to 'Users', '/users'
           %li= link_to 'About', '/about'
           -# %li
           -#   = form_tag '/search', :method => :get do
           -#     = search_field_tag :q, '', :placeholder => 'Search'
         %ul{ class: "nav pull-right" }
+          %li.divider-vertical
           - if logged_in?
             %li= link_to current_user.nickname, current_user
             %li= link_to 'logout', logout_url
@@ -37,7 +39,7 @@
   %section.flashes
     - [:error, :notice].each do |type|
       - unless flash[type].blank?
-        %div{ class: type }= flash[type]
+        .alert{ class: { error: 'alert-error', notice: 'alert-success' }[type] }= flash[type]
 
   %section.main
     = yield
@@ -45,7 +47,7 @@
   %footer
     %p.copy
       %span{ :class => 'left' } ©
-      2010
+      = "2010-#{Date.today.year}"
       %a{ href: 'http://red-brigade.biz/' } Red Brigade
 
   = render partial: 'shared/analytics'

@@ -1,35 +1,35 @@
-%h1.aligned Profile
-
-= form_for @user do |f|
-  %p
-    = f.label :nickname, 'Ninja Name'
-    = f.text_field :nickname
-    %span.desc
-      Displayed to other users
-  %p
-    = f.label :email, 'Email'
-    = f.text_field :email
-    %span.desc
-      Used for
-      %a{ href: 'http://gravatar.com' } Gravatar
-  %p
-    = f.label :website, 'Website'
-    = f.text_field :website
-  %p
-    = f.label :bitcoin
-    = f.text_field :bitcoin
-    %span.desc
-      %a{ href: 'http://bitcoin.com' } Bitcoin
-      address for money donations
-  %p
-    = f.label :about, '&nbsp;'.html_safe
-    = f.text_area :about, :placeholder => 'Few lines about You', :rows => 4
-  %p
-    = f.label :api_key, 'API Key'
-    = f.text_field :api_key, disabled: true
-    %span.desc
-      shelr setup API_KEY
-  %p.submit
-    %label
-    = button_to_function 'Cancel', 'history.back()'
-    = f.submit 'Save'
+.profile
+  %h1.aligned Profile
+  
+  = form_for @user do |f|
+    %p
+      = f.label :nickname, 'Ninja Name'
+      = f.text_field :nickname
+      %span.desc
+        Displayed to other users
+    %p
+      = f.label :email, 'Email'
+      = f.text_field :email
+      %span.desc
+        Used for
+        %a{ href: 'http://gravatar.com' } Gravatar
+    %p
+      = f.label :website, 'Website'
+      = f.text_field :website
+    %p
+      = f.label :bitcoin
+      = f.text_field :bitcoin
+      %span.desc
+        %a{ href: 'http://bitcoin.com' } Bitcoin
+        address for money donations
+    %p
+      = f.label :about, '&nbsp;'.html_safe
+      = f.text_area :about, :placeholder => 'Few lines about You', :rows => 4
+    %p
+      = f.label :api_key, 'API Key'
+      = f.text_field :api_key, disabled: true
+      %span.desc
+        shelr setup API_KEY
+    .btn-group.submit
+      = button_to_function 'Cancel', 'history.back()', :class => 'btn'
+      = f.submit 'Save', :class => 'btn'

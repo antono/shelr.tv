@@ -1,3 +1,4 @@
 %ul.users
   = render collection: @users, partial: 'user'
-  %li.user.btn-group= paginate @users
+
+= paginate @users

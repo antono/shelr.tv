@@ -15,7 +15,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = User.where(nickname: params[:id]).first
+    @user = User.find(params[:id])
     if @user.editable_by?(current_user)
       flash[:notice] = "Updated!"
       @user.update_attributes(params[:user])

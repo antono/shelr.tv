@@ -1,5 +1,5 @@
 %ul.records
   - @records.each do |record|
     = render :partial => 'records/record', locals: { record: record, show_user: true }
-  %li.record.btn-group
-    = paginate @records
+  
+= paginate @records

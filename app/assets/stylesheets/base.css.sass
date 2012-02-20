@@ -1,17 +1,21 @@
 @import compass
 @import compass_twitter_bootstrap
 @import compass_twitter_bootstrap_responsive
+@import mixins
 
 body
   font: 14px "Ubuntu", "Trebuchet MS", sans-serif
   color: #333
   background: image-url("bg.png")
-  padding-top: 55px
 
 .hidden
   display: none
 
-  
+.flashes
+  +wrap
+  width: 736px
+
+
 a
   color: #333
   -webkit-transition: color
@@ -22,58 +26,39 @@ a
   &:active
     color: red
 
-h1.aligned
-  :margin-left 150px
-
 
 .navbar
-  .navbar-fixed-top
+  margin: 20px auto  
+  .navbar-inner  
+    +wrap
     .container
-      width: 800px
+      +wrap
 
 
 .pagination
-  padding: 0
-  margin: 0
-  a
-    background: #ccc
-    padding: 5px
-    margin: 2px
-    border: 1px solid #999
-    text-decoration: none
-    &:hover, &:active
-      border: 1px solid #777
-      color: #000
-  em
-    display: none
-    background: #aaa
-    padding: 5px
-    margin: 2px
-    border: 1px solid #777
-    text-decoration: none
-    &:hover
-      border: 1px solid #999
-      color: #000
-  span.disabled
-    display: none
-    background: #ccc
-    padding: 5px
-    margin: 2px
-    border: 1px solid #999
-    text-decoration: none
-      
+  +wrap
+  margin-top: 15px  
+  ul  
+    background: white
+    
+.info
+  margin-top: 15px
+  .alert
+    +wrap
+    box-shadow: 1px 1px 5px #bbb
+    width: 680px
+  
 hr
   height: 1px
   border: 0
   border-top: 1px #aaa solid
   
 footer
+  +wrap
   padding: 0
-  nav
-    li
-      display: inline-block
-      padding: 0 10px 0 0
   .copy
+    text-align: center
+    margin-top: 20px
     color: gray
     font-size: small
     .left
@@ -81,6 +66,9 @@ footer
       -moz-transform: rotate(180deg)
       transform: rotate(180deg)
       filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2)
+
+h1.aligned
+  margin-left: 150px
 
 .edit_record, .edit_user
   label
@@ -90,3 +78,5 @@ footer
     padding-right: 10px
   .desc
     color: gray
+  .btn-group.submit
+    margin-left: 150px

@@ -7,16 +7,22 @@
   %ul.records
     - @user.records.page(params[:page]).per(5).each do |record|
       = render :partial => 'records/record', locals: { record: record, show_user: false }
-    %li.record= paginate @user.records.page(params[:page]).per 5
-    
+
+  = paginate @user.records.page(params[:page]).per 5
+  
 - else
-  - if current_user && @user.id == current_user.id
-    %p You have no records yet...
-    %h2 Start sharing now!
-    %ul
-      %li gem install shelr
-      %li= "shelr setup #{@user.api_key}"
-      %li shelr record
-      %li shelr push SHELLCAST_ID
-  - else
-    %p Ninja have no records yet...
+  .info
+    - if current_user && @user.id == current_user.id
+      .alert.alert-block
+        %h2.alert-heading Start sharing now!
+        %pre
+          %code
+            = preserve do
+              :escaped
+                gem install shelr
+                shelr record
+                shelr push SHELLCAST_ID
+          
+    - else
+      .alert.alert-block
+        %p Ninja have no records yet...
