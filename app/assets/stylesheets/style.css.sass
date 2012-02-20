@@ -1,0 +1,305 @@
+body
+  :font 14px "Ubuntu", "Trebuchet MS", sans-serif
+  :color #333
+  :background url(/images/bg.png)
+
+h1.aligned
+  :margin-left 150px
+
+.hidden
+  display: none
+
+a
+  color: #333
+  -webkit-transition: color
+  -webkit-transition-timing-function: ease-out
+  -webkit-transition-duration: 300ms
+  &:hover
+    color: #513a7b
+  &:active
+    color: red
+
+#wrapper
+  width: 900px
+  margin: 0 auto
+
+.hidden
+  :display none
+
+.user
+  &.big
+    box-shadow: 1px 1px 5px #bbb
+    background: #E0EAF8 
+    padding: 15px
+    overflow: auto
+    border: 1px solid #ccc
+    .avatar
+      :float left
+    .desc
+      strong
+        :display inline-block
+        :width 100px
+        :font-weight normal
+        :font-size 0.9em
+        :text-align right
+        :padding-right 15px
+        :color #999
+        float: left
+      margin-bottom: 5px
+      margin-left: 100px
+      .long      
+        margin-left: 115px
+        p
+          padding-left: 0
+          margin-top: 0
+          margin-bottom: 7px
+          &:last-child
+            margin-bottom: 0
+    .about
+      :margin-left 320px
+
+
+.records
+  box-shadow: 1px 1px 5px #bbb
+  :padding-left 0
+  .record
+    display: block
+    background: #eee
+    padding: 15px
+    border: 1px #ccc solid
+    border-top: 1px #ccc dotted
+    border-bottom: none
+    overflow: auto
+    &:hover
+      :background #fafafa
+      box-shadow: inside -1px -1px 5px #444
+    &:first-child
+      :border-top 1px #ccc solid
+    &:last-child
+      :border-bottom 1px #ccc solid
+      :background #eee
+    .userinfo, .shell
+      :text-align center
+      :width 110px
+      :overflow hidden
+      :float left
+      &:hover
+        :overflow visible
+    .avatar
+      :display block
+    .title
+      :margin 0
+    .desc, .tags, h3.title
+      :margin-left 140px
+
+.tags
+  a
+    display: inline-block
+    padding-left: 20px
+    line-height: 16px        
+    background: transparent url(/images/tag-icon.png) center left no-repeat
+    text-decoration: none        
+
+header
+  :overflow hidden
+  :padding 0
+  :margin-bottom 20px
+  h1
+    :float left
+    :padding 0
+    :margin 0
+    :font-size 4em
+    :text-shadow 1px 1px 5px #aaa
+    a
+      -webkit-mask-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(0,0,0,1)), to(rgba(0,0,0,0.7)))
+      // :color #4a268e
+      :color #333
+      :display block
+      :text-decoration none
+      :margin 1em 0 0 150px 
+      :width 500px
+      sup
+        :color gray
+        :font-size 0.2em
+        :font-weight normal
+        :margin-left -40px
+        :vertical-align top
+        :text-shadow 1px 1px 1px #ccc
+    svg
+      :margin 0 0 0 0
+      :float left
+
+menu.top
+  :position absolute
+  :top 0
+  :display block
+  :border 1px solid #aaa
+  :background #eee
+  :opacity 0.7
+  :padding 0
+  :margin-left 400px
+  :margin-top -3px
+  :border-radius 5px
+  :box-shadow 1px 1px 5px #ccc
+  li
+    :display inline-block
+    :padding 5px
+    :margin 0
+  li.search
+    input
+
+footer
+  :padding 0
+  nav
+    li
+      :display inline-block
+      :padding 0 10px 0 0
+  .copy
+    :color gray
+    :font-size small
+    .left
+      -webkit-transform: rotate(180deg)
+      -moz-transform: rotate(180deg)
+      transform: rotate(180deg)
+      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2)
+
+.edit_record, .edit_user
+  label
+    display: inline-block
+    width: 135px
+    text-align: right
+    padding-right: 10px
+  .desc
+    color: gray
+
+// Player styling
+#player-hover
+  text-align: center
+  color: white
+  font-size: 2em
+  p
+    padding: 20px
+    .donate
+      font-size: 0.5em
+      color: gray
+  &.enabled
+    :-webkit-transition-property background
+    :-webkit-transition-duration 5s
+    :-webkit-transition-timing-function default
+    :background-color rgba(0,0,0,0.7)
+    &.error
+      a
+        color: #aaa
+      .img
+        width: 126px
+        height: 126px
+        background: #eee
+        padding: 10px
+        margin: 0 auto
+        border-radius: 10px
+  &.disabled
+    :background rgba(0,0,0,0)
+
+
+#player
+  width: 100%
+  display: inline-block
+  margin-bottom: 15px  
+  .header
+    height: 32px
+    line-height: 32px
+    color: white
+    background: url(/images/term/bg-gradient.png)
+    -moz-border-radius-topleft: 5px
+    -moz-border-radius-topright: 5px
+    -webkit-border-top-left-radius: 5px
+    -webkit-border-top-right-radius: 5px
+    img
+      margin: 6px 10px 0 10px
+      float: left
+    h1
+      display: block
+      font-size: 12px
+  input.cmdline
+    border: 0
+    border-top: 1px solid #444
+    font-size: 1.4em
+    padding: 3px
+    margin: 0
+    background: #111
+    color: #aaa
+  .canvas
+    :overflow hidden
+    :padding 10px
+    :font-family "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Monaco", monospace
+    .row
+      :padding 1px 0 1px 0
+      :width 0.2em
+      :border 1px
+    span.cursor
+      :background-color white
+  input[type=range]
+    :margin-bottom -10px
+  nav
+    height: 30px
+    border-top: 1px solid #444
+    background: black
+    li
+      display: block
+      margin: 0
+      float: left
+      height: 30px
+    .sc-button
+      cursor: pointer
+      line-height: 30px
+      width: 30px
+      img
+        margin: 4px
+    .sc-settings
+      display: none
+    .progress
+      .progress-inner
+        display: block
+        width: 50%
+        background: blue
+
+// Pagination
+.pagination
+  padding: 0
+  margin: 0
+  a
+    :background #ccc
+    :padding 5px
+    :margin 2px
+    :border 1px solid #999
+    :text-decoration none
+    &:hover, &:active
+      :border 1px solid #777
+      :color #000
+  em
+    :display none
+    :background #aaa
+    :padding 5px
+    :margin 2px
+    :border 1px solid #777
+    :text-decoration none
+    &:hover
+      :border 1px solid #999
+      :color #000
+  span.disabled
+    :display none
+    :background #ccc
+    :padding 5px
+    :margin 2px
+    :border 1px solid #999
+    :text-decoration none
+
+
+hr
+  height: 1px
+  border: 0
+  border-top: 1px #aaa solid
+
+#disqus_thread
+  #dsq-footer, .dsq-trackback-url, #dsq-account-dropdown, #dsq-reply h3
+    display: none

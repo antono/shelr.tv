@@ -43,8 +43,3 @@
   color: #000;
   background: #f0f0f0;
 }
-
-#open:hover, #lights:hover {
-  color: slategrey;
-  background: white;
-}
