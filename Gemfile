@@ -17,14 +17,14 @@ gem "simple-navigation"
 # in productionvironments by default.
 # http://stackoverflow.com/questions/7756293/undefined-method-sass-for-railsapplicationconfiguration-on-heroku
 gem 'sass-rails',    '~> 3.2.3'
+gem 'jquery-rails'
+gem 'backbone-rails'
+gem 'coffee-rails',  '~> 3.2.1'
+gem 'compass-rails', '>= 1.0.0.rc.1'
+gem 'compass_twitter_bootstrap', '2.0.1.2'
+gem 'uglifier', '>= 1.0.3'
 
 group :assets do
-  gem 'jquery-rails'
-  gem 'backbone-rails'
-  gem 'coffee-rails',  '~> 3.2.1'
-  gem 'compass-rails', '>= 1.0.0.rc.1'
-  gem 'compass_twitter_bootstrap', '2.0.1.2'
-  gem 'uglifier', '>= 1.0.3'
 end
 
 
