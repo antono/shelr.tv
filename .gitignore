@@ -6,3 +6,4 @@ doc/*
 .sass-cache/
 tmp/
 TAGS
+run.sh
