@@ -13,7 +13,7 @@ VT.Player = function(term) {
   this.element = document.getElementById('player');
   this.speedup = 0;
   this.calculateTermSize();
-  //this.initSpeedControl();
+  this.initSpeedControl();
   this.initHover();
   this.initTermContainer();
   this.initHeader();
@@ -38,25 +38,25 @@ VT.Player.prototype.onError = function() {
 }
 
 VT.Player.prototype.initSpeedControl = function() {
-  var speed = this.element.getElementsByClassName('speed')[0];
+  var speed = jQuery('.speed');
   var player = this;
-  speed.setAttribute('step', 100);
-  speed.setAttribute('min', -500);
-  speed.setAttribute('max', +500);
-  speed.setAttribute('value', 0);
-  speed.addEventListener('change', function(e) {
+  speed.attr('step', 100)
+    .attr('min', -500)
+    .attr('max', +500)
+    .attr('value', 0);
+  
+  speed.change(function(e) {
     player.speedup = (e.target.value * -1);
-  }, true)
+  })
 }
 
 VT.Player.prototype.initProgress = function() {
-  this.progress = this.element.getElementsByClassName('progress')[0];
-  this.progress.setAttribute('data-percent', 0);
-  // this.progress.setAttribute("style", "width:" +
-  //                            (this.vt.canvas.getHtmlOffsets().offsetWidth - 60) + "px");
-  this.progress.addEventListener('click', function(e) {
-    console.log(e)
-  }, true)
+  this.progress = $('.progress');
+  this.progressBar = this.progress.find('.bar');
+  this.progress.css("width", (this.termWidth - 75) + "px");
+  
+  // TODO: Revind
+  this.progress.click(function(e) { console.log(e) })
 }
 
 VT.Player.prototype.initControls = function() {
@@ -132,7 +132,7 @@ VT.Player.prototype.createTimeline = function(data) {
   })
 
   this.timeline = timeline;
-  this.progress.setAttribute('max', timeline.length);
+  this.progress.prop('max', timeline.length);
   this.setProgress(0);
 }
 
@@ -159,7 +159,7 @@ VT.Player.prototype.play = function() {
   player.hoverHide();
   
   if (player.playing) return;
-  // if (player.timelinePosition == 0) player.vt.clear();
+  // if (player.timelinePosition == 0) player.term.t;
 
   player.playing = true;
 
@@ -204,21 +204,20 @@ VT.Player.prototype.settings = function() {
 
 VT.Player.prototype.updateTimelinePosition = function(val) {
   this.timelinePosition = this.timelinePosition + val;
-  this.progress.setAttribute('value', this.timelinePosition);
+  this.progressBar.css("width", ((100.0 / this.timeline.length) * this.timelinePosition) + '%' );
 }
 
 VT.Player.prototype.setProgress = function(val) {
   this.timelinePosition = val;
-  this.progress.setAttribute('value', val);
+  this.progress.prop('value', val);
 }
 
 VT.Player.prototype.initHover = function(content) {
-  var player = this;
+  // var player = this;
   this.hover = document.createElement('div');
-  // this.vt.canvas.getHtmlOffsets().offsetParent.appendChild(this.hover);
+  // this.term.element.appendChild(this.hover);
+  
   // this.vt.canvas.container.addEventListener('mouseout', function(ev) {
-  //   // FIXME race condition here
-  //   // mostly works but need to be perfect
   //   if (!player.playing && ev.target.classList.contains('canvas')) {
   //     //console.log(ev.target.classList)
   //     player.hoverShow();
@@ -226,11 +225,12 @@ VT.Player.prototype.initHover = function(content) {
   //     ev.stopPropagation();
   //   }
   // }, false)
-  this.hover.addEventListener('mouseover', function(ev) {
-    if (!player.playing)  {
-      player.hoverHide();
-    }
-  }, false);
+  
+  // this.hover.addEventListener('mouseover', function(ev) {
+  //   if (!player.playing)  {
+  //     player.hoverHide();
+  //   }
+  // }, false);
 }
 
 VT.Player.prototype.hoverShow = function(content) {

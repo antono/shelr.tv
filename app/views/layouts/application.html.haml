@@ -1,48 +1,52 @@
 !!! 5
 %html
   %head
+    %meta{ charset:'utf-8' }
+    %link{ href: "/favicon.png", rel: "icon", type: "image/png" }
     %title
       = yield :title
       Shelr
     = stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Ubuntu&subset=cyrillic,latin'
     = stylesheet_link_tag 'application'
+    = javascript_include_tag 'jquery'
     = javascript_include_tag 'application'
-    %link{ href: "/favicon.png", rel: "icon", type: "image/png" }
     = csrf_meta_tag
-%body
-  .navbar
-    .navbar-inner
-      .container
-        %a{ class: "brand", href: '/' } Shelr.tv
-        %ul{ class: "nav" }
+  
+%body{ class: controller_and_action_class_names }
+  .wrapper
+    .navbar
+      .navbar-inner
+        .container
+          %a{ class: "brand", href: '/' } Shelr.tv
+          %ul{ class: "nav" }
 
-          %li{ class: "active"  }= link_to 'Records', "/records"
-          %li= link_to 'Users', '/users'
-          -# %li= link_to 'Tags', '/tags'
-          %li= link_to 'About', '/about'
-          -# %li
-          -#   = form_tag '/search', :method => :get do
-          -#     = search_field_tag :q, '', :placeholder => 'Search'
-        %ul{ class: "nav pull-right" }
-          %li.divider-vertical
-          - if logged_in?
-            %li= link_to current_user.nickname, current_user
-            %li= link_to 'logout', logout_url
-          - else
-            %li= link_to 'Login via Github', '/auth/github'
-          
-  %section.flashes
-    - [:error, :notice].each do |type|
-      - unless flash[type].blank?
-        .alert{ class: { error: 'alert-error', notice: 'alert-success', info: 'alert-info' }[type] }= flash[type]
+            %li{ class: "active"  }= link_to 'Records', "/records"
+            %li= link_to 'Users', '/users'
+            -# %li= link_to 'Tags', '/tags'
+            %li= link_to 'About', '/about'
+            -# %li
+            -#   = form_tag '/search', :method => :get do
+            -#     = search_field_tag :q, '', :placeholder => 'Search'
+          %ul{ class: "nav pull-right" }
+            %li.divider-vertical
+            - if logged_in?
+              %li= link_to current_user.nickname, current_user
+              %li= link_to 'logout', logout_url
+            - else
+              %li= link_to 'Login via Github', '/auth/github'
+            
+    %section.flashes
+      - [:error, :notice].each do |type|
+        - unless flash[type].blank?
+          .alert{ class: { error: 'alert-error', notice: 'alert-success', info: 'alert-info' }[type] }= flash[type]
 
-  %section.main
-    = yield
+    %section.main
+      = yield
 
-  %footer
-    %p.copy
-      %span{ :class => 'left' } ©
-      = "2010-#{Date.today.year}"
-      %a{ href: 'http://red-brigade.biz/' } Red Brigade
+    %footer
+      %p.copy
+        %span{ :class => 'left' } ©
+        = "2010-#{Date.today.year}"
+        %a{ href: 'http://red-brigade.biz/' } Red Brigade
 
-  = render partial: 'shared/analytics'
+    = render partial: 'shared/analytics'

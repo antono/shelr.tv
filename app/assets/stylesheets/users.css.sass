@@ -1,15 +1,11 @@
 @import mixins
 
-.users
-  margin: 0
 
 .profile
   +wrap
   
 .user
-  +wrap
   &.big
-    box-shadow: 1px 1px 5px #bbb
     background: #E0EAF8 
     padding: 15px
     overflow: auto
@@ -38,4 +34,17 @@
             margin-bottom: 0
     .about
       margin-left: 320px
+        
+.users
+  +wrap
+  +shadow  
+  .user.big
+    margin: 0
+    border-bottom: none
+    &:last-child
+      border: 1px solid #ccc
 
+.profile
+  +wrap
+  .user
+    margin: 0

@@ -521,12 +521,13 @@ Terminal.prototype.startBlink = function() {
   this._blinker = function() {
     self.cursorBlink();
   };
-  this._blink = setInterval(function () { this._blinker }, 500);
+  this._blink = setInterval(function () { self._blinker() }, 500);
 };
 
 Terminal.prototype.refreshBlink = function() {
+  var self = this;
   clearTimeout(this._blink);
-  this._blink = setInterval(function () { this._blinker }, 500);
+  this._blink = setInterval(function () { self._blinker() }, 500);
 };
 
 Terminal.prototype.scroll = function() {

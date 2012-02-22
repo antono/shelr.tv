@@ -1,7 +1,7 @@
 - content_for :title do
   = @user.nickname + ' < '
 
-= render :partial => 'user', :locals => { :user => @user }
+.profile= render :partial => 'user', :locals => { :user => @user }
 
 - if @user.records.any?
   %ul.records
