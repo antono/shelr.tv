@@ -18,9 +18,11 @@
     -#   %input.speed{ type: 'range', value: 0 }
     %li.progress.progress-info.progress-striped
       .bar
-    %br      
+    %br
     %input{ :type => :text, :value => "shelr play #{record_path(@record, :only_path => false, :format => :json)}", :class => 'cmdline hidden' }
-    
+
+.social= render partial: 'shared/addthis'
+
 :javascript
   jQuery(function() {
     window.term = new Terminal(#{@record.columns || 80}, #{@record.rows || 24}, function(data) {
