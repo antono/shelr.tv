@@ -21,3 +21,6 @@
     %p.tags
       - record.tags.split(",").map(&:strip).each do |tag|
         = link_to sanitize(tag), records_path(:tags => [tag])
+  .desc
+    = time_ago_in_words(record.created_at)
+    ago

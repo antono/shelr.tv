@@ -1,5 +1,9 @@
 class Record
 
+  LICENSES = {
+    "by-sa" => "http://creativecommons.org/licenses/by-sa/3.0/"
+  }
+
   include Mongoid::Document
   include Mongoid::Timestamps
 
@@ -11,6 +15,7 @@ class Record
   field :typescript,   type: String
   field :timing,       type: String
   field :tags,         type: Array
+  field :license,      type: String
   field :created_at,   type: DateTime
   field :updated_at,   type: DateTime
 
@@ -18,6 +23,7 @@ class Record
 
   referenced_in :user
 
+  before_create :set_license
   after_create :increment_counters!
   after_destroy :decrement_counters!
 
@@ -49,6 +55,10 @@ class Record
     return false if usr.nil?
     return true  if usr.nickname == 'antono'
     self.user.id.to_s == usr.id.to_s
+  end
+
+  def set_license
+    self.license = 'by-sa'
   end
 
   def increment_counters!
