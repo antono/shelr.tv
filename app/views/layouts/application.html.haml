@@ -19,11 +19,10 @@
         .container
           %a{ class: "brand", href: '/' } Shelr.tv
           %ul{ class: "nav" }
-
-            %li{ class: "active"  }= link_to 'Records', "/records"
-            %li= link_to 'Users', '/users'
+            %li{ class: active_if(/^\/records/)    }= link_to "Records <sup>#{Record.count}</sup>".html_safe, "/records"
+            %li{ class: active_if(/^\/users/)      }= link_to "Users <sup>#{User.count}</sup>".html_safe, '/users'
+            %li{ class: active_if(/^\/about/)      }= link_to 'About', '/about'
             -# %li= link_to 'Tags', '/tags'
-            %li= link_to 'About', '/about'
             -# %li
             -#   = form_tag '/search', :method => :get do
             -#     = search_field_tag :q, '', :placeholder => 'Search'
