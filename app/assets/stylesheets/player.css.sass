@@ -1,4 +1,5 @@
-@import mixins
+@import mixins, compass/css3, compass/utilities
+
 
 #term
   font-family: "DejaVu Sans Mono", monospace
@@ -12,14 +13,12 @@
   margin: 0 auto
   margin-bottom: 15px  
   .header
+    +border-top-left-radius(5px)
+    +border-top-right-radius(5px)
+    background: url(/assets/term/bg-gradient.png)
     height: 32px
     line-height: 32px
     color: white
-    background: url(/assets/term/bg-gradient.png)
-    -moz-border-radius-topleft: 5px
-    -moz-border-radius-topright: 5px
-    -webkit-border-top-left-radius: 5px
-    -webkit-border-top-right-radius: 5px
     img
       margin: 6px 10px 0 10px
       float: left
