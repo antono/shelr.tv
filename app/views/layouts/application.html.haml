@@ -25,9 +25,9 @@
             %li{ class: active_if(/^\/users/)      }= link_to "Users <sup>#{User.count}</sup>".html_safe, '/users'
             %li{ class: active_if(/^\/about/)      }= link_to 'About', '/about'
             -# %li= link_to 'Tags', '/tags'
-            %form{ action: "http://www.google.com/search", class: 'navbar-search' }
-              %input{ type: 'hidden', name: "sitesearch", value: "shelr.tv", checked: 'checked' }
-              %input{ type: "text", class: "search-query", placeholder: "Search", id: "q", name: "q" }
+            -# %li
+            -#   = form_tag '/search', :method => :get do
+            -#     = search_field_tag :q, '', :placeholder => 'Search'
           %ul{ class: "nav pull-right" }
             %li.divider-vertical
             - if logged_in?
