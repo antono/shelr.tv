@@ -10,16 +10,19 @@ class User
   field :records_count, type: Integer, default: 0
   field :api_key,       type: String,  unique: true
   field :twitter_name,  type: String,  unique: false
-  field :github_name,   type: String,  unique: false
   field :twitter_uid,   type: String,  unique: true, allow_nil: true
+  field :github_name,   type: String,  unique: false
   field :github_uid,    type: String,  unique: true, allow_nil: true
+  field :google_name,   type: String,  unique: false
+  field :google_uid,    type: String,  unique: true, allow_nil: true
   field :website,       type: String
   field :bitcoin,       type: String
   field :about,         type: String
 
   attr_accessible :nickname, :email, :website, :about, :bitcoin
 
-  validates_uniqueness_of :nickname, :api_key, :twitter_uid, :github_uid
+  validates_uniqueness_of :nickname, :api_key, :twitter_uid, :github_uid, :google_uid
+  
   validates_length_of :nickname, maximum: 20
 
   references_many :records

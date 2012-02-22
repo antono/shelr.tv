@@ -1,1 +1,2 @@
 * TODO select better cloud hosting
+* TODO http://oembed.com/ support

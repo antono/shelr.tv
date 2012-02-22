@@ -1,11 +1,14 @@
 - content_for :title do
   = @user.nickname + ' < '
 
+- content_for :head do
+  = auto_discovery_link_tag :atom, user_url(@user, :format => :atom), title: "Shelr.tv - records from #{@user.nickname}"
+
 .profile= render :partial => 'user', :locals => { :user => @user }
 
 - if @user.records.any?
   %ul.records
-    - @user.records.page(params[:page]).per(5).each do |record|
+    - @records.each do |record|
       = render :partial => 'records/record', locals: { record: record, show_user: false }
 
   = paginate @user.records.page(params[:page]).per 5
