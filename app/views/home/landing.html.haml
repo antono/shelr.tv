@@ -1,14 +1,13 @@
-= cache do
-  .krio.hero-unit
-    %h1
-      Share Your Shell
-      %br
-      Kung-Fu!
-    %a{ href: '/about', class: 'btn btn-success btn-large'} NOW!
-  
-  %ul.records
-    - @records.each do |record|
-      = render :partial => 'records/record', locals: { record: record, show_user: true }
-  
-  .more
-    %a{ href: '/records?page=2', class: 'btn btn-primary btn-large' } show me moar!
+.krio.hero-unit
+  %h1
+    Share Your Shell
+    %br
+    Kung-Fu!
+  %a{ href: '/about', class: 'btn btn-success btn-large'} NOW!
+
+%ul.records
+  - @records.each do |record|
+    = render :partial => 'records/record', locals: { record: record, show_user: true }
+
+.more
+  %a{ href: '/records?page=2', class: 'btn btn-primary btn-large' } show me moar!
