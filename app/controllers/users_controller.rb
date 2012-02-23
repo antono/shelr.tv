@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   before_filter :login_required, except: [:show, :login, :authenticate, :index]
 
   def index
-    @users = User.page(params[:page]).per(10)
+    @users = User.desc(:created_at).page(params[:page]).per(10)
   end
 
   def show
