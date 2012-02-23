@@ -1,2 +1,5 @@
+* TODO edit record
+* TODO finish registrations with gh, twitter and google
 * TODO select better cloud hosting
 * TODO http://oembed.com/ support
+
