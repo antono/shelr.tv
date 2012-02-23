@@ -13,7 +13,8 @@
     = csrf_meta_tag
     = auto_discovery_link_tag :atom, "/records.atom", title: 'Shelr.tv - new records'
     = yield :head
-  
+    = yield :meta
+
 %body{ class: controller_and_action_class_names }
   .wrapper
     %nav.navbar
@@ -35,7 +36,7 @@
               %li= link_to 'logout', logout_url
             - else
               %li= link_to 'Login via Github', '/auth/github'
-            
+
     %section.flashes
       - [:error, :notice].each do |type|
         - unless flash[type].blank?

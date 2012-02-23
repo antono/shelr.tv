@@ -1,5 +1,8 @@
+* DONE meta title and description for records
 * TODO edit record
 * TODO finish registrations with gh, twitter and google
 * TODO select better cloud hosting
 * TODO http://oembed.com/ support
+* TODO http://ogp.me/ support
+* TODO http://schema.org/docs/gs.html support
 

@@ -1,3 +1,7 @@
+- content_for :meta do
+  %meta{ name: 'title', content: @record.title }
+  %meta{ name: 'description', content: @record.description }
+    
 #player.sgr
   .header
     %img{ src: '/assets/term/buttons.png'}
