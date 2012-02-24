@@ -1,8 +1,48 @@
-* DONE meta title and description for records
-* TODO edit record
-* TODO finish registrations with gh, twitter and google
-* TODO select better cloud hosting
-* TODO http://oembed.com/ support
-* TODO http://ogp.me/ support
-* TODO http://schema.org/docs/gs.html support
+* Alpha
+** DONE meta title and description for records
+** DONE edit record
+** DONE finish registrations with gh, twitter and google
+** DONE select better cloud hosting
+** TODO [#B] Comments!!!
+** TODO [#C] Blog
+** TODO [#A] Migrate to ttyrec
+** TODO [#B] Better copywrigthing
+** TODO [#B] Nginx + Redis cache all!                                 :admin:
+** TODO [#C] Packages                                             :community:
+*** DONE Arch
+*** DONE Ubuntu
+*** TODO Gentoo
+*** TODO Older ubuntu
+** TODO [#A] Setup new instance                                       :admin:
+*** TODO ec2 micro (default)
+*** TODO ec2 small (slashdotting)
+*** TODO Setup mongo replica
+** TODO [#A] Release                                                  :admin:
+*** TODO Change DNS
+*** TODO Setup fresh DB
+* Promotion
+** TODO Like button on landing
+** TODO Press release
+*** TODO habrahabr.ru
+*** TODO linux.org.ru
+*** TODO opennet.ru
+*** TODO omgubuntu.com
+*** TODO hackernews
+*** TODO reddit
+* Social
+  Iteration when we are going to make it more social
+** Followers
+** Groups
+** Dashboard
+   
+* Beta
+** TODO View counter for shellcasts (registered/anonymous)
+** TODO Total view counter for users
+** TODO Records counter for user
+** TODO Ratings for user based on raitings of his shellcasts and followers count
+** TODO Ratings for shellcasts
+** TODO Connect other services to current account
+** TODO http://oembed.com/ support
+** TODO http://ogp.me/ support
+** TODO http://schema.org/docs/gs.html support
 
