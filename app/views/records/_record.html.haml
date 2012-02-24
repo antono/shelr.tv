@@ -13,10 +13,6 @@
     = link_to sanitize(record.title), record
   .desc
     =sanitize record.description_html
-  - unless show_user
-    .desc
-      %strong Ninja:
-      = link_to sanitize(record.user.nickname), record.user
   - unless record.tags.blank?
     %p.tags
       - record.tags.split(",").map(&:strip).each do |tag|

@@ -1,9 +1,9 @@
-.profile
+.info-block.profile
   %h1.aligned Profile
   
   = form_for @user do |f|
     %p
-      = f.label :nickname, 'Ninja Name'
+      = f.label :nickname, 'Nickname'
       = f.text_field :nickname
       %span.desc
         Displayed to other users
@@ -15,7 +15,7 @@
         %a{ href: 'http://gravatar.com' } Gravatar
     %p
       = f.label :website, 'Website'
-      = f.text_field :website
+      = f.text_field :website, placeholder: 'http://shelr.tv/'
     %p
       = f.label :bitcoin
       = f.text_field :bitcoin

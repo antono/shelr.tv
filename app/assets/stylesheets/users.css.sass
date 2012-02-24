@@ -1,12 +1,11 @@
 @import mixins
 
-
-.profile
-  +wrap
-  
+//
+// Generic styles
+//
 .user
   &.big
-    background: #E0EAF8 
+    background: #E0EAF8
     padding: 15px
     overflow: auto
     border: 1px solid #ccc
@@ -24,7 +23,7 @@
         float: left
       margin-bottom: 5px
       margin-left: 100px
-      .long      
+      .long
         margin-left: 115px
         p
           padding-left: 0
@@ -34,17 +33,30 @@
             margin-bottom: 0
     .about
       margin-left: 320px
-        
+
 .users
   +wrap
-  +shadow  
+  +shadow
   .user.big
     margin: 0
     border-bottom: none
     &:last-child
       border: 1px solid #ccc
 
-.profile
-  +wrap
-  .user
-    margin: 0
+
+//
+// Specific styles
+//
+.users-controller
+  &.show-action
+    .profile
+      +wrap
+      +shadow
+      .user
+        border-bottom: none
+  &.edit-action
+    .profile
+      form
+        margin-top: 25px
+        .desc
+          margin-left: 10px
