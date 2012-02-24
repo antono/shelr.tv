@@ -1,6 +1,10 @@
 - content_for :title do
   = @record.title + ' < '.html_safe
-  
+
+- content_for :meta do
+  %meta{ name: 'title', content: @record.title }
+  %meta{ name: 'description', content: @record.description }
+
 = render :partial => 'users/user', :locals => { :user => @record.user, :record => @record }
 
 = player_for(@record)
