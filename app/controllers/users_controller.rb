@@ -49,7 +49,6 @@ class UsersController < ApplicationController
   end
 
   def login
-    redirect_to '/auth/github'
   end
 
   def authenticate

@@ -35,7 +35,7 @@
               %li= link_to current_user.nickname, current_user
               %li= link_to 'logout', logout_url
             - else
-              %li= link_to 'Login via Github', '/auth/github'
+              %li= link_to 'Login', '/login'
 
     %section.flashes
       - [:error, :notice].each do |type|
@@ -52,3 +52,4 @@
         %a{ href: 'http://red-brigade.biz/' } Red Brigade
 
     = render partial: 'shared/analytics'
+    = render partial: 'shared/login_modal'
