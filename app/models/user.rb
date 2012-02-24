@@ -13,21 +13,21 @@ class User
   field :twitter_uid,   type: String,  unique: true, allow_nil: true
   field :github_name,   type: String,  unique: false
   field :github_uid,    type: String,  unique: true, allow_nil: true
-  field :google_name,   type: String,  unique: false
-  field :google_uid,    type: String,  unique: true, allow_nil: true
+  field :google_oauth2_name, type: String,  unique: false
+  field :google_oauth2_uid,  type: String,  unique: true, allow_nil: true
   field :website,       type: String
   field :bitcoin,       type: String
   field :about,         type: String
 
   attr_accessible :nickname, :email, :website, :about, :bitcoin
 
-  validates_uniqueness_of :nickname, :api_key, :twitter_uid, :github_uid, :google_uid
+  validates_uniqueness_of :api_key, :twitter_uid, :github_uid, :google_oauth2_uid, allow_nil: true
   
   validates_length_of :nickname, maximum: 20
 
   references_many :records
 
-  before_create :generate_api_key
+  before_create :generate_api_key, :maybe_assign_nickname_placeholder
 
   def avatar_url(size)
     return "/images/avatars/anonymous-#{size}.png" if nickname == 'Anonymous'
@@ -50,6 +50,10 @@ class User
 
   def generate_api_key!
     generate_api_key && save
+  end
+
+  def maybe_assign_nickname_placeholder
+    self.nickname = 'noname' if nickname.blank?
   end
 
 end

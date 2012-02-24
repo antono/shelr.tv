@@ -1,5 +1,13 @@
 require 'spec_helper'
 
 describe User do
-  pending "add some examples to (or delete) #{__FILE__}"
+
+  describe "#nickname" do
+    it "should be renameme if nickname blank" do
+      user = User.new(nickname: '')
+      binding.pry
+      user.save.should be_true
+      user.nickname.should == 'noname'
+    end
+  end
 end

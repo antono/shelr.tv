@@ -65,9 +65,10 @@ class UsersController < ApplicationController
       redirect_to user_path(user)
     else
       user_info = omniauth['info']
-      user = User.new(nickname: user_info['nickname'])
+      user = User.new(nickname: user_info['nickname'] || user_info['name'])
       user.update_attribute(provider_uid_field, omniauth['uid'])
-      user.update_attribute(provider_name_field, user_info['nickname'])
+      user.update_attribute(provider_name_field, user_info['nickname'] || user_info['name'])
+      user.update_attribute('email', user_info['email'])
       user.update_attribute('about', user_info['description'])
       user.update_attribute('website', user_info['urls'].try(:values).try(:last))
 
