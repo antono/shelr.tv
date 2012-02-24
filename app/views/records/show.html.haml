@@ -5,7 +5,7 @@
   %meta{ name: 'title', content: @record.title }
   %meta{ name: 'description', content: @record.description }
 
-= render :partial => 'users/user', :locals => { :user => @record.user, :record => @record }
+= render :partial => 'users/user', :locals => { :user => @record.user, :record => @record, :edit => true }
 
 = player_for(@record)
 

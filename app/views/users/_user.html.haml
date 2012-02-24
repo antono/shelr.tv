@@ -17,6 +17,12 @@
         .tags.long
         - record.tags.split(",").map(&:strip).each do |tag|
           = link_to sanitize(tag), records_path(:tags => [tag])
+    - if record.editable_by?(current_user)
+      .desc
+        %strong Tools:
+        .btn-group
+          = link_to('edit', edit_record_path(@record), class: 'btn btn-success') if @record.editable_by?(current_user)
+          = link_to('destroy', record_path(@record), method: :delete, class: 'btn btn-danger') if @record.editable_by?(current_user)
 
   - else
     

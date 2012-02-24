@@ -1,6 +1,6 @@
 .info-block.profile
   %h1.aligned Profile
-  
+
   = form_for @user do |f|
     %p
       = f.label :nickname, 'Nickname'
@@ -32,4 +32,4 @@
         shelr setup API_KEY
     .btn-group.submit
       = button_to_function 'Cancel', 'history.back()', :class => 'btn'
-      = f.submit 'Save', :class => 'btn'
+      = f.submit 'Save', :class => 'btn btn-success'
