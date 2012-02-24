@@ -17,7 +17,7 @@
         .tags.long
         - record.tags.split(",").map(&:strip).each do |tag|
           = link_to sanitize(tag), records_path(:tags => [tag])
-    - if record.editable_by?(current_user)
+    - if record.editable_by?(current_user) and edit
       .desc
         %strong Tools:
         .btn-group

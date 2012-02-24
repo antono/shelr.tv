@@ -18,6 +18,7 @@ class User
   field :website,       type: String
   field :bitcoin,       type: String
   field :about,         type: String
+  field :god,           type: Boolean, default: false
 
   attr_accessible :nickname, :email, :website, :about, :bitcoin
 
@@ -40,7 +41,7 @@ class User
 
   def editable_by?(user)
     return false if user.nil?
-    return true  if user.nickname == 'antono'
+    return true  if user.god?
     self.id == user.id
   end
 
