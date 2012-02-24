@@ -7,6 +7,7 @@ gem 'maruku'
 gem 'omniauth'
 gem 'omniauth-github'
 gem 'omniauth-twitter'
+gem 'omniauth-google-oauth2'
 
 gem 'mongoid', '~> 2.0'
 gem 'bson_ext'

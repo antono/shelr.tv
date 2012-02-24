@@ -49,14 +49,15 @@ class UsersController < ApplicationController
   end
 
   def login
+    # render
   end
 
   def authenticate
     provider = params[:provider]
-    uid_field = "#{provider}_uid"
-    name_field = "#{provider}_name"
+    provider_uid_field = "#{provider}_uid"
+    provider_name_field = "#{provider}_name"
     omniauth = request.env["omniauth.auth"]
-    user = User.where(uid_field => omniauth['uid']).first
+    user = User.where(provider_uid_field => omniauth['uid']).first
 
     if user
       flash[:notice] = "Signed in successfully."
@@ -65,8 +66,8 @@ class UsersController < ApplicationController
     else
       user_info = omniauth['info']
       user = User.new(nickname: user_info['nickname'])
-      user.update_attribute(uid_field, omniauth['uid'])
-      user.update_attribute(name_field, user_info['nickname'])
+      user.update_attribute(provider_uid_field, omniauth['uid'])
+      user.update_attribute(provider_name_field, user_info['nickname'])
       user.update_attribute('about', user_info['description'])
       user.update_attribute('website', user_info['urls'].try(:values).try(:last))
 
@@ -75,7 +76,6 @@ class UsersController < ApplicationController
         flash[:notice] = "Signed in successfully."
         redirect_to edit_user_path(user)
       else
-        binding.pry
         flash[:notice] = "Failed"
         redirect_to root_url
       end
