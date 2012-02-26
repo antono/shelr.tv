@@ -17,7 +17,7 @@ class UsersController < ApplicationController
         respond_with @records
       end
       format.html do
-        @records = @user.records.page(params[:page]).per(5)
+        @records = @user.records.desc(:created_at).page(params[:page]).per(5)
         respond_with @user
       end
     end
