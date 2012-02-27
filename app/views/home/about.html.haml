@@ -9,6 +9,14 @@
   
   %h2 Quickstart on Linux
 
+  %p
+    There are
+    %a{ :href => 'https://launchpad.net/~antono/+archive/shelr' } PPA
+    for Ubuntu
+    and
+    %a{ :href => 'https://aur.archlinux.org/packages.php?ID=56945' } PKGBUILD
+    for Arch Linux.
+  
   %p Install ruby and rubygems for your distribution
   %pre
     %code
@@ -31,14 +39,15 @@
         :escaped
           brew install ttyrec
 
+  %p Install shelr
+
   %pre
     %code
       = preserve do
         :escaped
           gem install shelr
           shelr record
-    
-    
+
   %h2 Support
   %p
     Mailing List:
