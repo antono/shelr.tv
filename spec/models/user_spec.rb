@@ -5,7 +5,6 @@ describe User do
   describe "#nickname" do
     it "should be renameme if nickname blank" do
       user = User.new(nickname: '')
-      binding.pry
       user.save.should be_true
       user.nickname.should == 'noname'
     end

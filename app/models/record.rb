@@ -19,7 +19,8 @@ class Record
   field :created_at,   type: DateTime
   field :updated_at,   type: DateTime
 
-  attr_accessible :title, :description, :typescript, :timing, :tags, :columns, :rows
+  attr_accessible :title, :description, :typescript,
+                  :timing, :tags, :columns, :rows
 
   referenced_in :user
 
@@ -32,11 +33,15 @@ class Record
   end
 
   def title
-    read_attribute(:title).blank? ? 'untitled' : read_attribute(:title)
+    if read_attribute(:title).blank?
+      'untitled'
+    else
+      read_attribute(:title)
+    end
   end
 
   def description_html
-    Maruku.new(description).to_html
+    RDiscount.new(description).to_html
   end
 
   def tags=(tags)
@@ -44,7 +49,15 @@ class Record
   end
 
   def size
-    [ self.columns || 80, 'x', self.rows || 24 ].join
+    [self.columns, 'x', self.rows].join
+  end
+
+  def columns
+    read_attribute(:columns) or 80
+  end
+  
+  def rows
+    read_attribute(:rows) or 24
   end
 
   def tags
@@ -52,7 +65,7 @@ class Record
   end
 
   def editable_by?(usr)
-    return false if usr.nil?
+    return false if not usr.is_a?(User)
     return true  if usr.god?
     self.user.id == usr.id
   end
