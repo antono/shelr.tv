@@ -6,14 +6,37 @@
   %p.lead
     It almost the same thing as YouTube but for plain
     text shellcasts. You can copy and paste everything You see.
-  %h2 Quickstart (currently only Linux)
+  
+  %h2 Quickstart on Linux
+
+  %p Install ruby and rubygems for your distribution
   %pre
     %code
       = preserve do
         :escaped
           gem install shelr
           shelr record
-          shelr push SHELLCAST_ID
+
+  %h2 Quickstart on OSX
+
+  %p Install ruby and rubygems
+  
+  %p
+    Install ttyrec via
+    %a{ :href => 'http://mxcl.github.com/homebrew/' } homebrew
+    
+  %pre
+    %code
+      = preserve do
+        :escaped
+          brew install ttyrec
+
+  %pre
+    %code
+      = preserve do
+        :escaped
+          gem install shelr
+          shelr record
     
     
   %h2 Support
