@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 gem 'rails', '~> 3.2.1'
 gem 'haml'
-gem 'maruku'
+gem 'rdiscount'
 
 gem 'omniauth'
 gem 'omniauth-github'
@@ -28,8 +28,13 @@ gem 'uglifier', '>= 1.0.3'
 group :assets do
 end
 
-
 group :development, :test do
+  gem 'factory_girl_rails'
+  gem 'guard-spork'
+  gem 'guard-rspec'
+  gem 'guard-bundler'
+  gem 'libnotify'
+  
   gem 'rake'
   gem 'pry'
   gem 'pry-nav'
