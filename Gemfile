@@ -3,6 +3,7 @@ source 'http://rubygems.org'
 gem 'rails', '~> 3.2.1'
 gem 'haml'
 gem 'rdiscount'
+gem 'kaminari'
 
 gem 'omniauth'
 gem 'omniauth-github'
@@ -11,8 +12,13 @@ gem 'omniauth-google-oauth2'
 
 gem 'mongoid', '~> 2.0'
 gem 'bson_ext'
-gem 'kaminari'
-gem "simple-navigation"
+
+# Search
+gem 'sunspot_rails'
+gem 'sunspot_solr'
+gem 'sunspot_with_kaminari'
+gem 'sunspot_mongoid'
+
 
 # Gems used only for assets and not required
 # in productionvironments by default.
@@ -22,7 +28,7 @@ gem 'jquery-rails'
 gem 'backbone-rails'
 gem 'coffee-rails',  '~> 3.2.1'
 gem 'compass-rails', '>= 1.0.0.rc.1'
-gem 'compass_twitter_bootstrap', '2.0.1.2'
+gem 'compass_twitter_bootstrap', '>= 2.0.1'
 gem 'uglifier', '>= 1.0.3'
 
 group :assets do

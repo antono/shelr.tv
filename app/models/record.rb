@@ -6,7 +6,7 @@ class Record
 
   include Mongoid::Document
   include Mongoid::Timestamps
-
+  include Sunspot::Mongoid
 
   field :title,        type: String
   field :description,  type: String
@@ -16,8 +16,18 @@ class Record
   field :timing,       type: String
   field :tags,         type: Array
   field :license,      type: String
+  field :hits,         type: Integer
   field :created_at,   type: DateTime
   field :updated_at,   type: DateTime
+
+  searchable do
+    text :title, :boost => 2.0, :stored => true
+    text :description, :boost => 1.0, :stored => true
+    text :tags, :boost => 5.0, :stored => true, :more_like_this => true
+    # text :comments do
+    #   comments.map { |comment| comment.body }
+    # end
+  end
 
   attr_accessible :title, :description, :typescript,
                   :timing, :tags, :columns, :rows
