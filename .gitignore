@@ -7,3 +7,5 @@ doc/*
 tmp/
 TAGS
 run.sh
+log/*
+solr/*
