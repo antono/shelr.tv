@@ -12,7 +12,6 @@ gem 'omniauth-google-oauth2'
 gem 'mongoid', '~> 2.0'
 gem 'bson_ext'
 gem 'kaminari'
-gem "simple-navigation"
 
 # Gems used only for assets and not required
 # in productionvironments by default.
