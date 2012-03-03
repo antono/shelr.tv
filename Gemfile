@@ -27,13 +27,16 @@ gem 'uglifier', '>= 1.0.3'
 group :assets do
 end
 
+group :linux do
+  gem 'libnotify'
+end
+
 group :development, :test do
   gem 'factory_girl_rails'
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-bundler'
-  gem 'libnotify'
-  
+
   gem 'rake'
   gem 'pry'
   gem 'pry-nav'
