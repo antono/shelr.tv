@@ -40,6 +40,10 @@ class Record
     end
   end
 
+  def owner
+    self.user
+  end
+
   def description_html
     RDiscount.new(description).to_html
   end
@@ -55,7 +59,7 @@ class Record
   def columns
     read_attribute(:columns) or 80
   end
-  
+
   def rows
     read_attribute(:rows) or 24
   end

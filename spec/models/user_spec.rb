@@ -2,13 +2,18 @@ require 'spec_helper'
 
 describe User do
 
+  it_should_behave_like "editable by god"
+  it_should_behave_like "editable by owner"
+
+  subject { Factory.build(:user) }
+
   describe "on create" do
     it "should generate api key" do
       subject.should_receive(:generate_api_key)
       subject.save
     end
 
-    it "should be renameme if nickname blank" do
+    it "should be renamed if nickname blank" do
       subject.should_receive(:maybe_assign_nickname_placeholder)
       subject.save
     end
@@ -28,11 +33,37 @@ describe User do
       subject.generate_api_key
       subject.api_key.should_not be_blank
     end
+  end
 
-    it "should assign random md5 hash to #api_key" do
-      subject.should be_new_record
+  describe "#generate_api_key!" do
+    before(:each) { subject.save }
+
+    it "should call generate_api_key" do
+      subject.should_receive :generate_api_key
       subject.generate_api_key!
-      subject.should_not be_new_record
+    end
+
+    it "should save the record" do
+      subject.should_receive :save
+      subject.generate_api_key!
+    end
+  end
+
+  describe "#avatar_url(size)" do
+    context "when user is Anonymous" do
+      it "should return anonymous.png" do
+        subject.nickname = 'Anonymous'
+        subject.avatar_url("100x100")
+          .should == '/images/avatars/anonymous-100x100.png'
+      end
+    end
+
+    context "when email is blank" do
+      it "should return default avatar" do
+        subject.email = ""
+        subject.avatar_url("100x100")
+          .should == "/images/avatars/default-100x100.png"
+      end
     end
   end
 end

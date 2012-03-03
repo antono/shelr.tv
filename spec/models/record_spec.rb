@@ -2,10 +2,15 @@ require 'spec_helper'
 
 describe Record do
 
+  subject { Factory.build :record }
+
+  it_should_behave_like "editable by god"
+  it_should_behave_like "editable by owner"
+
   describe "on create" do
-    subject { Factory.build :record }
-    
-    it "should set licse to 'by-sa' before create" do
+    before(:each) { subject.should be_new_record }
+
+    it "should set license to 'by-sa'" do
       subject.save
       subject.license.should == 'by-sa'
     end
@@ -14,35 +19,6 @@ describe Record do
       subject.save
       subject.created_at.should be_a(DateTime)
       subject.updated_at.should be_a(DateTime)
-    end
-  end
-
-  describe "access" do
-    let(:user) { Factory :user }
-    
-    describe "#editable_by?(user)" do
-      it "should return true if user is owner" do
-        subject.user = user
-        subject.should be_editable_by(user)
-      end
-
-      it "should return true if user is god" do
-        god = Factory :user, god: true
-        subject.user = user
-        subject.should be_editable_by(god)
-      end
-
-      it "should return false if user is not User" do
-        subject.should_not be_editable_by(nil)
-        subject.should_not be_editable_by(false)
-        subject.should_not be_editable_by(Record)
-      end
-      
-      it "should return false if user is not owner" do
-        subject.user = user
-        not_owner = Factory :user
-        subject.should_not be_editable_by(not_owner)
-      end
     end
   end
 
@@ -67,7 +43,7 @@ describe Record do
       subject.rows.should == 24
     end
   end
-  
+
   describe "#tags=(tags)" do
     it "should split tags with ',' and assign them" do
       subject.tags = "one, two"

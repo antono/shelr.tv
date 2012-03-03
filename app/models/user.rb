@@ -23,7 +23,7 @@ class User
   attr_accessible :nickname, :email, :website, :about, :bitcoin
 
   validates_uniqueness_of :api_key, :twitter_uid, :github_uid, :google_oauth2_uid, allow_nil: true
-  
+
   validates_length_of :nickname, maximum: 20
 
   references_many :records
@@ -32,11 +32,15 @@ class User
 
   def avatar_url(size)
     return "/images/avatars/anonymous-#{size}.png" if nickname == 'Anonymous'
-    unless email.blank?
-      return "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email)}?s=#{size}"
-    else
+    if email.blank?
       return "/images/avatars/default-#{size}.png"
+    else
+      return "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email)}?s=#{size}"
     end
+  end
+
+  def owner
+    self
   end
 
   def editable_by?(user)
