@@ -7,5 +7,12 @@ shared_examples "editable by god" do
         subject.editable_by?(god).should be_true
       end
     end
+
+    context "when user is not god?" do
+      it "returns false" do
+        god = Factory(:user, god: false)
+        subject.editable_by?(god).should be_false
+      end
+    end
   end
 end

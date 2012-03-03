@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe User do
 
+  it_should_behave_like "editable with restrictions"
   it_should_behave_like "editable by god"
   it_should_behave_like "editable by owner"
 
