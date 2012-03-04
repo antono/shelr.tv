@@ -20,7 +20,7 @@
     %nav.navbar
       .navbar-inner
         .container
-          %a{ class: "brand", href: '/' } Shelr.tv
+          %a{ class: "brand", href: '/' } Ŝelr.tv
           %ul{ class: "nav" }
             %li{ class: active_if(/^\/records/)    }= link_to "Records <sup>#{Record.count}</sup>".html_safe, "/records"
             %li{ class: active_if(/^\/users/)      }= link_to "Users <sup>#{User.count}</sup>".html_safe, '/users'
