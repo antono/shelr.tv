@@ -1,4 +1,4 @@
-shared_examples "editable by owner" do
+shared_examples Traits::EditableByOwner do
 
   its(:owner) { should_not be_blank }
 
@@ -8,7 +8,7 @@ shared_examples "editable by owner" do
         subject.editable_by?(subject.owner).should be_true
       end
     end
-    
+
     context "when user is NOT subject.owner" do
       it "returns false" do
         other_user = Factory.build(subject.class.to_s.underscore.to_sym)

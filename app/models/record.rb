@@ -7,7 +7,6 @@ class Record
   include Mongoid::Document
   include Mongoid::Timestamps
 
-
   field :title,        type: String
   field :description,  type: String
   field :columns,      type: Integer
@@ -19,10 +18,11 @@ class Record
   field :created_at,   type: DateTime
   field :updated_at,   type: DateTime
 
+  referenced_in :user
+
   attr_accessible :title, :description, :typescript,
                   :timing, :tags, :columns, :rows
 
-  referenced_in :user
 
   before_create :set_license
   after_create :increment_counters!
@@ -30,6 +30,10 @@ class Record
 
   def self.per_page
     5
+  end
+
+  def owner
+    self.user
   end
 
   def title
@@ -40,9 +44,6 @@ class Record
     end
   end
 
-  def owner
-    self.user
-  end
 
   def description_html
     RDiscount.new(description).to_html

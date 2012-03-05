@@ -2,11 +2,13 @@ require 'spec_helper'
 
 describe User do
 
-  it_should_behave_like "editable with restrictions"
-  it_should_behave_like "editable by god"
-  it_should_behave_like "editable by owner"
+  subject { Factory.build :user }
 
-  subject { Factory.build(:user) }
+  it_should_behave_like Traits::EditableWithRestrictions
+  it_should_behave_like Traits::EditableByGod
+  it_should_behave_like Traits::EditableByOwner
+
+  its(:owner) { should_not be_blank }
 
   describe "on create" do
     it "should generate api key" do

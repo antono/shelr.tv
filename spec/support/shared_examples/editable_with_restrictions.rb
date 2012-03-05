@@ -1,4 +1,4 @@
-shared_examples "editable with restrictions" do
+shared_examples Traits::EditableWithRestrictions do
 
   it { should respond_to(:editable_by?) }
 
