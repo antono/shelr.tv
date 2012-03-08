@@ -46,5 +46,6 @@ group :development, :test do
   gem 'pry-nav'
   gem 'rspec'
   gem 'rspec-rails'
+  gem 'sunspot_matchers'
   gem 'mocha'
 end

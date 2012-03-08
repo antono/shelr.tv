@@ -4,7 +4,7 @@ describe Record do
 
   describe "on create" do
     subject { Factory.build :record }
-    
+
     it "should set licse to 'by-sa' before create" do
       subject.save
       subject.license.should == 'by-sa'
@@ -19,7 +19,7 @@ describe Record do
 
   describe "access" do
     let(:user) { Factory :user }
-    
+
     describe "#editable_by?(user)" do
       it "should return true if user is owner" do
         subject.user = user
@@ -37,7 +37,7 @@ describe Record do
         subject.should_not be_editable_by(false)
         subject.should_not be_editable_by(Record)
       end
-      
+
       it "should return false if user is not owner" do
         subject.user = user
         not_owner = Factory :user
@@ -67,7 +67,7 @@ describe Record do
       subject.rows.should == 24
     end
   end
-  
+
   describe "#tags=(tags)" do
     it "should split tags with ',' and assign them" do
       subject.tags = "one, two"
