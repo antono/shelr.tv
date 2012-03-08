@@ -1,8 +1,11 @@
 Shelr::Application.routes.draw do
 
-  resources :records
+  resources :records do
+    get :search, :on => :collection
+  end
+
   resources :users do
-    get :authenticate
+    get :authenticate, :on => :collection
   end
 
   match '/auth/:provider/callback' => 'users#authenticate'

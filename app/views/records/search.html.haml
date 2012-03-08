@@ -1,0 +1,20 @@
+.flashes
+  - if @records.any?
+    .alert.alert-success
+      Results for:
+      = params[:q]
+  - else
+    .alert.alert-error
+      Nothing found for:
+      = params[:q]
+
+%ul.records
+  - if @records.any?
+    - @records.each do |record|
+      = render :partial => 'records/record', locals: { record: record, show_user: true }
+  - else
+    %li.record
+      .centered
+        = link_to image_tag('search/yoda.jpg'), '/about'
+
+= paginate @records

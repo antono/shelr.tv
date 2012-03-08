@@ -25,11 +25,10 @@
             %li{ class: active_if(/^\/records/)    }= link_to "Records <sup>#{Record.count}</sup>".html_safe, "/records"
             %li{ class: active_if(/^\/users/)      }= link_to "Users <sup>#{User.count}</sup>".html_safe, '/users'
             %li{ class: active_if(/^\/about/)      }= link_to 'About', '/about'
-            -# %li= link_to 'Tags', '/tags'
-            -# %li
-            -#   = form_tag '/search', :method => :get do
-            -#     = search_field_tag :q, '', :placeholder => 'Search'
           %ul{ class: "nav pull-right" }
+            %li
+              = form_tag '/records/search', :method => :get, :class => 'navbar-search pull-right' do
+                = search_field_tag :q, '', :placeholder => 'Search', :class => 'search-query'
             %li.divider-vertical
             - if logged_in?
               %li= link_to current_user.nickname, current_user

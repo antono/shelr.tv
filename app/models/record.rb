@@ -6,7 +6,7 @@ class Record
 
   include Mongoid::Document
   include Mongoid::Timestamps
-  include Sunspot::Mongoid
+  include Sunspot::Mongo
 
   field :title,        type: String
   field :description,  type: String
@@ -16,30 +16,53 @@ class Record
   field :timing,       type: String
   field :tags,         type: Array
   field :license,      type: String
-  field :hits,         type: Integer
   field :created_at,   type: DateTime
   field :updated_at,   type: DateTime
 
-  searchable do
-    text :title, :boost => 2.0, :stored => true
-    text :description, :boost => 1.0, :stored => true
-    text :tags, :boost => 5.0, :stored => true, :more_like_this => true
-    # text :comments do
-    #   comments.map { |comment| comment.body }
-    # end
-  end
+  referenced_in :user
 
   attr_accessible :title, :description, :typescript,
                   :timing, :tags, :columns, :rows
-
-  referenced_in :user
 
   before_create :set_license
   after_create :increment_counters!
   after_destroy :decrement_counters!
 
+  searchable do
+    text :title, :boost => 5.0
+    text :description_html, :boost => 3.0
+    text :tags, :boost => 4.0 do
+      read_attribute(:tags)
+    end
+    text :typescript, :boost => 0.3
+    time :updated_at
+    time :created_at
+  end
+
+  class << self
+    def find_in_batches(args = { per: 10 })
+      last_page = (count / args[:per]) + 1
+      1.upto(last_page).each do |batch_number|
+        puts "batch => #{batch_number}"
+        yield page(batch_number).per(args[:per])
+      end
+    end
+
+    def reindex!
+      find_in_batches(:per => 10) do |batch|
+        batch.each do |record|
+          index record
+        end
+      end
+    end
+  end
+
   def self.per_page
     5
+  end
+
+  def owner
+    self.user
   end
 
   def title
@@ -49,6 +72,7 @@ class Record
       read_attribute(:title)
     end
   end
+
 
   def description_html
     RDiscount.new(description).to_html
@@ -65,7 +89,7 @@ class Record
   def columns
     read_attribute(:columns) or 80
   end
-  
+
   def rows
     read_attribute(:rows) or 24
   end

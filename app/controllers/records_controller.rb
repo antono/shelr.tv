@@ -1,5 +1,7 @@
 class RecordsController < ApplicationController
 
+  skip_before_filter :verify_authenticity_token, :only => [:create]
+
   respond_to :html, :json, :atom
 
   def index
@@ -67,5 +69,12 @@ class RecordsController < ApplicationController
       flash[:notice] = "Shellcast was destroyed!"
       redirect_to @record
     end
+  end
+
+  def search
+    @records = Record.solr_search do
+      fulltext params[:q]
+      paginate page: params[:page] || 1
+    end.results
   end
 end

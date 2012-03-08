@@ -23,7 +23,7 @@ class User
   attr_accessible :nickname, :email, :website, :about, :bitcoin
 
   validates_uniqueness_of :api_key, :twitter_uid, :github_uid, :google_oauth2_uid, allow_nil: true
-  
+
   validates_length_of :nickname, maximum: 20
 
   references_many :records
@@ -40,7 +40,7 @@ class User
   end
 
   def editable_by?(user)
-    return false if user.nil?
+    return false if user.blank?
     return true  if user.god?
     self.id == user.id
   end

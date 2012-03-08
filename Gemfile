@@ -17,7 +17,7 @@ gem 'bson_ext'
 gem 'sunspot_rails'
 gem 'sunspot_solr'
 gem 'sunspot_with_kaminari'
-gem 'sunspot_mongoid'
+gem 'sunspot_mongo', git: 'https://github.com/derekharmel/sunspot_mongo.git'
 
 
 # Gems used only for assets and not required
@@ -40,7 +40,7 @@ group :development, :test do
   gem 'guard-rspec'
   gem 'guard-bundler'
   gem 'libnotify'
-  
+
   gem 'rake'
   gem 'pry'
   gem 'pry-nav'
