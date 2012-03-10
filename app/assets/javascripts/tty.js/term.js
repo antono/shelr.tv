@@ -48,7 +48,6 @@ var Terminal = function(cols, rows, handler) {
   this.cols = cols;
   this.rows = rows;
   this.handler = handler;
-  this.scrollback = 1000;
   this.ybase = 0;
   this.ydisp = 0;
   this.x = 0;
@@ -70,9 +69,8 @@ var Terminal = function(cols, rows, handler) {
   this.charset = null;
   this.normal = null;
 
-  this.defAttr = (7 << 3) | 0;
+  this.defAttr = 16 | (17 << 5);
   this.curAttr = this.defAttr;
-  this.isMac = ~navigator.userAgent.indexOf('Mac');
   this.keyState = 0;
   this.keyStr = '';
 
@@ -90,7 +88,8 @@ var Terminal = function(cols, rows, handler) {
  * Options
  */
 
-Terminal.bgColors = [
+Terminal.colors = [
+  // dark:
   '#2e3436',
   '#cc0000',
   '#4e9a06',
@@ -98,10 +97,8 @@ Terminal.bgColors = [
   '#3465a4',
   '#75507b',
   '#06989a',
-  '#d3d7cf'
-];
-
-Terminal.fgColors = [
+  '#d3d7cf',
+  // bright:
   '#555753',
   '#ef2929',
   '#8ae234',
@@ -109,8 +106,19 @@ Terminal.fgColors = [
   '#729fcf',
   '#ad7fa8',
   '#34e2e2',
-  '#eeeeec'
+  '#eeeeec',
+  // default bg/fg:
+  '#000000',
+  '#f0f0f0'
 ];
+
+Terminal.termName = '';
+Terminal.geometry = [80, 30];
+Terminal.cursorBlink = true;
+Terminal.visualBell = false;
+Terminal.popOnBell = false;
+Terminal.scrollback = 1000;
+Terminal.screenKeys = false;
 
 /**
  * Focused Terminal
@@ -135,15 +143,15 @@ Terminal.prototype.focus = function() {
 Terminal.bindKeys = function() {
   if (Terminal.focus) return;
 
-  // We could put an "if (Term.focus)" check
-  // here, but it shouldn't be necessary.
-  on(document, 'keydown', function(key) {
-    return Terminal.focus.keyDownHandler(key);
-  }, true);
+  // // We could put an "if (Term.focus)" check
+  // // here, but it shouldn't be necessary.
+  // on(document, 'keydown', function(key) {
+  //   return Terminal.focus.keyDownHandler(key);
+  // }, true);
 
-  on(document, 'keypress', function(key) {
-    return Terminal.focus.keyPressHandler(key);
-  }, true);
+  // on(document, 'keypress', function(key) {
+  //   return Terminal.focus.keyPressHandler(key);
+  // }, true);
 };
 
 /**
@@ -161,7 +169,6 @@ Terminal.prototype.open = function(container) {
 
   for (; i < this.rows; i++) {
     div = document.createElement('div');
-    div.className = 'term';
     this.element.appendChild(div);
     this.children.push(div);
   }
@@ -175,7 +182,7 @@ Terminal.prototype.open = function(container) {
 
   this.startBlink();
 
-  on(this.element, 'click', function() {
+  on(this.element, 'mousedown', function() {
     self.focus();
   });
 
@@ -189,6 +196,19 @@ Terminal.prototype.open = function(container) {
   });
 
   this.bindMouse();
+
+  // XXX - hack, move this somewhere else.
+  if (Terminal.brokenBold == null) {
+    Terminal.brokenBold = isBoldBroken();
+  }
+
+  // sync default bg/fg colors
+  this.element.style.backgroundColor = Terminal.colors[16];
+  this.element.style.color = Terminal.colors[17];
+
+  // otherwise:
+  // Terminal.colors[16] = css(this.element, 'background-color');
+  // Terminal.colors[17] = css(this.element, 'color');
 };
 
 // XTerm mouse events
@@ -328,7 +348,9 @@ Terminal.prototype.bindMouse = function() {
     y = ev.pageY;
     el = self.element;
 
-    while (el !== document.body) {
+    // should probably check offsetParent
+    // but this is more portable
+    while (el !== document.documentElement) {
       x -= el.offsetLeft;
       y -= el.offsetTop;
       el = el.parentNode;
@@ -396,9 +418,20 @@ Terminal.prototype.bindMouse = function() {
   });
 };
 
+/**
+ * Rendering Engine
+ */
+
+// In the screen buffer, each character
+// is stored as a 32-bit integer.
+// First 16 bits: a utf-16 character.
+// Next 5 bits: background color (0-31).
+// Next 5 bits: foreground color (0-31).
+// Next 6 bits: a mask for misc. flags:
+//   1=bold, 2=underline, 4=inverse
+
 Terminal.prototype.refresh = function(start, end) {
-  var element
-    , x
+  var x
     , y
     , i
     , line
@@ -406,17 +439,25 @@ Terminal.prototype.refresh = function(start, end) {
     , ch
     , width
     , data
-    , defAttr
+    , attr
     , fgColor
     , bgColor
-    , row;
+    , flags
+    , row
+    , parent;
+
+  width = this.cols;
+
+  if (end - start === this.rows - 1) {
+    parent = this.element.parentNode;
+    parent.removeChild(this.element);
+  }
 
   for (y = start; y <= end; y++) {
     row = y + this.ydisp;
 
     line = this.lines[row];
     out = '';
-    width = this.cols;
 
     if (y === this.y
         && this.cursorState
@@ -427,7 +468,7 @@ Terminal.prototype.refresh = function(start, end) {
       x = -1;
     }
 
-    defAttr = this.defAttr;
+    attr = this.defAttr;
 
     for (i = 0; i < width; i++) {
       ch = line[i];
@@ -437,32 +478,41 @@ Terminal.prototype.refresh = function(start, end) {
         data = -1;
       }
 
-      if (data !== defAttr) {
-        if (defAttr !== this.defAttr)
+      if (data !== attr) {
+        if (attr !== this.defAttr) {
           out += '</span>';
+        }
         if (data !== this.defAttr) {
           if (data === -1) {
-            out += '<span class="termReverse">';
+            out += '<span class="reverse-video">';
           } else {
             out += '<span style="';
-            fgColor = (data >> 3) & 7;
-            bgColor = data & 7;
-            if (fgColor !== 7) {
-              out += 'color:'
-                + Terminal.fgColors[fgColor]
-                + ';';
-            }
-            if (bgColor !== 0) {
-              out += 'background-color:'
-                + Terminal.bgColors[bgColor]
-                + ';';
-            }
-            if ((data >> 8) & 1) {
+            fgColor = (data >> 5) & 31;
+            bgColor = data & 31;
+            flags = data >> 10;
+
+            if (flags & 1) {
               out += 'font-weight:bold;';
+              // see: XTerm*boldColors
+              if (fgColor < 8) fgColor += 8;
             }
-            if ((data >> 8) & 4) {
+
+            if (flags & 2) {
               out += 'text-decoration:underline;';
             }
+
+            if (fgColor !== 17) {
+              out += 'color:'
+                + Terminal.colors[fgColor]
+                + ';';
+            }
+
+            if (bgColor !== 16) {
+              out += 'background-color:'
+                + Terminal.colors[bgColor]
+                + ';';
+            }
+
             out += '">';
           }
         }
@@ -490,16 +540,17 @@ Terminal.prototype.refresh = function(start, end) {
           break;
       }
 
-      defAttr = data;
+      attr = data;
     }
 
-    if (defAttr !== this.defAttr) {
+    if (attr !== this.defAttr) {
       out += '</span>';
     }
 
-    element = this.children[y];
-    element.innerHTML = out;
+    this.children[y].innerHTML = out;
   }
+
+  if (parent) parent.appendChild(this.element);
 };
 
 Terminal.prototype.cursorBlink = function() {
@@ -512,35 +563,35 @@ Terminal.prototype.showCursor = function() {
   if (!this.cursorState) {
     this.cursorState = 1;
     this.refresh(this.y, this.y);
+  } else {
+    // Temporarily disabled:
+    // this.refreshBlink();
   }
-  this.refreshBlink();
 };
 
 Terminal.prototype.startBlink = function() {
+  if (!Terminal.cursorBlink) return;
   var self = this;
   this._blinker = function() {
     self.cursorBlink();
   };
-  this._blink = setInterval(function () { self._blinker() }, 500);
+  this._blink = setInterval(this._blinker, 500);
 };
 
 Terminal.prototype.refreshBlink = function() {
-  var self = this;
-  clearTimeout(this._blink);
-  this._blink = setInterval(function () { self._blinker() }, 500);
+  if (!Terminal.cursorBlink) return;
+  clearInterval(this._blink);
+  this._blink = setInterval(this._blinker, 500);
 };
 
 Terminal.prototype.scroll = function() {
   var row;
 
-  // maybe check this.lines.length ?
-  if (++this.ybase === this.scrollback) {
+  if (++this.ybase === Terminal.scrollback) {
     this.ybase = 0;
-    this.ydisp = 0; // always reset disp to zero
     this.lines = this.lines.slice(-this.rows + 1);
   }
 
-  // if (this.scrollTtyOutput)
   this.ydisp = this.ybase;
 
   // last line
@@ -548,6 +599,11 @@ Terminal.prototype.scroll = function() {
 
   // subtract the bottom scroll region
   row -= this.rows - 1 - this.scrollBottom;
+
+  // potential optimization
+  // if (row === this.lines.length) {
+  //   this.lines.push(this.blankLine());
+  // } else
 
   // add our new line
   this.lines.splice(row, 0, this.blankLine());
@@ -1323,6 +1379,7 @@ Terminal.prototype.keyDownHandler = function(ev) {
       }
       if (ev.ctrlKey) {
         this.scrollDisp(-1);
+        return cancel(ev);
       } else {
         str = '\x1b[A';
       }
@@ -1335,6 +1392,7 @@ Terminal.prototype.keyDownHandler = function(ev) {
       }
       if (ev.ctrlKey) {
         this.scrollDisp(1);
+        return cancel(ev);
       } else {
         str = '\x1b[B';
       }
@@ -1365,16 +1423,18 @@ Terminal.prototype.keyDownHandler = function(ev) {
       break;
     // page up
     case 33:
-      if (ev.ctrlKey) {
+      if (ev.shiftKey) {
         this.scrollDisp(-(this.rows - 1));
+        return cancel(ev);
       } else {
         str = '\x1b[5~';
       }
       break;
     // page down
     case 34:
-      if (ev.ctrlKey) {
+      if (ev.shiftKey) {
         this.scrollDisp(this.rows - 1);
+        return cancel(ev);
       } else {
         str = '\x1b[6~';
       }
@@ -1442,7 +1502,7 @@ Terminal.prototype.keyDownHandler = function(ev) {
           // delete
           str = String.fromCharCode(127);
         }
-      } else if ((!this.isMac && ev.altKey) || (this.isMac && ev.metaKey)) {
+      } else if ((!isMac && ev.altKey) || (isMac && ev.metaKey)) {
         if (ev.keyCode >= 65 && ev.keyCode <= 90) {
           str = '\x1b' + String.fromCharCode(ev.keyCode + 32);
         } else if (ev.keyCode >= 48 && ev.keyCode <= 57) {
@@ -1489,8 +1549,8 @@ Terminal.prototype.keyPressHandler = function(ev) {
 
   if (key !== 0) {
     if (!ev.ctrlKey
-        && ((!this.isMac && !ev.altKey)
-        || (this.isMac && !ev.metaKey))) {
+        && ((!isMac && !ev.altKey)
+        || (isMac && !ev.metaKey))) {
       str = String.fromCharCode(key);
     }
   }
@@ -1524,12 +1584,13 @@ Terminal.prototype.outputHandler = function() {
 };
 
 Terminal.prototype.bell = function() {
-  if (!this.useBell) return;
+  if (!Terminal.visualBell) return;
   var self = this;
   this.element.style.borderColor = 'white';
   setTimeout(function() {
     self.element.style.borderColor = '';
   }, 10);
+  if (Terminal.popOnBell) this.focus();
 };
 
 Terminal.prototype.resize = function(x, y) {
@@ -1545,14 +1606,16 @@ Terminal.prototype.resize = function(x, y) {
   if (this.y >= y) this.y = y - 1;
   if (this.x >= x) this.x = x - 1;
 
-  if (this.cols < x) {
+  // resize cols
+  j = this.cols;
+  if (j < x) {
     i = this.lines.length;
     while (i--) {
       while (this.lines[i].length < x) {
         this.lines[i].push((this.defAttr << 16) | 32);
       }
     }
-  } else if (this.cols > x) {
+  } else if (j > x) {
     i = this.lines.length;
     while (i--) {
       while (this.lines[i].length > x) {
@@ -1560,7 +1623,9 @@ Terminal.prototype.resize = function(x, y) {
       }
     }
   }
+  this.cols = x;
 
+  // resize rows
   j = this.rows;
   if (j < y) {
     el = this.element;
@@ -1570,7 +1635,6 @@ Terminal.prototype.resize = function(x, y) {
       }
       if (this.children.length < y) {
         line = document.createElement('div');
-        line.className = 'term';
         el.appendChild(line);
         this.children.push(line);
       }
@@ -1587,9 +1651,8 @@ Terminal.prototype.resize = function(x, y) {
       }
     }
   }
-
-  this.cols = x;
   this.rows = y;
+
   this.scrollTop = 0;
   this.scrollBottom = y - 1;
   this.refreshStart = 0;
@@ -1901,43 +1964,50 @@ Terminal.prototype.charAttributes = function(params) {
     for (i = 0; i < params.length; i++) {
       p = params[i];
       if (p >= 30 && p <= 37) {
-        this.curAttr = (this.curAttr & ~(7 << 3)) | ((p - 30) << 3);
+        this.curAttr = (this.curAttr & ~(31 << 5)) | ((p - 30) << 5);
       } else if (p >= 40 && p <= 47) {
-        this.curAttr = (this.curAttr & ~7) | (p - 40);
+        this.curAttr = (this.curAttr & ~31) | (p - 40);
       } else if (p >= 90 && p <= 97) {
-        this.curAttr = (this.curAttr & ~(7 << 3)) | ((p - 90) << 3);
+        this.curAttr = (this.curAttr & ~(31 << 5)) | ((p - 90) << 5);
+        this.curAttr = this.curAttr | (8 << 5);
       } else if (p >= 100 && p <= 107) {
-        this.curAttr = (this.curAttr & ~7) | (p - 100);
+        this.curAttr = (this.curAttr & ~31) | (p - 100);
+        this.curAttr = this.curAttr | 8;
       } else if (p === 0) {
         this.curAttr = this.defAttr;
       } else if (p === 1) {
         // bold text
-        this.curAttr = this.curAttr | (1 << 8);
+        this.curAttr = this.curAttr | (1 << 10);
       } else if (p === 4) {
         // underlined text
-        this.curAttr = this.curAttr | (4 << 8);
-      } else if (p === 7) {
-        // reverse video
-        // should maybe have this as
-        // an attr 1 byte to the left
-        this.curAttr = -1;
+        this.curAttr = this.curAttr | (2 << 10);
+      } else if (p === 7 || p === 27) {
+        // inverse and positive
+        // test with: echo -e '\e[31m\e[42mhello\e[7mworld\e[27mhi\e[m'
+        if (p === 7) {
+          if ((this.curAttr >> 10) & 4) continue;
+          this.curAttr = this.curAttr | (4 << 10);
+        } else if (p === 27) {
+          if (~(this.curAttr >> 10) & 4) continue;
+          this.curAttr = this.curAttr & ~(4 << 10);
+        }
+        var bg = this.curAttr & 31;
+        var fg = (this.curAttr >> 5) & 31;
+        this.curAttr = (this.curAttr & ~1023) | ((bg << 5) | fg);
       } else if (p === 22) {
         // not bold
-        this.curAttr = this.curAttr & ~(1 << 8);
+        this.curAttr = this.curAttr & ~(1 << 10);
       } else if (p === 24) {
         // not underlined
-        this.curAttr = this.curAttr & ~(4 << 8);
-      } else if (p === 27) {
-        // not reverse video
-        this.curAttr = this.defAttr;
+        this.curAttr = this.curAttr & ~(2 << 10);
       } else if (p === 39) {
         // reset fg
-        p = this.curAttr & 7;
-        this.curAttr = (this.defAttr & ~7) | p;
+        this.curAttr = this.curAttr & ~(31 << 5);
+        this.curAttr = this.curAttr | (((this.defAttr >> 5) & 31) << 5);
       } else if (p === 49) {
         // reset bg
-        p = (this.curAttr >> 3) & 7;
-        this.curAttr = (this.defAttr & ~(7 << 3)) | (p << 3);
+        this.curAttr = this.curAttr & ~31;
+        this.curAttr = this.curAttr | (this.defAttr & 31);
       }
     }
   }
@@ -2122,9 +2192,9 @@ Terminal.prototype.deleteChars = function(params) {
   while (param--) {
     this.lines[row].splice(this.x, 1);
     // screen:
-    //this.lines.push((this.defAttr << 16) | 32);
+    //this.lines[row].push((this.defAttr << 16) | 32);
     // xterm, linux:
-    this.lines.push((this.curAttr << 16) | 32);
+    this.lines[row].push((this.curAttr << 16) | 32);
   }
 };
 
@@ -2859,7 +2929,7 @@ Terminal.prototype.setAttrInRectangle = function(params) {
   for (; t < b + 1; t++) {
     line = this.lines[this.ybase + t];
     for (i = l; i < r; i++) {
-      line[i] = (attr << 16) | (line[i] & 0xFFFF);
+      line[i] = (attr << 16) | (line[i] & 0xffff);
     }
   }
 };
@@ -3018,7 +3088,7 @@ Terminal.prototype.fillRectangle = function(params) {
   for (; t < b + 1; t++) {
     line = this.lines[this.ybase + t];
     for (i = l; i < r; i++) {
-      line[i] = ((line[i] >> 16) << 16) | ch;
+      line[i] = (line[i] & ~0xffff) | ch;
     }
   }
 };
@@ -3223,6 +3293,21 @@ function cancel(ev) {
   if (ev.stopPropagation) ev.stopPropagation();
   ev.cancelBubble = true;
   return false;
+}
+
+var isMac = ~navigator.userAgent.indexOf('Mac');
+
+// if bold is broken, we can't
+// use it in the terminal.
+function isBoldBroken() {
+  var el = document.createElement('span');
+  el.innerHTML = 'hello world';
+  document.body.appendChild(el);
+  var w1 = el.scrollWidth;
+  el.style.fontWeight = 'bold';
+  var w2 = el.scrollWidth;
+  document.body.removeChild(el);
+  return w1 !== w2;
 }
 
 /**
