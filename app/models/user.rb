@@ -32,11 +32,15 @@ class User
 
   def avatar_url(size)
     return "/images/avatars/anonymous-#{size}.png" if nickname == 'Anonymous'
-    unless email.blank?
-      return "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email)}?s=#{size}"
-    else
+    if email.blank?
       return "/images/avatars/default-#{size}.png"
+    else
+      return "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email)}?s=#{size}"
     end
+  end
+
+  def owner
+    self
   end
 
   def editable_by?(user)

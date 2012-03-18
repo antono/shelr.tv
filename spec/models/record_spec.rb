@@ -2,8 +2,18 @@ require 'spec_helper'
 
 describe Record do
 
+  subject { Factory.build :record }
+
+  it_should_behave_like Traits::EditableWithRestrictions
+  it_should_behave_like Traits::EditableByGod
+  it_should_behave_like Traits::EditableByOwner
+
+  its(:owner) { should_not be_blank }
+
   describe "on create" do
     subject { Factory.build :record }
+
+    before(:each) { subject.should be_new_record }
 
     it "should set licse to 'by-sa' before create" do
       subject.save
