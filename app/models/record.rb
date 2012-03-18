@@ -25,7 +25,7 @@ class Record
                   :timing, :tags, :columns, :rows
 
   before_create :set_license
-  after_create :increment_counters!
+  after_create  :increment_counters!
   after_destroy :decrement_counters!
 
   searchable do
@@ -40,11 +40,11 @@ class Record
   end
 
   class << self
-    def find_in_batches(args = { per: 10 })
-      last_page = (count / args[:per]) + 1
+    def find_in_batches(options = {})
+      options[:per] ||= 10
+      last_page = (self.count / options[:per]) + 1
       1.upto(last_page).each do |batch_number|
-        puts "batch => #{batch_number}"
-        yield page(batch_number).per(args[:per])
+        yield page(batch_number).per(options[:per])
       end
     end
 
