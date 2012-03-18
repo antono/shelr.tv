@@ -18,6 +18,7 @@ gem 'sunspot_rails'
 gem 'sunspot_solr'
 gem 'sunspot_with_kaminari'
 gem 'sunspot_mongo', git: 'https://github.com/derekharmel/sunspot_mongo.git'
+gem 'progress_bar'
 
 
 # Gems used only for assets and not required
@@ -43,6 +44,7 @@ group :development, :test do
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-bundler'
+  gem 'guard-ctags-bundler'
 
   gem 'rake'
   gem 'pry'
