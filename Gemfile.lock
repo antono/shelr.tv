@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/antono/guard-ctags-bundler.git
+  revision: df7f4e65c7d17b33e05204dae86c786baf58a3a8
+  specs:
+    guard-ctags-bundler (0.0.5)
+      guard (>= 0.4.0)
+
+GIT
   remote: https://github.com/derekharmel/sunspot_mongo.git
   revision: 411960f0dd67cc5aa3e54d6346371b9d6ce8c600
   specs:
@@ -85,8 +92,6 @@ GEM
     guard-bundler (0.1.3)
       bundler (>= 1.0.0)
       guard (>= 0.2.2)
-    guard-ctags-bundler (0.0.5)
-      guard (>= 0.4.0)
     guard-rspec (0.6.0)
       guard (>= 0.10.0)
     guard-spork (0.5.2)
@@ -254,7 +259,7 @@ DEPENDENCIES
   compass_twitter_bootstrap (>= 2.0.1)
   factory_girl_rails
   guard-bundler
-  guard-ctags-bundler
+  guard-ctags-bundler!
   guard-rspec
   guard-spork
   haml
