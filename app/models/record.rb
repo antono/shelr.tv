@@ -73,7 +73,6 @@ class Record
     end
   end
 
-
   def description_html
     RDiscount.new(description).to_html
   end
