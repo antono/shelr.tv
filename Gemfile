@@ -11,6 +11,7 @@ gem 'omniauth-twitter'
 gem 'omniauth-google-oauth2'
 
 gem 'mongoid', '~> 2.0'
+gem 'mongoid_rails_migrations'
 gem 'bson_ext'
 
 # Search
