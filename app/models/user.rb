@@ -26,7 +26,8 @@ class User
 
   validates_length_of :nickname, maximum: 20
 
-  references_many :records
+  has_many :records
+  has_many :comments
 
   before_create :generate_api_key, :maybe_assign_nickname_placeholder
 

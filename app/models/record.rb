@@ -19,7 +19,8 @@ class Record
   field :created_at,   type: DateTime
   field :updated_at,   type: DateTime
 
-  referenced_in :user
+  belongs_to :user
+  has_many :comments, :as => :commentable
 
   attr_accessible :title, :description, :typescript,
                   :timing, :tags, :columns, :rows

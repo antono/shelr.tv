@@ -8,7 +8,8 @@ describe Record do
   it_should_behave_like Traits::EditableByGod
   it_should_behave_like Traits::EditableByOwner
 
-  its(:owner) { should_not be_blank }
+  its(:owner)    { should_not be_blank }
+  its(:comments) { should == [] }
 
   describe "on create" do
     subject { Factory.build :record }
