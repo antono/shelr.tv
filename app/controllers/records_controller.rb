@@ -33,8 +33,10 @@ class RecordsController < ApplicationController
       user.save
       render json: { ok: true,  id: record.id.to_s, message: 'Record published!' }
     else
-      render json: { ok: false, message: 'Cannot publish record :(' }
+      render json: { ok: false, message: 'Cannot publish the record :(' }
     end
+  rescue => e
+    render json: { ok: false, message: "Cannot publish the record :(\n\n" + e.message }
   end
 
   def update

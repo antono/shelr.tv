@@ -45,6 +45,7 @@ describe RecordsController do
 
   describe "POST create" do
     it "should not verify authenticy token (we use API key here)" do
+      pending
       controller.should_not_receive(:verify_authenticity_token)
       controller.stub(:create)
       post :create
