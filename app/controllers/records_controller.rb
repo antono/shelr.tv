@@ -5,20 +5,11 @@ class RecordsController < ApplicationController
   respond_to :html, :json, :atom
 
   def index
-    respond_to do |format|
-      format.atom do
-        @records = Record.desc(:created_at).page(params[:page]).limit(25)
-      end
-
-      format.html do
-        if params[:tags]
-          @records = Record.desc(:created_at).where(:tags.in => params[:tags]).page(params[:page]).per(5)
-        else
-          @records = Record.desc(:created_at).page(params[:page]).per(5)
-        end
-      end
+    if params[:tags]
+      @records = Record.desc(:created_at).where(:tags.in => params[:tags]).page(params[:page]).per(5)
+    else
+      @records = Record.desc(:created_at).page(params[:page]).per(5)
     end
-
     respond_with @records
   end
 

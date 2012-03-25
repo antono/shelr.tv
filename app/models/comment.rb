@@ -19,4 +19,5 @@ class Comment
     return true  if usr.god?
     self.user.id == usr.id
   end
+
 end
