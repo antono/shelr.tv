@@ -3,16 +3,18 @@
 ** DONE edit record
 ** DONE finish registrations with gh, twitter and google
 ** DONE select better cloud hosting
+** DONE [#A] Migrate to ttyrec
+** DONE [#A] Search with solr
 ** TODO [#B] Comments!!!
 ** TODO [#C] Blog
-** TODO [#A] Migrate to ttyrec
 ** TODO [#B] Better copywrigthing
-** TODO [#B] Nginx + Redis cache all!                                 :admin:
 ** TODO [#C] Packages                                             :community:
 *** DONE Arch
 *** DONE Ubuntu
-*** TODO Gentoo
-*** TODO Older ubuntu
+*** DONE Debian
+*** DONE Gentoo
+*** TODO AltLinux
+*** TODO Older Ubuntu
 ** TODO [#A] Setup new instance                                       :admin:
 *** TODO ec2 micro (default)
 *** TODO ec2 small (slashdotting)
