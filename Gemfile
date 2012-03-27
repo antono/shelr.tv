@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'rails', '~> 3.2.1'
-gem 'haml'
+gem 'haml-rails'
 gem 'rdiscount'
 gem 'kaminari'
 
@@ -50,6 +50,7 @@ group :development, :test do
   gem 'rake'
   gem 'pry'
   gem 'pry-nav'
+  gem 'turnip', git: "git://github.com/jnicklas/turnip.git"
   gem 'rspec'
   gem 'rspec-rails'
   gem 'shoulda-matchers'

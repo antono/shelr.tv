@@ -39,6 +39,9 @@ Spork.prefork do
     config.before do
       Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
     end
+
+    Turnip::Config.step_dirs = 'examples'
+    Turnip::StepLoader.load_steps
   end
 end
 
