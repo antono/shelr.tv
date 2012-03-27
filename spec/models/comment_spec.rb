@@ -4,8 +4,16 @@ describe Comment do
 
   subject { Factory.build :comment }
 
-  it_should_behave_like Traits::EditableWithRestrictions
-  it_should_behave_like Traits::EditableByGod
-  it_should_behave_like Traits::EditableByOwner
+  it_behaves_like "editable with restrictions"
+  it_behaves_like "editable by God"
+  it_behaves_like "editable by Owner"
+
+  describe ".for(commentable)" do
+    it "should filter comments for given commentable" do
+      commentable = Factory(:record)
+      commentable.comments.create(Factory.attributes_for(:comment))
+      Comment.for('record', commentable.id).should == commentable.comments
+    end
+  end
 
 end

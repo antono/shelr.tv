@@ -1,5 +1,7 @@
 class Comment
 
+  COMMENTABLES = ['record']
+
   include Mongoid::Document
   include Mongoid::Timestamps
 
@@ -9,6 +11,12 @@ class Comment
 
   belongs_to :commentable, polymorphic: true
   belongs_to :user
+
+  def self.for(commentable, commentable_id)
+    if COMMENTABLES.include?(commentable)
+      commentable.classify.constantize.find(commentable_id).comments
+    end
+  end
 
   def owner
     user
