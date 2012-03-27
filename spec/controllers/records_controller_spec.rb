@@ -2,35 +2,29 @@ require 'spec_helper'
 
 describe RecordsController do
 
-  describe "GET 'index'" do
+  describe "#index" do
     before :each do
-      Record.stub_chain(:desc, :where, :page, :per)
-      Record.stub_chain(:desc, :page, :per)
+      @scope = mock("records scope")
+      @scope.stub(:where => @scope)
+      @scope.stub(:page  => @scope)
+      @scope.stub(:desc  => @scope)
+      Record.stub(:desc).and_return(@scope)
     end
 
-    it "should be successful" do
+    it "responds successfuly" do
       get 'index'
       response.should be_success
     end
 
-    it "should respond to json, html and atom" do
-      [:html, :json, :atom].each do |format|
-        get :index, format: format
-        response.should be_success
-      end
-    end
-
-    it "should assign some records" do
-      Record.stub_chain(:desc, :page, :per).and_return('records')
+    it "assigns some records" do
       get :index
-      assigns(:records).should_not be_blank
-      assigns(:records).should == 'records'
+      assigns(:records).should == @scope
     end
 
     context "when tags param given" do
       it "should filter records by tags" do
         tags = ['hello', 'world']
-        Record.desc.should_receive(:where).with(:tags.in => tags)
+        @scope.should_receive(:where).with(:tags.in => tags)
         get :index, tags: tags
       end
     end
@@ -38,8 +32,9 @@ describe RecordsController do
 
   describe "GET 'show'" do
     it "should assign @record by id" do
-      Record.should_receive(:find).with('kinda id')
+      Record.should_receive(:find).with('kinda id').and_return('record')
       get :show, id: 'kinda id'
+      assigns(:record).should == 'record'
     end
   end
 

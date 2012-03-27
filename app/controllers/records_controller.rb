@@ -6,9 +6,9 @@ class RecordsController < ApplicationController
 
   def index
     if params[:tags]
-      @records = Record.desc(:created_at).where(:tags.in => params[:tags]).page(params[:page]).per(5)
+      @records = Record.desc(:created_at).where(:tags.in => params[:tags]).page(params[:page])
     else
-      @records = Record.desc(:created_at).page(params[:page]).per(5)
+      @records = Record.desc(:created_at).page(params[:page])
     end
     respond_with @records
   end
