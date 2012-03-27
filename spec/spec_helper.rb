@@ -1,5 +1,7 @@
 require 'rubygems'
 require 'spork'
+require 'turnip'
+require 'turnip/capybara'
 
 
 ENV["RAILS_ENV"] ||= 'test'
@@ -40,7 +42,7 @@ Spork.prefork do
       Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
     end
 
-    Turnip::Config.step_dirs = 'examples'
+    Turnip::Config.step_dirs = Rails.root.join('spec', 'steps')
     Turnip::StepLoader.load_steps
   end
 end

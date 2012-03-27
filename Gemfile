@@ -51,9 +51,9 @@ group :development, :test do
   gem 'pry'
   gem 'pry-nav'
   gem 'turnip', git: "git://github.com/jnicklas/turnip.git"
+  gem 'capybara'
   gem 'rspec'
   gem 'rspec-rails'
   gem 'shoulda-matchers'
   gem 'sunspot_matchers'
-  gem 'mocha'
 end
