@@ -4,9 +4,9 @@ describe User do
 
   subject { Factory.build :user }
 
-  it_should_behave_like Traits::EditableWithRestrictions
-  it_should_behave_like Traits::EditableByGod
-  it_should_behave_like Traits::EditableByOwner
+  it_behaves_like "editable with restrictions"
+  it_behaves_like "editable by God"
+  it_behaves_like "editable by Owner"
 
   its(:owner) { should_not be_blank }
 

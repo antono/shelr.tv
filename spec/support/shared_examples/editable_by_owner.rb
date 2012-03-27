@@ -1,4 +1,4 @@
-shared_examples Traits::EditableByOwner do
+shared_examples "editable by Owner" do
 
   its(:owner) { should_not be_blank }
 

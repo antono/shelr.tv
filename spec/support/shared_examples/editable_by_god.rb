@@ -1,4 +1,4 @@
-shared_examples Traits::EditableByGod do
+shared_examples "editable by God" do
 
   describe "#editable_by?(user)" do
     context "when user is god?" do

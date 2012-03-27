@@ -4,16 +4,14 @@ describe Record do
 
   subject { Factory.build :record }
 
-  it_should_behave_like Traits::EditableWithRestrictions
-  it_should_behave_like Traits::EditableByGod
-  it_should_behave_like Traits::EditableByOwner
+  it_behaves_like "editable with restrictions"
+  it_behaves_like "editable by God"
+  it_behaves_like "editable by Owner"
 
   its(:owner)    { should_not be_blank }
   its(:comments) { should == [] }
 
   describe "on create" do
-    subject { Factory.build :record }
-
     before(:each) { subject.should be_new_record }
 
     it "should set licse to 'by-sa' before create" do
@@ -28,39 +26,14 @@ describe Record do
     end
   end
 
-  describe "access" do
-    let(:user) { Factory :user }
-
-    describe "#editable_by?(user)" do
-      it "should return true if user is owner" do
-        subject.user = user
-        subject.should be_editable_by(user)
-      end
-
-      it "should return true if user is god" do
-        god = Factory :user, god: true
-        subject.user = user
-        subject.should be_editable_by(god)
-      end
-
-      it "should return false if user is not User" do
-        subject.should_not be_editable_by(nil)
-        subject.should_not be_editable_by(false)
-        subject.should_not be_editable_by(Record)
-      end
-
-      it "should return false if user is not owner" do
-        subject.user = user
-        not_owner = Factory :user
-        subject.should_not be_editable_by(not_owner)
-      end
-    end
+  it "paginates per 10 items" do
+    Record.per_page.should == 10
   end
 
   describe "#size" do
     it "should return #columns x #rows as string" do
       subject.columns = 10
-      subject.rows    = 20
+      subject.rows = 20
       subject.size.should == "10x20"
     end
   end

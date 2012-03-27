@@ -41,6 +41,10 @@ class Record
   end
 
   class << self
+    def per_page
+      10
+    end
+
     def find_in_batches(options = {})
       options[:per] ||= 10
       last_page = (self.count / options[:per]) + 1
@@ -56,10 +60,6 @@ class Record
         end
       end
     end
-  end
-
-  def self.per_page
-    5
   end
 
   def owner
