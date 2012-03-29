@@ -50,8 +50,11 @@ group :development, :test do
   gem 'rake'
   gem 'pry'
   gem 'pry-nav'
+
   gem 'turnip', git: "git://github.com/jnicklas/turnip.git"
   gem 'capybara'
+  gem 'database_cleaner'
+
   gem 'rspec'
   gem 'rspec-rails'
   gem 'shoulda-matchers'

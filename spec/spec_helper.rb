@@ -1,8 +1,9 @@
 require 'rubygems'
 require 'spork'
 require 'turnip'
+require 'capybara/rails'
+require 'capybara/rspec'
 require 'turnip/capybara'
-
 
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
@@ -17,6 +18,8 @@ Spork.prefork do
   # Loading more in this block will cause your tests to run faster. However,
   # if you change any configuration or code from libraries loaded here, you'll
   # need to restart spork for it take effect.
+
+  Capybara.default_driver = :selenium
 
   RSpec.configure do |config|
     # == Mock Framework
@@ -42,8 +45,18 @@ Spork.prefork do
       Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
     end
 
+    #
+    # Turnip
+    #
     Turnip::Config.step_dirs = Rails.root.join('spec', 'steps')
     Turnip::StepLoader.load_steps
+
+    #
+    # Datablase cleaner
+    #
+    # config.after :each do
+    #   DatabaseCleaner.clean
+    # end
   end
 end
 
