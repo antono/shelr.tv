@@ -1,0 +1,11 @@
+secret_token: CHANGE_ME
+github:
+  id: CHANGE_ME
+  secret: CHANGE_ME
+google:
+  id: CHANGE_ME
+  secret: CHANGE_ME
+twitter:
+  id: CHANGE_ME
+  secret: CHANGE_ME
+  
