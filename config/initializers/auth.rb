@@ -2,10 +2,12 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   
   provider :developer unless Rails.env.production?
   
-  provider :github, ENV['GITHUB_ID'], ENV['GITHUB_SECRET'],
-        :client_options => {:ssl => {:ca_path => '/etc/ssl/certs'}}
-  provider :twitter, 'LviFieaqd8pUfcfa8LxcNg', 'oSxUo8k6K9W47ku9l6x0F2m3O2D3u8FbrrT7ym1fI'
-  provider :google_oauth2, ENV['GOOGLE_ID'], ENV['GOOGLE_SECRET'], {
+  provider :github, Shelr.config['github']['id'], Shelr.config['github']['secret'],
+           :client_options => {:ssl => {:ca_path => '/etc/ssl/certs'} }
+
+  provider :twitter, Shelr.config['twitter']['id'], Shelr.config['twitter']['secret']
+
+  provider :google_oauth2, Shelr.config['google']['id'], Shelr.config['google']['secret'], {
     :access_type => 'online',
     :approval_prompt => ''
   }

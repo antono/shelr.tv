@@ -13,6 +13,10 @@ if defined?(Bundler)
 end
 
 module Shelr
+  def self.config
+    @_config ||= YAML.load_file(Rails.root.join('config', 'config.yml'))
+  end
+
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers # -- all .rb files in that directory are automatically loaded.
@@ -45,7 +49,7 @@ module Shelr
       g.test_framework :rspec, :fixture => false, :views => false
     end
 
-    config.secret_token = ENV['SECRET_TOKEN']
+    config.secret_token = Shelr.config['secret_token']
 
     config.assets.enabled = true
     config.sass.cache = true
