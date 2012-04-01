@@ -1,9 +1,10 @@
 require 'rubygems'
 require 'spork'
-require 'turnip'
 require 'capybara/rails'
 require 'capybara/rspec'
+require 'turnip'
 require 'turnip/capybara'
+require 'database_cleaner'
 
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
@@ -45,12 +46,14 @@ Spork.prefork do
       Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
     end
 
+    config.after :each do
+      DatabaseCleaner.clean
+    end
+
     #
     # Turnip
     #
     Turnip::Config.step_dirs = Rails.root.join('spec', 'steps')
-    Turnip::StepLoader.load_steps
-
     #
     # Datablase cleaner
     #
@@ -70,4 +73,6 @@ Spork.each_run do
   # Requires supporting ruby files with custom matchers and macros, etc,
   # in spec/support/ and its subdirectories.
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+  Turnip::StepLoader.steps_loaded = false
+  Turnip::StepLoader.load_steps
 end

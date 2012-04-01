@@ -4,4 +4,4 @@ Feature: Registration
   In order to get some fun
 
   Scenario: via twitter
-    Given I'm on the '/' page
+    Given I'm on the / page

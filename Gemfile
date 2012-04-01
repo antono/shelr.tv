@@ -23,8 +23,6 @@ gem 'progress_bar'
 
 
 # Gems used only for assets and not required
-# in productionvironments by default.
-# http://stackoverflow.com/questions/7756293/undefined-method-sass-for-railsapplicationconfiguration-on-heroku
 gem 'sass-rails',    '~> 3.2.3'
 gem 'jquery-rails'
 gem 'backbone-rails'

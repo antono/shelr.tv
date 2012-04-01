@@ -6,4 +6,6 @@ Feature: Records
   @javascript
   Scenario: browsing records
     Given I signed in
-    And I'm on the "/records" page
+    And there are 3 records in db
+    When I visit "/records" page
+    Then I should see some records
