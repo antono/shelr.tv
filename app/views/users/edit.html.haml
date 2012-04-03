@@ -16,12 +16,12 @@
     %p
       = f.label :website, 'Website'
       = f.text_field :website, placeholder: 'http://shelr.tv/'
-    %p
-      = f.label :bitcoin
-      = f.text_field :bitcoin
-      %span.desc
-        %a{ href: 'http://bitcoin.com' } Bitcoin
-        address for money donations
+    -# %p
+    -#   = f.label :bitcoin
+    -#   = f.text_field :bitcoin
+    -#   %span.desc
+    -#     %a{ href: 'http://bitcoin.com' } Bitcoin
+    -#     address for money donations
     %p
       = f.label :about, '&nbsp;'.html_safe
       = f.text_area :about, :placeholder => 'Few lines about You', :rows => 4
