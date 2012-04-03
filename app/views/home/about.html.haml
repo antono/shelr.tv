@@ -6,33 +6,35 @@
   %p.lead
     It is almost the same thing as YouTube but for plain
     text shellcasts. You can copy and paste everything you see.
-  
+
   %h2 Quickstart on Linux
 
   %p
-    There is a 
+    There is a
     %a{ :href => 'https://launchpad.net/~antono/+archive/shelr' } PPA
-    for Ubuntu
+    for Ubuntu (Oneiric, Precise)
     and a
     %a{ :href => 'https://aur.archlinux.org/packages.php?ID=56945' } PKGBUILD
     for Arch Linux.
-  
+
+  %h3 Via rubygems
+
   %p Install ruby and rubygems for your distribution
   %pre
     %code
       = preserve do
         :escaped
-          gem install shelr
+          [sudo] gem install shelr
           shelr record
 
   %h2 Quickstart on OSX
 
   %p Install ruby and rubygems
-  
+
   %p
     Install ttyrec via
     %a{ :href => 'http://mxcl.github.com/homebrew/' } homebrew
-    
+
   %pre
     %code
       = preserve do
@@ -56,4 +58,3 @@
   %p
     IRC:
     %a{ href: "irc://irc.freenode.net#shelr" } #shelr at freenode.net
-    
