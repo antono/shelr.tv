@@ -16,10 +16,10 @@ class Record
   field :timing,       type: String
   field :tags,         type: Array
   field :license,      type: String
-  field :created_at,   type: DateTime
-  field :updated_at,   type: DateTime
+  field :created_at,   type: DateTime, index: true
+  field :updated_at,   type: DateTime, index: true
 
-  belongs_to :user
+  belongs_to :user, index: true
   has_many :comments, :as => :commentable
 
   attr_accessible :title, :description, :typescript,
