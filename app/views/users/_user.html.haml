@@ -12,7 +12,11 @@
       .long=sanitize record.description_html
     .desc
       %strong Statistics
-      .long== #{@record.views(:anonymous)} view by Anonymous and #{@record.views(:registered)} views by registered users
+      - anon_count = @record.views(:anonymous)
+      - reg_count  = @record.views(:registered)
+      .long
+        == #{pluralize anon_count, 'view'} by Anonymous and
+        == #{pluralize reg_count, 'view'} by registered users
 
     - unless record.tags.blank?
       .desc.tags
