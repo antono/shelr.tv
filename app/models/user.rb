@@ -32,9 +32,9 @@ class User
   before_create :generate_api_key, :maybe_assign_nickname_placeholder
 
   def avatar_url(size)
-    return "/images/avatars/anonymous-#{size}.png" if nickname == 'Anonymous'
+    return "/assets/avatars/anonymous-#{size}.png" if nickname == 'Anonymous'
     if email.blank?
-      return "/images/avatars/default-#{size}.png"
+      return "/assets/avatars/default-#{size}.png"
     else
       return "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email)}?s=#{size}"
     end
