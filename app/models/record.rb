@@ -29,6 +29,8 @@ class Record
   after_create  :increment_counters!
   after_destroy :decrement_counters!
 
+  validates :user, presence: true
+
   searchable do
     text :title, :boost => 5.0
     text :description_html, :boost => 3.0

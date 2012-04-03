@@ -57,7 +57,7 @@ describe User do
       it "should return anonymous.png" do
         subject.nickname = 'Anonymous'
         subject.avatar_url("100x100")
-          .should == '/images/avatars/anonymous-100x100.png'
+          .should == '/assets/avatars/anonymous-100x100.png'
       end
     end
 
@@ -65,7 +65,7 @@ describe User do
       it "should return default avatar" do
         subject.email = ""
         subject.avatar_url("100x100")
-          .should == "/images/avatars/default-100x100.png"
+          .should == "/assets/avatars/default-100x100.png"
       end
     end
   end

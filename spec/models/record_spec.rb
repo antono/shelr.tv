@@ -24,6 +24,13 @@ describe Record do
       subject.created_at.should be_a(DateTime)
       subject.updated_at.should be_a(DateTime)
     end
+
+    it "validates presence of user" do
+      subject.user = nil
+      subject.save.should be_false
+      subject.user = Factory :user
+      subject.save.should be_true
+    end
   end
 
   it "paginates per 10 items" do
