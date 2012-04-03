@@ -35,10 +35,6 @@ describe Record do
     end
   end
 
-  it "paginates per 10 items" do
-    Record.per_page.should == 10
-  end
-
   describe "#size" do
     it "should return #columns x #rows as string" do
       subject.columns = 10

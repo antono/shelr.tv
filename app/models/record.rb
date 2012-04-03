@@ -46,10 +46,6 @@ class Record
   end
 
   class << self
-    def per_page
-      10
-    end
-
     def find_in_batches(options = {})
       options[:per] ||= 10
       last_page = (self.count / options[:per]) + 1
