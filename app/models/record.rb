@@ -14,8 +14,8 @@ class Record
   field :rows,         type: Integer
   field :typescript,   type: String
   field :timing,       type: String
-  field :tags,         type: Array
-  field :license,      type: String
+  field :tags,         type: Array,    index: true
+  field :license,      type: String,   index: true
   field :created_at,   type: DateTime, index: true
   field :updated_at,   type: DateTime, index: true
 
