@@ -14,6 +14,7 @@ class Record
   field :rows,         type: Integer
   field :typescript,   type: String
   field :timing,       type: String
+  field :hits,         type: Integer,  index: true, default: 0
   field :tags,         type: Array,    index: true
   field :license,      type: String,   index: true
   field :created_at,   type: DateTime, index: true
@@ -21,6 +22,8 @@ class Record
 
   belongs_to :user, index: true
   has_many :comments, :as => :commentable
+
+  has_and_belongs_to_many :viewers, :class_name => 'User', :inverse_of => nil
 
   attr_accessible :title, :description, :typescript,
                   :timing, :tags, :columns, :rows
@@ -98,6 +101,22 @@ class Record
 
   def tags
     read_attribute(:tags).try(:join, ", ")
+  end
+
+  def hit!(user = nil)
+    if user
+      self.viewers << user unless self.viewers.include?(user)
+    else
+      self.inc(:hits, 1)
+    end
+  end
+
+  def views(type = :all)
+    case type
+    when :all         then hits + viewers.count
+    when :registered  then viewers.count
+    when :anonymous   then hits
+    end
   end
 
   def editable_by?(usr)

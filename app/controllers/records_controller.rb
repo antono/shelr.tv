@@ -15,6 +15,7 @@ class RecordsController < ApplicationController
 
   def show
     @record = Record.find(params[:id])
+    @record.hit!(current_user) if request.format.json?
     respond_with @record
   end
 

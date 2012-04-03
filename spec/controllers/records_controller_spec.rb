@@ -36,6 +36,19 @@ describe RecordsController do
       get :show, id: 'kinda id'
       assigns(:record).should == 'record'
     end
+
+    context "when format is json" do
+      let(:user)   { Factory(:user) }
+      let(:record) { Factory(:record) }
+
+      it "hits the record with current_user" do
+        controller.stub(:current_user).and_return(user)
+        Record.stub(:find).and_return(record)
+
+        record.should_receive(:hit!).with(user)
+        get :show, id: 'id', format: 'json'
+      end
+    end
   end
 
   describe "POST create" do

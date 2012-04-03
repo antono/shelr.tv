@@ -1,7 +1,7 @@
 .user.big
 
   = link_to(image_tag(user.avatar_url(100)), user, :class => 'avatar')
-  
+
   .desc
     %strong Nick
     = link_to sanitize(user.nickname), user
@@ -10,7 +10,10 @@
     .desc
       %strong Description
       .long=sanitize record.description_html
-      
+    .desc
+      %strong Statistics
+      .long== #{@record.views(:anonymous)} view by Anonymous and #{@record.views(:registered)} views by registered users
+
     - unless record.tags.blank?
       .desc.tags
         %strong Tags
@@ -25,7 +28,7 @@
           = link_to('destroy', record_path(@record), method: :delete, class: 'btn btn-danger') if @record.editable_by?(current_user)
 
   - else
-    
+
     - unless user.website.blank?
       .desc
         %strong Website
@@ -36,7 +39,7 @@
         %strong Twitter
         - twitter_url = sanitize "http://twitter.com/#{user.twitter_name}"
         = link_to twitter_url, twitter_url
-        
+
     - unless user.github_name.blank?
       .desc
         %strong Github
@@ -47,7 +50,7 @@
       .desc
         %strong Bitcoin
         =sanitize user.bitcoin
-      
+
     .desc
       %strong Member Since
       = user.created_at.strftime("%Y-%m-%d")

@@ -5,9 +5,7 @@
 ** DONE select better cloud hosting
 ** DONE [#A] Migrate to ttyrec
 ** DONE [#A] Search with solr
-** TODO [#B] Comments!!!
-** TODO [#C] Blog
-** TODO [#B] Better copywrigthing
+** DONE [#B] Better copywrigthing
 ** TODO [#C] Packages                                             :community:
 *** DONE Arch
 *** DONE Ubuntu
@@ -15,6 +13,8 @@
 *** DONE Gentoo
 *** TODO AltLinux
 *** TODO Older Ubuntu
+** TODO [#B] Comments!!!
+** TODO [#C] Blog
 ** TODO [#A] Setup new instance                                       :admin:
 *** TODO ec2 micro (default)
 *** TODO ec2 small (slashdotting)

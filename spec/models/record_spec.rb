@@ -8,8 +8,10 @@ describe Record do
   it_behaves_like "editable by God"
   it_behaves_like "editable by Owner"
 
-  its(:owner)    { should_not be_blank }
-  its(:comments) { should == [] }
+  its(:owner)      { should_not be_blank }
+  its(:comments)   { should == []        }
+  its(:viewers)    { should be_empty     }
+  its(:hits)       { should == 0         }
 
   describe "on create" do
     before(:each) { subject.should be_new_record }
@@ -82,6 +84,68 @@ describe Record do
     it "should convert markdown from #description to html" do
       subject.description = "# Hello World"
       subject.description_html.should == "<h1>Hello World</h1>\n"
+    end
+  end
+
+  describe "#hit!(user)" do
+    let(:subject) { Factory(:record) }
+
+    context "when user is not nil" do
+      let(:user) { Factory(:user) }
+
+      it "adds user to viewers" do
+        subject.viewers.should_not include(user)
+        subject.hit!(user)
+        subject.viewers.should include(user)
+      end
+
+      it "saves the record" do
+        subject.viewers.should be_empty
+        subject.hit!(user)
+        subject.reload.viewers.should_not be_empty
+      end
+
+      it "does not add user twice" do
+        subject.viewers.should be_empty
+        subject.hit!(user)
+        subject.hit!(user)
+        subject.reload.viewers.count.should == 1
+      end
+    end
+
+    context "when user is nil" do
+      it "ircreases hits count" do
+        expect { subject.hit! }.to change(subject, :hits).by(1)
+      end
+    end
+  end
+
+  describe "#views(type)" do
+    subject { Factory(:record) }
+
+    before :each do
+      subject.viewers << Factory(:user)
+      subject.viewers << Factory(:user)
+      subject.hits = 10
+      subject.save
+    end
+
+    context "when type is :anonymous" do
+      it "returns hit count" do
+        subject.views(:anonymous).should == 10
+      end
+    end
+
+    context "when type is :registered" do
+      it "returns viewers count" do
+        subject.views(:registered).should == 2
+      end
+    end
+
+    context "when type is :all" do
+      it "returns summary count" do
+        subject.views(:all).should == 12
+      end
     end
   end
 end
