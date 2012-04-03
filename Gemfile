@@ -1,5 +1,7 @@
 source 'http://rubygems.org'
 
+gem 'unicorn'
+
 gem 'rails', '~> 3.2.1'
 gem 'haml-rails'
 gem 'rdiscount'
