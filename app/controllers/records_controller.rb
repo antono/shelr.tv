@@ -23,10 +23,12 @@ class RecordsController < ApplicationController
   end
 
   def create
-    user = User.where(api_key: params[:api_key]).first unless params[:api_key].blank?
+    user = User.where(api_key: params[:api_key]).first if params[:api_key].present?
     user = User.where(nickname: 'Anonymous').first unless user
 
     record = Record.new(JSON.parse(params[:record]))
+    # FIXME: wtf?
+    record.user = user
 
     if record.save
       user.records << record
