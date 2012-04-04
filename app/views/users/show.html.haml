@@ -23,8 +23,9 @@
             = preserve do
               :escaped
                 gem install shelr
+                shelr setup #{@user.api_key}
                 shelr record
-                shelr push SHELLCAST_ID
+                shelr push last
           
     - else
       .alert.alert-block
