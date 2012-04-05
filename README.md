@@ -1,14 +1,10 @@
 # Quickstart
 
+    sudo apt-get install mongodb-server  java
+
+
     bundle install
     bundle exec foreman start
-
-
-Where run.sh is like:
-
-    #!/bin/sh
-    SECRET_TOKEN=[TOKEN] GITHUB_ID=[GHID] GITHUB_SECRET=[GHSEC] \
-    GOOGLE_ID=[GGLID] GOOGLE_SECRET=GGLSEC RBXOPT=-X19 rails s
 
 # JS Libs
 
