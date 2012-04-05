@@ -18,9 +18,19 @@
   width: 600px  
   background: #E0EAF8
   .comment
-    clear: both
-    padding: 10px
-    border-bottom: #eee dotted 1px
+    display: block
+    background: #eee
+    padding: 15px
+    border: 1px #ccc solid
+    border-bottom: none
+    overflow: auto
+    &:hover, &:last-child:hover
+      background: #fafafa
+    &:first-child
+      border-top: 1px #ccc solid
+    &:last-child
+      border-bottom: 1px #ccc solid
+      background: #eee
     min-height: 90px    
     .badge
       float: left      
