@@ -1,8 +1,8 @@
 # Quickstart
 
     bundle install
-    rake sunspot:solr:start
-    ./run.sh
+    bundle exec foreman start
+
 
 Where run.sh is like:
 
