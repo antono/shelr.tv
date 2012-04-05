@@ -1,6 +1,8 @@
 Shelr::Application.routes.draw do
 
   resources :records do
+    resources :comments
+
     get :search, :on => :collection
   end
 

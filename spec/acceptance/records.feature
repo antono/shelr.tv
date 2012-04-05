@@ -3,9 +3,19 @@ Feature: Records
   I would like to browse and publish records
   In order to know something new or impress my friends
 
+  Background:
+    Given there are following records
+      | title         | fixture | user     |
+      | hello world   | ls.json | antono   |
+      | goodbye world | ls.json | ntanyone |
+      | shelr manual  | ls.json | antono   |
+    And I signed in
+
   @javascript
   Scenario: browsing records
-    Given I signed in
-    And there are 3 records in db
     When I visit "/records" page
-    Then I should see some records
+    And I click link "hello world"
+    Then I should see player for "hello world"
+    When I visit "/records" page
+    And I click link "goodbye world"
+    Then I should see player for "goodbye world"

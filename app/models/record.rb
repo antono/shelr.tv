@@ -22,8 +22,9 @@ class Record
 
   belongs_to :user, index: true
   has_many :comments, :as => :commentable
-
   has_and_belongs_to_many :viewers, :class_name => 'User', :inverse_of => nil
+
+  validates :user, presence: true
 
   attr_accessible :title, :description, :typescript,
                   :timing, :tags, :columns, :rows
@@ -32,7 +33,6 @@ class Record
   after_create  :increment_counters!
   after_destroy :decrement_counters!
 
-  validates :user, presence: true
 
   searchable do
     text :title, :boost => 5.0

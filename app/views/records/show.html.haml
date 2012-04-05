@@ -9,5 +9,9 @@
 
 = player_for(@record)
 
+.comments
+  - if @record.comments.any?
+    - @record.comments.each do |comment|
+      = render partial: 'comments/comment', object: comment
 
--# .comments= render :partial => 'shared/disqus', :locals => { disqus_url: record_path(@record, :only_path => false), disqus_id: @record.id.to_s, disqus_title: @record.title }
+= render partial: 'comments/form', locals: { commentable: @record }

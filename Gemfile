@@ -27,8 +27,8 @@ gem 'progress_bar'
 # Gems used only for assets and not required
 group :assets do
   gem 'sass-rails',    '~> 3.2.3'
+  gem 'rails-backbone'
   gem 'jquery-rails'
-  gem 'backbone-rails'
   gem 'coffee-rails',  '~> 3.2.1'
   gem 'compass-rails', '>= 1.0.0.rc.1'
   gem 'compass_twitter_bootstrap', '>= 2.0.1'
@@ -40,6 +40,8 @@ group :linux do
 end
 
 group :development, :test do
+  gem 'shelr' # used in integration tests
+
   gem 'factory_girl_rails'
   gem 'guard-spork'
   gem 'guard-rspec'

@@ -1,6 +1,10 @@
 //= require jquery
 //= require jquery_ujs
-//= require_tree ./bootstrap/
-//= require_tree ./tty.js/
+//= require underscore
+//= require backbone
+//= require backbone_rails_sync
+//= require backbone_datalink
+//= require backbone/shelr
+//= require_tree .
 
 

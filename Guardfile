@@ -18,6 +18,12 @@ guard 'rspec', :version => 2 do
   watch(%r{^lib/(.+)\.rb$})     { |m| "spec/lib/#{m[1]}_spec.rb" }
   watch('spec/spec_helper.rb')  { "spec" }
 
+  # turnip
+  watch(%r{^spec/.+_steps\.rb$})
+  watch(%r{^spec/.+\.feature$})
+  watch(%r{^spec/acceptance/.+\.feature$})
+  watch(%r{^spec/steps/.+_steps\.rb$})  { |m| "spec/acceptance/#{m[1]}.feature" }
+
   # Rails example
   watch(%r{^app/(.+)\.rb$})                           { |m| "spec/#{m[1]}_spec.rb" }
   watch(%r{^app/(.*)(\.erb|\.haml)$})                 { |m| "spec/#{m[1]}#{m[2]}_spec.rb" }

@@ -1,0 +1,31 @@
+// Place all the styles related to the comments controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+@import mixins
+
+.comment-form
+  +wrap
+  width: 600px  
+  text-align: left  
+  textarea
+    width: 590px
+    height: 50px
+    
+.comments
+  +wrap
+  +shadow
+  width: 600px  
+  background: white
+  .comment
+    clear: both
+    padding: 10px
+    border-bottom: #eee dotted 1px
+    min-height: 90px    
+    .badge
+      float: left      
+      width: 80px      
+      text-align: center      
+    .body
+      margin-left: 100px
+          

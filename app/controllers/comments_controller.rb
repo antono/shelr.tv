@@ -2,23 +2,28 @@ class CommentsController < ApplicationController
 
   COMMENTABLES = ['record', 'user']
 
-  respond_to :html, :json
+  respond_to :json
 
   def index
-    @comments = Comment.for(params[:commentable], params[:commentable_id]).page(params[:page]).desc(:created_at)
-    
+    @comments = commentable.comments.page(params[:page]).desc(:created_at)
     respond_with @comments
+  end
+
+  def create
+    @comment = commentable.comments.build(params[:comment])
+    @comment.user = current_user
+    @comment.save
+    render json: @comment
   end
 
   private
 
   def commentable
-    @_commentable ||= commentable_class.find(params[:id])
-  end
-
-  def commentable_class
-    if COMMENTABLES.include? params[:commentable]
-      @_commentable_class ||= params[:commentable].classify.constantize
+    params.each do |name, value|
+      if name =~ /(.+)_id$/ and COMMENTABLES.include?($1)
+        return $1.classify.constantize.find(value)
+      end
     end
+    nil
   end
 end

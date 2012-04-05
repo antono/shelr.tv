@@ -1,0 +1,15 @@
+.comment-form
+  - if logged_in?
+    = form_for [commentable, Comment.new], remote: true do |f|
+      = f.text_area :body, :cols => 700, :rows => 10
+      .btn-group
+        = f.submit 'Submit', class: 'btn submit btn-primary'
+    .comment-template.hidden
+      = render partial: 'comments/comment', object: Comment.new(user: current_user)
+  - else
+    %h2 Please login to post comments.
+    .btn-group
+      %a{ href: '/auth/github',  class: 'btn btn-large btn-success' } GitHub
+      %a{ href: '/auth/twitter', class: 'btn btn-large btn-success' } Twitter
+      %a{ href: '/auth/google_oauth2', class: 'btn btn-large btn-success' } Google
+

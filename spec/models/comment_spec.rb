@@ -11,7 +11,7 @@ describe Comment do
   describe ".for(commentable)" do
     it "should filter comments for given commentable" do
       commentable = Factory(:record)
-      commentable.comments.create(Factory.attributes_for(:comment))
+      commentable.comments << Factory(:comment)
       Comment.for('record', commentable.id).should == commentable.comments
     end
   end

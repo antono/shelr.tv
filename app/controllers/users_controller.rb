@@ -12,10 +12,13 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
 
     respond_to do |format|
+      # rendering feed
       format.atom do
         @records = Record.desc(:created_at).page(params[:page]).limit(25)
         respond_with @records
       end
+
+      # rendering user profile
       format.html do
         @records = @user.records.desc(:created_at).page(params[:page]).per(5)
         respond_with @user

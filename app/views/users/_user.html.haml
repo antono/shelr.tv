@@ -33,24 +33,24 @@
 
   - else
 
-    - unless user.website.blank?
+    - if user.website.present?
       .desc
         %strong Website
         = link_to sanitize(user.website), user.website
 
-    - unless user.twitter_name.blank?
+    - if user.twitter_name.present?
       .desc
         %strong Twitter
         - twitter_url = sanitize "http://twitter.com/#{user.twitter_name}"
         = link_to twitter_url, twitter_url
 
-    - unless user.github_name.blank?
+    - if user.github_name.present?
       .desc
         %strong Github
         - github_url = sanitize "http://github.com/#{user.github_name}"
         = link_to github_url, github_url
 
-    - unless user.bitcoin.blank?
+    - if user.bitcoin.present?
       .desc
         %strong Bitcoin
         =sanitize user.bitcoin
@@ -59,7 +59,7 @@
       %strong Member Since
       = user.created_at.strftime("%Y-%m-%d")
 
-    - unless user.about.blank?
+    - if user.about.present?
       .desc
         %strong About
         =sanitize user.about

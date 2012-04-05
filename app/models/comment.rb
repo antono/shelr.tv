@@ -6,11 +6,15 @@ class Comment
   include Mongoid::Timestamps
 
   field :body,       type: String
-  field :created_at, type: DateTime
+  field :created_at, type: DateTime, index: true
   field :updated_at, type: DateTime
 
   belongs_to :commentable, polymorphic: true
-  belongs_to :user
+  belongs_to :user, index: true
+
+  validates :user, presence: true
+
+  attr_accessible :body
 
   def self.for(commentable, commentable_id)
     if COMMENTABLES.include?(commentable)
