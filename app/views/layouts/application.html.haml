@@ -45,6 +45,8 @@
       = yield
 
     %footer
+      %p.follow
+        = render :partial => 'shared/twitter_follow'
       %p.copy
         %span{ :class => 'left' } ©
         = "2010-#{Date.today.year}"
