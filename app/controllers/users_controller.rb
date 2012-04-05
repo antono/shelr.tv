@@ -65,7 +65,7 @@ class UsersController < ApplicationController
     if user
       flash[:notice] = "Signed in successfully."
       session[:user_id] = user.id.to_s
-      redirect_to user_path(user)
+      redirect_to request.env['omniauth.origin'] || user_path(user)
     else
       user_info = omniauth['info']
       user = User.new(nickname: user_info['nickname'] || user_info['name'])
