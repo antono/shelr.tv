@@ -2,12 +2,19 @@
   %meta{ name: 'title', content: 'Shelr.tv' }
   %meta{ name: 'description', content: "Record and share Your shell" }
 
+- content_for :title do
+  Shelr.tv - screencasting for shell ninjas
+
 .krio.hero-unit
   %h1
     Share Your Shell
     %br
     Kung-Fu!
   %a{ href: '/about', class: 'btn btn-success btn-large'} NOW!
+  %br
+  %br
+  = render :partial => 'shared/tweet'
+  
 
 %ul.records
   - @records.each do |record|
