@@ -3,9 +3,9 @@ require "bundler/capistrano"
 set :application, "shelr"
 
 set :scm, :git
-set :repository, "gitosis@antono.info:shelr.git"
+set :repository, "git://github.com/antono/shelr.tv.git"
 set :user, 'ubuntu'
-set :branch, :next
+set :branch, :master
 set :deploy_via, :remote_cache
 
 ssh_options[:forward_agent] = true
