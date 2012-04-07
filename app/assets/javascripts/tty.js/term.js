@@ -217,13 +217,13 @@ Terminal.bindKeys = function() {
 
   // We could put an "if (Term.focus)" check
   // here, but it shouldn't be necessary.
-  on(document, 'keydown', function(key) {
-    return Terminal.focus.keyDownHandler(key);
-  }, true);
+  // on(document, 'keydown', function(key) {
+  //   return Terminal.focus.keyDownHandler(key);
+  // }, true);
 
-  on(document, 'keypress', function(key) {
-    return Terminal.focus.keyPressHandler(key);
-  }, true);
+  // on(document, 'keypress', function(key) {
+  //   return Terminal.focus.keyPressHandler(key);
+  // }, true);
 };
 
 /**
