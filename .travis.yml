@@ -1,6 +1,6 @@
 language: ruby
 gemfile: Gemfile.ci
-script: "bundle exec rake travis:build"
+script: "./script/build.sh"
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
