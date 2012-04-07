@@ -18,5 +18,12 @@
       - record.tags.split(",").map(&:strip).each do |tag|
         = link_to sanitize(tag), records_path(:tags => [tag])
   .desc
+    Published
     = time_ago_in_words(record.created_at)
     ago
+    %br
+
+  - if record.comments.any?
+    .desc
+      =link_to  pluralize(record.comments.count, 'comment'), record
+      so far...
