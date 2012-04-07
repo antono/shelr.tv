@@ -37,6 +37,9 @@
               %li= link_to 'Login', '/login'
 
     %section.flashes
+      - unless logged_in?
+        .alert.alert-success
+          Hey, You dont need registration, just login!
       - [:error, :notice].each do |type|
         - unless flash[type].blank?
           .alert{ class: { error: 'alert-error', notice: 'alert-success', info: 'alert-info' }[type] }= flash[type]
