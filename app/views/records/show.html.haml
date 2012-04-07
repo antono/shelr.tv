@@ -9,9 +9,12 @@
 
 = player_for(@record)
 
+-# TODO: cleanup
 - if @record.comments.any?
   %h2.comm Comments
-  .comments
+
+.comments
+  - if @record.comments.any?
     - @record.comments.each do |comment|
       = render partial: 'comments/comment', object: comment
 
