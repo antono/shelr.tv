@@ -1,7 +1,5 @@
 source 'http://rubygems.org'
 
-gem 'unicorn'
-
 gem 'rails', '~> 3.2.1'
 gem 'haml-rails'
 gem 'rdiscount'
@@ -35,18 +33,8 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-group :linux do
-  gem 'libnotify'
-end
-
 group :development, :test do
-  gem 'shelr' # used in integration tests
-
   gem 'factory_girl_rails'
-  gem 'guard-spork'
-  gem 'guard-rspec'
-  gem 'guard-bundler'
-  gem 'guard-ctags-bundler', git: 'git://github.com/antono/guard-ctags-bundler.git'
 
   gem 'rake'
   gem 'pry'
