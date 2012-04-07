@@ -1,0 +1,11 @@
+secret_token: kasjdfkljaowiwueriouipuiu29048ujiopopwuiqfuisajidfjkpoiuwioeruoiufsdfkjdkfj
+github:
+  id: CHANGE_ME
+  secret: CHANGE_ME
+google:
+  id: CHANGE_ME
+  secret: CHANGE_ME
+twitter:
+  id: CHANGE_ME
+  secret: CHANGE_ME
+  

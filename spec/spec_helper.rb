@@ -1,3 +1,5 @@
+ENV["RAILS_ENV"] ||= 'test'
+require File.expand_path("../../config/environment", __FILE__)
 require 'rubygems'
 require 'spork'
 require 'capybara/rails'
@@ -5,9 +7,6 @@ require 'capybara/rspec'
 require 'turnip'
 require 'turnip/capybara'
 require 'database_cleaner'
-
-ENV["RAILS_ENV"] ||= 'test'
-require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 
 Spork.prefork do
