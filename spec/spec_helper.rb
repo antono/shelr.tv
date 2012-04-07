@@ -1,6 +1,6 @@
 ENV["RAILS_ENV"] ||= 'test'
-require File.expand_path("../../config/environment", __FILE__)
 require 'rubygems'
+require File.expand_path("../../config/environment", __FILE__)
 require 'spork'
 require 'capybara/rails'
 require 'capybara/rspec'

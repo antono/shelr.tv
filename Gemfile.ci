@@ -39,6 +39,7 @@ group :development, :test do
   gem 'rake'
   gem 'pry'
   gem 'pry-nav'
+  gem 'spork'
 
   gem 'turnip', git: "git://github.com/jnicklas/turnip.git"
   gem 'capybara'
