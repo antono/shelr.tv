@@ -1,4 +1,4 @@
-# Shelr.tv --- terminal screencasting service
+# Shelr.tv - [service for terminal screencasting][TV]
 
 [![Build Status](https://secure.travis-ci.org/antono/shelr.tv.png?branch=master)](http://travis-ci.org/antono/shelr.tv)
 
@@ -21,3 +21,6 @@ screencasting. Service allow you to share your terminal records like
 - make sure other test pass
 - create pull request
 - enjoy :)
+
+
+[TV]: http://shelr.tv/
