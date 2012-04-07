@@ -1,7 +1,7 @@
 .comment-form
   - if logged_in?
     = form_for [commentable, Comment.new], remote: true do |f|
-      = f.text_area :body, :cols => 700, :rows => 10
+      = f.text_area :body, :cols => 700, :rows => 10, placeholder: 'Your comment here...'
       .btn-group
         = f.submit 'Submit', class: 'btn submit btn-primary'
     .comment-template.hidden

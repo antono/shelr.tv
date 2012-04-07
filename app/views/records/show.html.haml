@@ -9,10 +9,10 @@
 
 = player_for(@record)
 
-%h2.comm Comments
-.comments
-  - if @record.comments.any?
+- if @record.comments.any?
+  %h2.comm Comments
+  .comments
     - @record.comments.each do |comment|
       = render partial: 'comments/comment', object: comment
-
-= render partial: 'comments/form', locals: { commentable: @record }
+- else
+  = render partial: 'comments/form', locals: { commentable: @record }
