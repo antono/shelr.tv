@@ -3,6 +3,6 @@
 FactoryGirl.define do
   factory :comment do
     body { "comment body" }
-    user { Factory :user }
+    user { FactoryGirl.create :user }
   end
 end

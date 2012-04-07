@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Comment do
 
-  subject { Factory.build :comment }
+  subject { build :comment }
 
   it_behaves_like "editable with restrictions"
   it_behaves_like "editable by God"
@@ -10,8 +10,8 @@ describe Comment do
 
   describe ".for(commentable)" do
     it "should filter comments for given commentable" do
-      commentable = Factory(:record)
-      commentable.comments << Factory(:comment)
+      commentable = create(:record)
+      commentable.comments << create(:comment)
       Comment.for('record', commentable.id).should == commentable.comments
     end
   end

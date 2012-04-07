@@ -27,7 +27,7 @@ steps_for :records do
       Record.destroy_all
     else
       (num - Record.count).times do
-        FactoryGirl.create(:record)
+        create(:record)
       end
     end
   end
@@ -37,9 +37,9 @@ steps_for :records do
     table.hashes.each do |hash|
       record_json = load_record('ls.json')
       record_json.delete('created_at')
-      record = Factory.build(:record, record_json)
+      record = build(:record, record_json)
       record.title = hash['title']
-      record.user = Factory(:user, nickname: hash['nickname'])
+      record.user = create(:user, nickname: hash['nickname'])
       record.save
       @_records[hash['title']] = record
     end

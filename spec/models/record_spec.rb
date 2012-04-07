@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Record do
 
-  subject { Factory.build :record }
+  subject { build :record }
 
   it_behaves_like "editable with restrictions"
   it_behaves_like "editable by God"
@@ -30,7 +30,7 @@ describe Record do
     it "validates presence of user" do
       subject.user = nil
       subject.save.should be_false
-      subject.user = Factory :user
+      subject.user = create :user
       subject.save.should be_true
     end
   end
@@ -84,10 +84,10 @@ describe Record do
   end
 
   describe "#hit!(user)" do
-    let(:subject) { Factory(:record) }
+    let(:subject) { create :record }
 
     context "when user is not nil" do
-      let(:user) { Factory(:user) }
+      let(:user) { create :user }
 
       it "adds user to viewers" do
         subject.viewers.should_not include(user)
@@ -117,11 +117,11 @@ describe Record do
   end
 
   describe "#views(type)" do
-    subject { Factory(:record) }
+    subject { create :record }
 
     before :each do
-      subject.viewers << Factory(:user)
-      subject.viewers << Factory(:user)
+      subject.viewers << create(:user)
+      subject.viewers << create(:user)
       subject.hits = 10
       subject.save
     end

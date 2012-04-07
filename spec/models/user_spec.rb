@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe User do
 
-  subject { Factory.build :user }
+  subject { build :user }
 
   it_behaves_like "editable with restrictions"
   it_behaves_like "editable by God"

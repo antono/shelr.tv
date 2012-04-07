@@ -38,8 +38,8 @@ describe RecordsController do
     end
 
     context "when format is json" do
-      let(:user)   { Factory(:user) }
-      let(:record) { Factory(:record) }
+      let(:user)   { create :user }
+      let(:record) { create :record }
 
       it "hits the record with current_user" do
         controller.stub(:current_user).and_return(user)

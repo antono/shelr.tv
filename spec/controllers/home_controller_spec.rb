@@ -10,7 +10,7 @@ describe HomeController do
 
   describe "GET landing" do
     it "should assign records for feed" do
-      Factory(:record)
+      create :record
       get :landing
       assigns(:records).should_not be_blank
     end

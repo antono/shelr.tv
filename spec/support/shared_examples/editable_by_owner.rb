@@ -11,7 +11,7 @@ shared_examples "editable by Owner" do
 
     context "when user is NOT subject.owner" do
       it "returns false" do
-        other_user = Factory.build(subject.class.to_s.underscore.to_sym)
+        other_user = build(subject.class.to_s.underscore.to_sym)
         subject.editable_by?(other_user).should be_false
       end
     end

@@ -26,9 +26,9 @@ describe CommentsController do
   end
 
   describe "POST create" do
-    let(:user) { Factory(:user) }
-    let(:commentable) { Factory(:record) }
-    let(:comment) { Factory.build(:comment) }
+    let(:user) { create :user }
+    let(:commentable) { create :record }
+    let(:comment) { create :comment }
 
     before do
       controller.stub(:commentable => commentable)

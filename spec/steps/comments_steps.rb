@@ -3,7 +3,7 @@ steps_for :comments do
 
   step ":record_title record has :number comment(s)" do |title, number|
     number.to_i.times do 
-      comment = Factory(:comment, user: Factory(:user))
+      comment = create(:comment, user: create(:user))
       @_records[title].comments << comment
     end
   end
