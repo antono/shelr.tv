@@ -14,5 +14,5 @@
   .comments
     - @record.comments.each do |comment|
       = render partial: 'comments/comment', object: comment
-- else
-  = render partial: 'comments/form', locals: { commentable: @record }
+
+= render partial: 'comments/form', locals: { commentable: @record }
