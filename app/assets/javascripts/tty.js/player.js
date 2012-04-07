@@ -54,9 +54,9 @@ VT.Player.prototype.initProgress = function() {
   this.progress = $('.progress');
   this.progressBar = this.progress.find('.bar');
   this.progress.css("width", (this.termWidth - 75) + "px");
-  
-  // TODO: Revind
-  this.progress.click(function(e) { console.log(e) })
+  this.progress.click(function(e) {
+    console.log(e);
+  })
 }
 
 VT.Player.prototype.initControls = function() {
