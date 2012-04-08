@@ -12,7 +12,7 @@ describe User do
 
   describe "on create" do
     it "should generate api key" do
-      subject.should_receive(:generate_api_key)
+      subject.should_receive(:generate_api_key!)
       subject.save
     end
 

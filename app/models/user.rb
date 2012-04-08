@@ -29,7 +29,8 @@ class User
   has_many :records
   has_many :comments
 
-  before_create :generate_api_key, :maybe_assign_nickname_placeholder
+  before_create :maybe_assign_nickname_placeholder
+  after_create :generate_api_key!
 
   def avatar_url(size)
     return "/assets/avatars/anonymous-#{size}.png" if nickname == 'Anonymous'
@@ -51,7 +52,7 @@ class User
   end
 
   def generate_api_key
-    self.api_key = Digest::MD5.hexdigest(rand(1000).to_s)
+    self.api_key = Digest::MD5.hexdigest(self.id.to_s + rand.to_s + Time.now.to_s)
   end
 
   def generate_api_key!
