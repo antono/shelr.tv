@@ -3,6 +3,11 @@
 
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
-require 'sitemap_generator/tasks'
+
+begin
+  require 'sitemap_generator/tasks'
+rescue Exception => e
+  puts "Warning, couldn't load gem tasks: #{e.message}! Skipping..."
+end
 
 Shelr::Application.load_tasks
