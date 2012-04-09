@@ -16,6 +16,8 @@ gem 'mongoid', '~> 2.0'
 gem 'mongoid_rails_migrations'
 gem 'bson_ext'
 
+gem 'sitemap_generator'
+
 # Search
 gem 'sunspot_rails'
 gem 'sunspot_solr'

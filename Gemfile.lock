@@ -260,6 +260,7 @@ GEM
     shelr (0.12.0)
       json (>= 1.6.5)
     shoulda-matchers (1.0.0)
+    sitemap_generator (2.2.1)
     slop (2.4.4)
     spoon (0.0.1)
     spork (0.9.0)
@@ -334,6 +335,7 @@ DEPENDENCIES
   sass-rails (~> 3.2.3)
   shelr
   shoulda-matchers
+  sitemap_generator
   sunspot_matchers
   sunspot_mongo!
   sunspot_rails
