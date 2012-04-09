@@ -31,7 +31,8 @@ class Record
   validates :user, presence: true
 
   attr_accessible :title, :description, :typescript,
-                  :timing, :tags, :columns, :rows
+                  :timing, :tags, :columns, :rows,
+                  :term, :shell, :uname, :xdg_current_desktop
 
   before_create :set_license
   after_create  :increment_counters!
