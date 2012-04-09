@@ -9,7 +9,9 @@ Service allow you to share your terminal records like
 
 # Quickstart for Developers
 
-    sudo apt-get install mongodb-server
+Ruby 1.9.2+ required.
+
+    sudo apt-get install mongodb-server openjdk-6-jre
     bundle install
     bundle exec foreman start
 
