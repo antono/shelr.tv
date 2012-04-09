@@ -17,6 +17,8 @@ class RecordsController < ApplicationController
     @record = Record.find(params[:id])
     @record.hit!(current_user) if request.format.json?
     respond_with @record
+  rescue Mongoid::Errors::DocumentNotFound
+    render :no_such_record
   end
 
   def edit

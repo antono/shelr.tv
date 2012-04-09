@@ -1,0 +1,6 @@
+.info-block
+  %h2 No such record :(
+  %p Try our cool search.
+  = form_tag '/records/search', :method => :get  do
+    = search_field_tag :q, '', :placeholder => 'Search', :class => 'search-query'
+    = submit_tag 'Find!', :class => 'btn btn-primary'

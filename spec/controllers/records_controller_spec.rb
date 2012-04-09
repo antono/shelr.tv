@@ -37,6 +37,15 @@ describe RecordsController do
       assigns(:record).should == 'record'
     end
 
+    context "when no such record" do
+      it "should render :no_such_record template" do
+        record_id = create(:record).id.to_s
+        Record.destroy_all
+        get :show, id: record_id
+        response.should render_template :no_such_record
+      end
+    end
+
     context "when format is json" do
       let(:user)   { create :user }
       let(:record) { create :record }
@@ -48,6 +57,11 @@ describe RecordsController do
         record.should_receive(:hit!).with(user)
         get :show, id: 'id', format: 'json'
       end
+    end
+
+    context "when record is private" do
+      let(:record) { create(:record, private: true) }
+
     end
   end
 
