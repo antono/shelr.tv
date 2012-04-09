@@ -87,8 +87,10 @@ describe Record do
   end
 
   describe "#description_html" do
-    it "should convert markdown from #description to html" do
+    it "generated on save" do
       subject.description = "# Hello World"
+      subject.description_html.should_not be_present
+      subject.save
       subject.description_html.should == "<h1>Hello World</h1>\n"
     end
   end

@@ -8,22 +8,23 @@ class Record
   include Mongoid::Timestamps
   include Sunspot::Mongo
 
-  field :title,        type: String
-  field :description,  type: String
-  field :columns,      type: Integer
-  field :rows,         type: Integer
-  field :typescript,   type: String
-  field :timing,       type: String
-  field :tags,         type: Array,    index: true
-  field :license,      type: String,   index: true
-  field :term,         type: String
-  field :shell,        type: String
-  field :uname,        type: String
-  field :private,      type: Boolean,  index: true, default: false
-  field :access_key,   type: String,   index: true, default: ''
-  field :hits,         type: Integer,  index: true, default: 0
-  field :created_at,   type: DateTime, index: true
-  field :updated_at,   type: DateTime, index: true
+  field :title,                type: String
+  field :description,          type: String
+  field :description_html,     type: String
+  field :columns,              type: Integer
+  field :rows,                 type: Integer
+  field :typescript,           type: String
+  field :timing,               type: String
+  field :tags,                 type: Array,    index: true
+  field :license,              type: String,   index: true
+  field :term,                 type: String
+  field :shell,                type: String
+  field :uname,                type: String
+  field :private,              type: Boolean,  index: true, default: false
+  field :access_key,           type: String,   index: true, default: ''
+  field :hits,                 type: Integer,  index: true, default: 0
+  field :created_at,           type: DateTime, index: true
+  field :updated_at,           type: DateTime, index: true
   field :xdg_current_desktop,  type: String
 
   belongs_to :user, index: true
@@ -39,6 +40,8 @@ class Record
   before_create :set_license, :generate_access_key
   after_create  :increment_counters!
   after_destroy :decrement_counters!
+
+  before_save :update_description_html
 
   default_scope where(private: false)
 
@@ -81,10 +84,6 @@ class Record
     else
       read_attribute(:title)
     end
-  end
-
-  def description_html
-    RDiscount.new(description).to_html
   end
 
   def tags=(tags)
@@ -135,6 +134,10 @@ class Record
 
   def generate_access_key
     self.access_key = Digest::MD5.hexdigest(rand.to_s)
+  end
+
+  def update_description_html
+    self.description_html = RDiscount.new(description).to_html
   end
 
   def increment_counters!
