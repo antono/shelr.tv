@@ -20,7 +20,7 @@ Ruby 1.9.2+ required.
 - fork
 - add spec
 - add feature
-- make sure other test pass
+- [make sure other test pass](http://shelr.tv/records/4f8333f096608050cd000003)
 - create pull request
 - enjoy :)
 
