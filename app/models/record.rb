@@ -17,8 +17,12 @@ class Record
   field :hits,         type: Integer,  index: true, default: 0
   field :tags,         type: Array,    index: true
   field :license,      type: String,   index: true
+  field :term,         type: String
+  field :shell,        type: String
+  field :uname,        type: String
   field :created_at,   type: DateTime, index: true
   field :updated_at,   type: DateTime, index: true
+  field :xdg_current_desktop,  type: String
 
   belongs_to :user, index: true
   has_many :comments, :as => :commentable

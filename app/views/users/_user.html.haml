@@ -11,6 +11,25 @@
       .desc
         %strong Description
         .long=sanitize record.description_html
+    - if record.uname.present?
+      .desc
+        %strong Uname
+        .long=sanitize record.uname
+    - if record.xdg_current_desktop.present?
+      .desc
+        %strong Desktop
+        .long=sanitize record.xdg_current_desktop
+    - if record.term.present?
+      .desc
+        %strong Term
+        .long=sanitize record.term
+    - if record.shell.present?
+      .desc
+        %strong Shell
+        .long=sanitize record.shell
+    .desc
+      %strong Size
+        .long=sanitize record.size
     .desc
       %strong Statistics
       - anon_count = @record.views(:anonymous)

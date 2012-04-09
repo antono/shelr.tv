@@ -3,4 +3,4 @@
   .badge
     .avatar= image_tag user.avatar_url(50)
     .nick= link_to user.nickname, user
-  .body= comment.body
+  .body=sanitize comment.body
