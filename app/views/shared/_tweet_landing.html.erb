@@ -1,2 +1,4 @@
+<%- if Rails.env.production? %>
 <a href="https://twitter.com/share" class="twitter-share-button" data-text="Terminal screencasts for shell ninjas!" data-via="shelr_tv" data-size="large" data-related="shelr_tv" data-hashtags="shelr">Tweet</a>
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+<%- end %>

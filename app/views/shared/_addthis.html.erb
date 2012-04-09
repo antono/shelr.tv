@@ -1,3 +1,4 @@
+<%- if Rails.env.production? %>
 <!-- AddThis Button BEGIN -->
 <div class="addthis_toolbox addthis_default_style">
 <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
@@ -6,3 +7,4 @@
 </div>
 <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4f4574a718d284b4" async="async"></script>
 <!-- AddThis Button END -->
+<%- end %>
