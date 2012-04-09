@@ -88,7 +88,21 @@ namespace :config do
 
 end
 
+namespace :deploy do
+  task :copy_old_sitemap do
+    run "if [ -e #{previous_release}/public/sitemap_index.xml.gz ];
+           then cp #{previous_release}/public/sitemap* #{current_release}/public/;
+         fi"
+  end
+end
+
+task :refresh_sitemaps do
+  run "cd #{latest_release} && RAILS_ENV=production bundle exec rake sitemap:refresh"
+end
+
 after 'deploy:update_code', 'config:cp'
+after "deploy:update_code", "deploy:copy_old_sitemap"
+after "deploy", "refresh_sitemaps"
 
 # recompile assets after updating config
 load 'deploy/assets'
