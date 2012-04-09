@@ -19,3 +19,7 @@ end
 step "I click link :title" do |title|
   click_link title
 end
+
+step "I should not see :text" do |text|
+  page.should_not have_content text
+end

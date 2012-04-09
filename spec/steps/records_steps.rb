@@ -44,4 +44,9 @@ steps_for :records do
       @_records[hash['title']] = record
     end
   end
+
+  step "record :title is private" do |title|
+    @_records[title].private = true
+    @_records[title].save
+  end
 end

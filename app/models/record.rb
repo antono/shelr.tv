@@ -14,12 +14,14 @@ class Record
   field :rows,         type: Integer
   field :typescript,   type: String
   field :timing,       type: String
-  field :hits,         type: Integer,  index: true, default: 0
   field :tags,         type: Array,    index: true
   field :license,      type: String,   index: true
   field :term,         type: String
   field :shell,        type: String
   field :uname,        type: String
+  field :private,      type: Boolean,  index: true, default: false
+  field :access_key,   type: String,   index: true, default: ''
+  field :hits,         type: Integer,  index: true, default: 0
   field :created_at,   type: DateTime, index: true
   field :updated_at,   type: DateTime, index: true
   field :xdg_current_desktop,  type: String
@@ -34,10 +36,11 @@ class Record
                   :timing, :tags, :columns, :rows,
                   :term, :shell, :uname, :xdg_current_desktop
 
-  before_create :set_license
+  before_create :set_license, :generate_access_key
   after_create  :increment_counters!
   after_destroy :decrement_counters!
 
+  default_scope where(private: false)
 
   searchable do
     text :title, :boost => 5.0
@@ -128,6 +131,10 @@ class Record
 
   def set_license
     self.license = 'by-sa'
+  end
+
+  def generate_access_key
+    self.access_key = Digest::MD5.hexdigest(rand.to_s)
   end
 
   def increment_counters!

@@ -12,6 +12,16 @@ describe Record do
   its(:comments)   { should == []        }
   its(:viewers)    { should be_empty     }
   its(:hits)       { should == 0         }
+  its(:private)    { should == false     }
+  its(:access_key) { should == ''        }
+
+  describe "default scope" do
+    it "should not find private records by default" do
+      priv = create(:record, private: true)
+      publ = create(:record, private: true)
+      Record.all.should_not include priv
+    end
+  end
 
   describe "on create" do
     before(:each) { subject.should be_new_record }
