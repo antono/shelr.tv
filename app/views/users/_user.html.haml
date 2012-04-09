@@ -14,7 +14,7 @@
     - if record.uname.present?
       .desc
         %strong Uname
-        .long=sanitize record.uname
+        .long.uname=sanitize record.uname
     - if record.xdg_current_desktop.present?
       .desc
         %strong Desktop
