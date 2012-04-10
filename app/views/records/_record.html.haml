@@ -23,7 +23,7 @@
 
   .desc
     - if record.comments.any?
-      = link_to pluralize(record.comments.count, 'comment'), record, class: 'label label-success' 
+      = link_to pluralize(record.comments.count, 'comment'), record, class: 'label label-success comments-count'
     %p.tags
       - record.tags.split(",").map(&:strip).each do |tag|
         = link_to sanitize(tag), records_path(:tags => [tag])
