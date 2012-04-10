@@ -39,10 +39,6 @@
               %li= link_to 'Login', '/login'
 
     %section.flashes
-      .alert.alert-info
-        Join our
-        = link_to 'IRC chat', 'http://webchat.freenode.net/?channels=shelr'
-        at freenode.net
       - [:error, :notice].each do |type|
         - unless flash[type].blank?
           .alert{ class: { error: 'alert-error', notice: 'alert-success', info: 'alert-info' }[type] }= flash[type]
