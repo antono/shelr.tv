@@ -52,7 +52,7 @@ VT.Player.prototype.initSpeedControl = function() {
     min:1,
     max:10,
     animation: 'tween',
-    // hideInput: true,
+    hideInput: true,
     forceValue: true,
     callbacks: {
       update: [function (update) {
