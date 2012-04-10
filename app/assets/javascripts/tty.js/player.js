@@ -39,17 +39,27 @@ VT.Player.prototype.onError = function() {
 }
 
 VT.Player.prototype.initSpeedControl = function() {
+  console.log(document.getElementsByClassName("speed")[0]);
   var speed = jQuery('.speed');
   var player = this;
-  speed.attr('step', 100)
-    .attr('min', -500)
-    .attr('max', +500)
-    .attr('value', 0);
-  
   speed.change(function(e) {
-    console.log("Speed:", e.target.value);
-    player.speedup = (e.target.value * -1);
   })
+  fdSlider.createSlider({
+    inp: document.getElementsByClassName("speed")[0],
+    value: 1,
+    step:0.5,
+    maxStep:0.5,
+    min:1,
+    max:10,
+    animation: 'tween',
+    // hideInput: true,
+    forceValue: true,
+    callbacks: {
+      update: [function (update) {
+        player.speedup = (update.value * -1);
+      }]
+    }
+  });
 }
 
 VT.Player.prototype.initProgress = function() {
@@ -63,9 +73,6 @@ VT.Player.prototype.initProgress = function() {
 VT.Player.prototype.initControls = function() {
   this.controls = this.element.getElementsByClassName('controls')[0];
   this.controls.setAttribute("style", "width:" + this.termWidth + "px");
-  this.controls.addEventListener('click', function(e) {
-    console.log(e)
-  }, true);
 }
 
 VT.Player.prototype.initCmdline = function() {
@@ -158,7 +165,7 @@ VT.Player.prototype.play = function() {
   button.getElementsByTagName('img')[0].setAttribute('src', '/assets/term/playback-pause.png')
 
   player.hoverHide();
-  
+
   if (player.playing) return;
   // if (player.timelinePosition == 0) player.term.t;
 
@@ -174,7 +181,7 @@ VT.Player.prototype.play = function() {
       setTimeout(function() {
         player.updateTimelinePosition(+1);
         scheduleChunked(timeline);
-      }, chunk[0] + (player.speedup * 10));
+      }, chunk[0] + (player.speedup * 100));
     } else {
       if (!player.playing) {
         console.log('paused')
@@ -185,6 +192,7 @@ VT.Player.prototype.play = function() {
       player.hoverShow();
     }
   }
+
   scheduleChunked(player.timeline);
 }
 
@@ -217,7 +225,7 @@ VT.Player.prototype.initHover = function(content) {
   // var player = this;
   this.hover = document.createElement('div');
   // this.term.element.appendChild(this.hover);
-  
+
   // this.vt.canvas.container.addEventListener('mouseout', function(ev) {
   //   if (!player.playing && ev.target.classList.contains('canvas')) {
   //     //console.log(ev.target.classList)
@@ -226,7 +234,7 @@ VT.Player.prototype.initHover = function(content) {
   //     ev.stopPropagation();
   //   }
   // }, false)
-  
+
   // this.hover.addEventListener('mouseover', function(ev) {
   //   if (!player.playing)  {
   //     player.hoverHide();

@@ -10,7 +10,7 @@
 
 #player
   margin: 0 auto
-  margin-bottom: 15px  
+  margin-bottom: 15px
   .header
     +border-top-left-radius(5px)
     +border-top-right-radius(5px)
@@ -44,6 +44,11 @@
     margin-bottom: 0
     .bar
       width: 0%
+  .speed-container
+    width: 300px
+  .fd-slider
+    height: 20px
+    margin-top: 5px
   nav.controls
     height: 30px
     border-top: 1px solid #444
@@ -53,6 +58,12 @@
       margin: 0
       float: left
       height: 30px
+    .sc-label
+      color: gray
+      line-height: 30px
+      margin-left: 30px
+      margin-right: 10px
+      margin-top: -2px
     .sc-button
       cursor: pointer
       line-height: 30px
@@ -61,7 +72,7 @@
         margin: 4px
     .sc-settings
       display: none
-        
+
 #player-hover
   text-align: center
   color: white
