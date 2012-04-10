@@ -37,7 +37,6 @@
       .long
         == #{pluralize anon_count, 'view'} by Anonymous and
         == #{pluralize reg_count, 'view'} by registered users
-
     - unless record.tags.blank?
       .desc.tags
         %strong Tags
@@ -53,6 +52,10 @@
 
   - else
 
+    - if defined?(role)
+      .desc
+        %strong Role
+        = RDiscount.new(role).to_html.html_safe
     - if user.website.present?
       .desc
         %strong Website
