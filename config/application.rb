@@ -50,8 +50,9 @@ module Shelr
     end
 
     config.secret_token = Shelr.config['secret_token']
-
     config.assets.enabled = true
+    config.assets.compress = true
+    config.assets.js_compressor = :uglifier
     config.sass.cache = true
     config.sass.read_cache = true
     config.sass.cache_store = Sass::CacheStores::Memory.new

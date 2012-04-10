@@ -25,16 +25,17 @@ gem 'sunspot_with_kaminari'
 gem 'sunspot_mongo', git: 'https://github.com/derekharmel/sunspot_mongo.git'
 gem 'progress_bar'
 
-gem 'sass-rails',    '~> 3.2.3'
+gem 'sass-rails', '~> 3.2.3'
+gem 'uglifier', '>= 1.0.3'
 
 # Gems used only for assets and not required
 group :assets do
   gem 'rails-backbone'
+  gem 'underscore-rails'
   gem 'jquery-rails'
   gem 'coffee-rails',  '~> 3.2.1'
   gem 'compass-rails', '>= 1.0.0.rc.1'
   gem 'compass_twitter_bootstrap', '>= 2.0.1'
-  gem 'uglifier', '>= 1.0.3'
 end
 
 group :linux do
