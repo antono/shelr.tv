@@ -13,6 +13,7 @@ Ruby 1.9.2+ required.
 
     sudo apt-get install mongodb-server openjdk-6-jre
     bundle install
+    bundle exec rake db:seed
     bundle exec foreman start
 
 # Contributions welcome!
