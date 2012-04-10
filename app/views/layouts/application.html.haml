@@ -39,6 +39,10 @@
               %li= link_to 'Login', '/login'
 
     %section.flashes
+      .alert.alert-error
+        New bugfix release v0.13.0. Please upgrade!
+        &rarr;
+        %code sudo gem install shelr
       - [:error, :notice].each do |type|
         - unless flash[type].blank?
           .alert{ class: { error: 'alert-error', notice: 'alert-success', info: 'alert-info' }[type] }= flash[type]
