@@ -16,6 +16,8 @@ Shelr::Application.routes.draw do
   match '/login'  => 'users#login', as: 'login'
   match '/about'  => 'home#about', as: 'about'
 
+  match '/opensearch.xml'  => 'home#opensearch', as: 'opensearch'
+
   root :to => "home#landing"
 
 end
