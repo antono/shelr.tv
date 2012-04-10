@@ -8,4 +8,10 @@ google:
 twitter:
   id: CHANGE_ME
   secret: CHANGE_ME
-  
+team:
+  antono:
+    id: 4f103f3f6a89890001000001
+    note: Client and Server development
+  gonzih:
+    id: 4f45d7dde10dd70001000001
+    note: Arch Linux packaging, Server Development
