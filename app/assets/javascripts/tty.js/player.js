@@ -39,7 +39,6 @@ VT.Player.prototype.onError = function() {
 }
 
 VT.Player.prototype.initSpeedControl = function() {
-  console.log(document.getElementsByClassName("speed")[0]);
   var speed = jQuery('.speed');
   var player = this;
   speed.change(function(e) {
