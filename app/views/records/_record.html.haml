@@ -12,18 +12,18 @@
   %h3.title
     = link_to sanitize(record.title), record
   .desc
+    %time{ datetime: record.created_at }
+      = time_ago_in_words(record.created_at)
+      ago
+    
+  .desc.description
     =sanitize record.description_html
   - unless record.tags.blank?
+    %br
+
+  .desc
+    - if record.comments.any?
+      = link_to pluralize(record.comments.count, 'comment'), record, class: 'label label-success' 
     %p.tags
       - record.tags.split(",").map(&:strip).each do |tag|
         = link_to sanitize(tag), records_path(:tags => [tag])
-  .desc
-    Published
-    = time_ago_in_words(record.created_at)
-    ago
-    %br
-
-  - if record.comments.any?
-    .desc
-      =link_to  pluralize(record.comments.count, 'comment'), record
-      so far...
