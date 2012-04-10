@@ -4,6 +4,8 @@
     %h1
       = [@record.title, ' - ', @record.size].join
   #term
+  .progress.progress-info.progress-striped
+    .bar
   %nav.controls
     %li.sc-button.toggle{ :'data-action' => 'play' }
       %img{ src: '/assets/term/playback-start.png' }
@@ -16,8 +18,6 @@
           %li= link_to 'destroy', @record, method: 'delete', confirm: 'Really Destroy?'
     -# %li
     -#   %input.speed{ type: 'range', value: 0 }
-    %li.progress.progress-info.progress-striped
-      .bar
     %br
     %input{ :type => :text, :value => "shelr play #{record_path(@record, :only_path => false, :format => :json)}", :class => 'cmdline hidden' }
 

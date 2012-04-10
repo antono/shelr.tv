@@ -1,6 +1,5 @@
 @import mixins, compass/css3, compass/utilities
 
-
 #term
   font-family: "DejaVu Sans Mono", monospace
   font-size: 11px
@@ -37,6 +36,14 @@
     border: 0
   input[type=range]
     :margin-bottom -10px
+  .progress
+    +border-radius(0)
+    background-color: #333
+    background-image: none
+    height: 10px
+    margin-bottom: 0
+    .bar
+      width: 0%
   nav.controls
     height: 30px
     border-top: 1px solid #444
@@ -54,11 +61,6 @@
         margin: 4px
     .sc-settings
       display: none
-    .progress
-      height: 16px
-      margin: 7px      
-      .bar
-        width: 0%
         
 #player-hover
   text-align: center

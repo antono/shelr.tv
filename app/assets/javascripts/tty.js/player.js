@@ -11,6 +11,7 @@ VT.Player = function(term) {
   this.data    = null;
   this.timing  = null;
   this.element = document.getElementById('player');
+  this.el = $(this.element);
   this.speedup = 0;
   this.calculateTermSize();
   this.initSpeedControl();
@@ -46,14 +47,14 @@ VT.Player.prototype.initSpeedControl = function() {
     .attr('value', 0);
   
   speed.change(function(e) {
+    console.log("Speed:", e.target.value);
     player.speedup = (e.target.value * -1);
   })
 }
 
 VT.Player.prototype.initProgress = function() {
-  this.progress = $('.progress');
+  this.progress = this.el.find('.progress');
   this.progressBar = this.progress.find('.bar');
-  this.progress.css("width", (this.termWidth - 75) + "px");
   this.progress.click(function(e) {
     console.log(e);
   })
@@ -173,7 +174,7 @@ VT.Player.prototype.play = function() {
       setTimeout(function() {
         player.updateTimelinePosition(+1);
         scheduleChunked(timeline);
-      }, chunk[0] + player.speedup);
+      }, chunk[0] + (player.speedup * 10));
     } else {
       if (!player.playing) {
         console.log('paused')
