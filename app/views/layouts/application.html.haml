@@ -54,11 +54,19 @@
       %p.follow
         = render :partial => 'shared/twitter_follow'
       %p.copy
-        %span{ :class => 'left' } ©
-        = "2010-#{Date.today.year}"
-        %a{ href: 'http://twitter.com/antono' } Antono Vasiljev
+        %a{ href: 'https://github.com/shelr' } Shelr is fully free software written in Ruby and Rails.
       %p.copy
-        %a{ href: 'http://github.com/antono/shelr.tv' } Contribute on GitHub!
+        %a{ href: 'https://github.com/shelr' }
+          %strong Join the Fun!
+        
+      %p.copy
+        %span{ :class => 'left' } Written by
+        %a{ href: 'http://twitter.com/antono' } Antono Vasiljev
+        and
+        %a{ href: 'https://github.com/shelr/shelr.tv/contributors' } other
+        %a{ href: 'https://github.com/shelr/shelr/contributors' } contributors.
+        
+        
 
     = render partial: 'shared/analytics'
     = render partial: 'shared/fork_me'
