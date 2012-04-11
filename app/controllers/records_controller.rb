@@ -74,5 +74,6 @@ class RecordsController < ApplicationController
       fulltext params[:q]
       paginate page: params[:page] || 1
     end.results
+    respond_with @records
   end
 end

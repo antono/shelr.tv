@@ -1,3 +1,6 @@
+- content_for :meta do
+  = auto_discovery_link_tag :atom, "/records.atom?q=#{params[:q]}", title: "Shelr.tv - feed for '#{params[:q]}'"
+
 .flashes
   - if @records.any?
     .alert.alert-success
