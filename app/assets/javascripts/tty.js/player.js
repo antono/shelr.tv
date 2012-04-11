@@ -12,7 +12,7 @@ VT.Player = function(term) {
   this.timing  = null;
   this.element = document.getElementById('player');
   this.el = $(this.element);
-  this.speedup = 0;
+  this.speedup = 1;
   this.calculateTermSize();
   this.initSpeedControl();
   this.initHover();
@@ -47,7 +47,7 @@ VT.Player.prototype.initSpeedControl = function() {
     inp: document.getElementsByClassName("speed")[0],
     value: 1,
     step:0.5,
-    maxStep:0.5,
+    maxStep:1,
     min:1,
     max:10,
     animation: 'tween',
@@ -55,7 +55,7 @@ VT.Player.prototype.initSpeedControl = function() {
     forceValue: true,
     callbacks: {
       update: [function (update) {
-        player.speedup = (update.value * -1);
+        player.speedup = update.value;
       }]
     }
   });
@@ -126,6 +126,7 @@ VT.Player.prototype.setData = function(data) {
   var dArr  = data.split("\n");
   // drop first and last strings
   this.data = dArr.slice(1, dArr.length - 2).join("\n");
+  this.data += "\n";
 }
 
 VT.Player.prototype.createTimeline = function(data) {
@@ -159,9 +160,9 @@ VT.Player.prototype.enableButtons = function(data) {
 
 VT.Player.prototype.play = function() {
   var player = this;
-  var button = this.element.getElementsByClassName('toggle')[0]
-  button.setAttribute('data-action', 'pause')
-  button.getElementsByTagName('img')[0].setAttribute('src', '/assets/term/playback-pause.png')
+  var button = this.element.getElementsByClassName('toggle')[0];
+  button.setAttribute('data-action', 'pause');
+  button.getElementsByTagName('img')[0].setAttribute('src', '/assets/term/playback-pause.png');
 
   player.hoverHide();
 
@@ -178,9 +179,10 @@ VT.Player.prototype.play = function() {
       txt = chunk[1];
       player.term.write(txt)
       setTimeout(function() {
+        console.log('speedup: ', player.speedup);
         player.updateTimelinePosition(+1);
         scheduleChunked(timeline);
-      }, chunk[0] + (player.speedup * 100));
+      }, (chunk[0] / player.speedup));
     } else {
       if (!player.playing) {
         console.log('paused')
