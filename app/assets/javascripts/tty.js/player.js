@@ -101,7 +101,6 @@ VT.Player.prototype.initTermContainer = function() {
 VT.Player.prototype.load = function(path) {
   var player = this;
   jQuery.get(path).success(function(resp){
-    console.log(resp)
     player.record = resp;
     player.setTiming(player.record.timing);
     player.setData(player.record.typescript);
@@ -179,7 +178,6 @@ VT.Player.prototype.play = function() {
       txt = chunk[1];
       player.term.write(txt)
       setTimeout(function() {
-        console.log('speedup: ', player.speedup);
         player.updateTimelinePosition(+1);
         scheduleChunked(timeline);
       }, (chunk[0] / player.speedup));
