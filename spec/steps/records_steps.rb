@@ -20,6 +20,11 @@ steps_for :records do
     end
   end
 
+  step "I should not see player for :record_title" do |title|
+    page.should_not have_css '#player'
+    page.should_not have_content title
+  end
+
   step "there is/are :num record(s) in db" do |num|
     num = Integer(num)
     case num
@@ -48,5 +53,13 @@ steps_for :records do
   step "record :title is private" do |title|
     @_records[title].private = true
     @_records[title].save
+  end
+
+  step "I visit :title record page" do |title|
+    visit record_path @_records[title]
+  end
+
+  step "I visit :title record page with access key" do |title|
+    visit record_path @_records[title], access_key: @_records[title].access_key
   end
 end
