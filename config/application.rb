@@ -51,7 +51,7 @@ module Shelr
 
     config.secret_token = Shelr.config['secret_token']
     config.assets.enabled = true
-    config.assets.compress = true
+    config.assets.compress = false
     config.assets.js_compressor = :uglifier
     config.sass.cache = true
     config.sass.read_cache = true
