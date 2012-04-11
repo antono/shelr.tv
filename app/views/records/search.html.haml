@@ -3,9 +3,10 @@
 
 .flashes
   - if @records.any?
-    .alert.alert-success
-      Results for:
-      = params[:q]
+    .alert.alert-success.search-feed
+      %a{ href: search_records_path(format: 'atom', q: params[:q], path_only: false) }
+        = image_tag('feed-16x16.png')
+        = "Follow search: #{params[:q]}"
   - else
     .alert.alert-error
       Nothing found for:

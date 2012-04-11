@@ -61,10 +61,10 @@ class RecordsController < ApplicationController
   def destroy
     @record = Record.find(params[:id])
     if @record.destroy
-      flash[:notice] = "Shellcast was destroyed!"
+      flash[:notice] = "Record was destroyed!"
       redirect_to records_path
     else
-      flash[:notice] = "Shellcast was destroyed!"
+      flash[:error] = "Record was NOT destroyed!"
       redirect_to @record
     end
   end
