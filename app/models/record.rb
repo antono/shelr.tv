@@ -20,6 +20,8 @@ class Record
   field :term,                 type: String
   field :shell,                type: String
   field :uname,                type: String
+  # blog post, wiki page or documentation page for this record
+  field :related_url,          type: String
   field :private,              type: Boolean,  index: true, default: false
   field :access_key,           type: String,   index: true, default: ''
   field :hits,                 type: Integer,  index: true, default: 0

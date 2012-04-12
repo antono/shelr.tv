@@ -27,6 +27,10 @@
       .desc
         %strong Shell
         .long=sanitize record.shell
+    - if record.related_url.present?
+      .desc
+        %strong Read Also
+        .long= link_to record.related_url
     .desc
       %strong Size
       .long=sanitize record.size

@@ -6,6 +6,9 @@
     %p
       = f.label :title
       = f.text_field :title
+    %p
+      = f.label :related_url
+      = f.text_field :related_url
     %p.description
       = f.label :description, '&nbsp;'.html_safe
       = f.text_area :description, :rows => 5
