@@ -38,7 +38,7 @@ class Record
   attr_accessible :title, :description, :typescript,
                   :timing, :tags, :columns, :rows,
                   :term, :shell, :uname, :xdg_current_desktop,
-                  :private
+                  :private, :related_url
 
   before_create :set_license, :generate_access_key
   after_create  :increment_counters!
