@@ -22,9 +22,3 @@ Feature: Comments
     When I visit "/records" page
     And I click link "hello world"
     Then I should not see comment form
-
-  Scenario: displaying on dashboard
-    Given "hello world" record has 3 comments
-    And I signed in
-    When I visit "/dashboard" page
-    Then I should see 3 comments
