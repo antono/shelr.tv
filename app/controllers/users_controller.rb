@@ -48,7 +48,7 @@ class UsersController < ApplicationController
 
   def logout
     session.delete(:user_id)
-    redirect_to '/'
+    redirect_to root_path
   end
 
   def authenticate
