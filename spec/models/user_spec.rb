@@ -86,7 +86,28 @@ describe User do
         comments += Comment.for('record', commentable.id)
       end
 
+      comments.each { |comment|  subject.comments_for_records.should include(comment) }
+    end
+
+    it "should return comment in reversed order" do
+      comments = []
+
+      2.times do |i|
+        commentable = create(:record, user: subject)
+        commentable.comments << create(:comment)
+        # OPTIMIZE find better solution here
+        sleep 1
+        comments += Comment.for('record', commentable.id)
+      end
+
       comments.should == subject.comments_for_records
+    end
+
+    it "should add methods to array for kaminari" do
+      commentable = create(:record, user: subject)
+      commentable.comments << create(:comment)
+      comments = subject.comments_for_records
+      comments.should respond_to(:current_page)
     end
   end
 end

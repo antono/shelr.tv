@@ -63,13 +63,14 @@ class User
     self.nickname = 'noname' if nickname.blank?
   end
 
-  def comments_for_records
+  def comments_for_records(page = 1)
     comments = []
     records.each do |record|
       comments += Comment.for('record', record.id)
     end
 
-    comments
+    comments.sort { |a, b| a.updated_at <=> b.updated_at }
+    Kaminari.paginate_array(comments).page(page).per(20)
   end
 
 end
