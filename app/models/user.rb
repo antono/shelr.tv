@@ -63,4 +63,13 @@ class User
     self.nickname = 'noname' if nickname.blank?
   end
 
+  def comments_for_records
+    comments = []
+    records.each do |record|
+      comments += Comment.for('record', record.id)
+    end
+
+    comments
+  end
+
 end

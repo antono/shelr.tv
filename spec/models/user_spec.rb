@@ -69,4 +69,24 @@ describe User do
       end
     end
   end
+
+  describe "#comments_for_records" do
+    it "should return comments for record" do
+      commentable = create(:record, user: subject)
+      commentable.comments << create(:comment)
+      Comment.for('record', commentable.id).should == subject.comments_for_records
+    end
+
+    it "should return comments for all records" do
+      comments = []
+
+      2.times do
+        commentable = create(:record, user: subject)
+        commentable.comments << create(:comment)
+        comments += Comment.for('record', commentable.id)
+      end
+
+      comments.should == subject.comments_for_records
+    end
+  end
 end
