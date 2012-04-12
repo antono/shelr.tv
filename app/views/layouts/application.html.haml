@@ -23,6 +23,8 @@
         .container
           %a{ class: "brand", href: '/' } Ŝelr.tv
           %ul{ class: "nav" }
+            - if logged_in?
+              %li{ class: active_if(/^\/dashboard/)  }= link_to "Home", '/dashboard'
             %li{ class: active_if(/^\/records/)    }= link_to "Records <sup>#{Record.count}</sup>".html_safe, "/records"
             %li{ class: active_if(/^\/users/)      }= link_to "Users".html_safe, '/users'
             %li{ class: active_if(/^\/about/)      }= link_to "What's up?", '/about'
