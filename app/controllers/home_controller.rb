@@ -5,9 +5,6 @@ class HomeController < ApplicationController
     @records = Record.desc(:created_at).page(1)
   end
 
-  def about
-  end
-
   def opensearch
     response.headers["Content-Type"] = 'application/opensearchdescription+xml'
     render :layout => false

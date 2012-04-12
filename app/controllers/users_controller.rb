@@ -51,10 +51,6 @@ class UsersController < ApplicationController
     redirect_to '/'
   end
 
-  def login
-    # render
-  end
-
   def authenticate
     provider = params[:provider]
     provider_uid_field = "#{provider}_uid"
