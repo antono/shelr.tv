@@ -94,9 +94,9 @@ describe User do
 
       2.times do |i|
         commentable = create(:record, user: subject)
-        commentable.comments << create(:comment)
-        # OPTIMIZE find better solution here
-        sleep 1
+        comment = create(:comment)
+        comment.updated_at = Time.now + i * 100
+        commentable.comments << comment
         comments += Comment.for('record', commentable.id)
       end
 
