@@ -100,7 +100,7 @@ describe User do
         comments += Comment.for('record', commentable.id)
       end
 
-      comments.should == subject.comments_for_records
+      comments.reverse.should == subject.comments_for_records
     end
 
     it "should add methods to array for kaminari" do

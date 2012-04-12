@@ -69,7 +69,7 @@ class User
       comments += Comment.for('record', record.id)
     end
 
-    comments.sort { |a, b| a.updated_at <=> b.updated_at }
+    comments.sort! { |a, b| b.updated_at <=> a.updated_at }
     Kaminari.paginate_array(comments).page(page).per(20)
   end
 
