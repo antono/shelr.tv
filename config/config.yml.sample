@@ -8,10 +8,14 @@ google:
 twitter:
   id: CHANGE_ME
   secret: CHANGE_ME
-team:
-  antono:
-    id: 4f103f3f6a89890001000001
-    note: Client and Server development
-  gonzih:
-    id: 4f45d7dde10dd70001000001
-    note: Arch Linux packaging, Server Development
+## This should be added only when some users regiestred...
+# team:
+#   antono:
+#     id: 4f7b232d1e93fa1026000001
+#     role: "[Client](https://github.com/antono/shelr) and [Server](https://github.com/antono/shelr.tv) development"
+#   gonzih:
+#     id: 4f8401c79660806638000002
+#     role: "Arch Linux packaging, [Server](https://github.com/antono/shelr.tv) Developer, irc bot tamer :)"
+#   m0use:
+#     id: 4f6a54c73f87a60001000001
+#     role: "Gentoo packaging"
