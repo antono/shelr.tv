@@ -64,3 +64,7 @@ group :development, :test do
   gem 'shoulda-matchers'
   gem 'sunspot_matchers'
 end
+
+group :development do
+  gem 'foreman'
+end
