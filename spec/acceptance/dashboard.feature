@@ -17,3 +17,7 @@ Feature: Dashboard
   Scenario: not logged in user wants to see dashboard
     When I visit "/dashboard" page
     Then I should be on "/records" page
+
+  Scenario: not logged in user should not see dashboard link in top menu
+    When I visit "/records" page
+    Then I should not see "Home"
