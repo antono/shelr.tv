@@ -12,4 +12,12 @@ class HomeController < ApplicationController
     response.headers["Content-Type"] = 'application/opensearchdescription+xml'
     render :layout => false
   end
+
+  def dashboard
+    if logged_in?
+      @comments = current_user.comments_for_records(params[:page])
+    else
+      redirect_to records_path
+    end
+  end
 end
