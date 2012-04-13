@@ -43,7 +43,7 @@ group :linux do
 end
 
 group :development, :test do
-  gem 'shelr' # used in integration tests
+  gem 'fivemat'
 
   gem 'factory_girl_rails'
   gem 'guard-spork'
