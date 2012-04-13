@@ -2,7 +2,11 @@ class HomeController < ApplicationController
   respond_to :html, :xml
 
   def landing
-    @records = Record.desc(:created_at).page(1)
+    if logged_in? && current_user.comments_for_records.any?
+      redirect_to dashboard_path
+    else
+      @records = Record.desc(:created_at).page(1)
+    end
   end
 
   def about
