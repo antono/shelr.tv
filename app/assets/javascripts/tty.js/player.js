@@ -45,7 +45,7 @@ VT.Player.prototype.initSpeedControl = function() {
   })
   fdSlider.createSlider({
     inp: document.getElementsByClassName("speed")[0],
-    value: 1,
+    value: 2.5,
     step:0.5,
     maxStep:1,
     min:1,
