@@ -21,3 +21,18 @@ Feature: Dashboard
   Scenario: not logged in user should not see dashboard link in top menu
     When I visit "/records" page
     Then I should not see "Home"
+
+  Scenario: user clicks on dashboard item
+    Given I signed in
+    And there are following records
+      | title         | fixture | user     |
+      | hello world   | ls.json | antono   |
+    And I am the owner of "hello world" record
+    And record "hello world" has following comments
+      | user     | body           |
+      | Gonzih   | first comment  |
+      | antono   | second comment |
+    When I visit "/dashboard" page
+    And I click on the first comment
+    Then I should see player for "hello world"
+    Then I should see 2 comments
