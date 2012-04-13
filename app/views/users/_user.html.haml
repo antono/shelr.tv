@@ -11,29 +11,10 @@
       .desc
         %strong Description
         .long=sanitize record.description_html
-    - if record.uname.present?
-      .desc
-        %strong Uname
-        .long.uname=sanitize record.uname
-    - if record.xdg_current_desktop.present?
-      .desc
-        %strong Desktop
-        .long=sanitize record.xdg_current_desktop
-    - if record.term.present?
-      .desc
-        %strong Term
-        .long=sanitize record.term
-    - if record.shell.present?
-      .desc
-        %strong Shell
-        .long=sanitize record.shell
-    - if record.related_url.present?
-      .desc
-        %strong Read Also
-        .long= link_to record.related_url
-    .desc
-      %strong Size
-      .long=sanitize record.size
+      - if record.related_url.present?
+        .desc
+          %strong Read Also
+          .long= link_to record.related_url
     .desc
       %strong Statistics
       - anon_count = @record.views(:anonymous)
@@ -47,12 +28,37 @@
         .tags.long
         - record.tags.split(",").map(&:strip).each do |tag|
           = link_to sanitize(tag), records_path(:tags => [tag])
-    - if record.editable_by?(current_user) and edit
       .desc
-        %strong Tools:
-        .btn-group
-          = link_to('edit', edit_record_path(@record), class: 'btn btn-success') if @record.editable_by?(current_user)
-          = link_to('destroy', record_path(@record), method: :delete, class: 'btn btn-danger') if @record.editable_by?(current_user)
+        %strong Extra Info
+        .long
+          %a{ href: 'javascript:void(0)', class: 'toggle-extra-info' } Toggle
+
+    .extra-info
+      - if record.uname.present?
+        .desc
+          %strong Uname
+          .long.uname=sanitize record.uname
+      - if record.xdg_current_desktop.present?
+        .desc
+          %strong Desktop
+          .long=sanitize record.xdg_current_desktop
+      - if record.term.present?
+        .desc
+          %strong Term
+          .long=sanitize record.term
+      - if record.shell.present?
+        .desc
+          %strong Shell
+          .long=sanitize record.shell
+      .desc
+        %strong Size
+        .long=sanitize record.size
+      - if record.editable_by?(current_user) and edit
+        .desc
+          %strong Tools:
+          .btn-group
+            = link_to('edit', edit_record_path(@record), class: 'btn btn-success') if @record.editable_by?(current_user)
+            = link_to('destroy', record_path(@record), method: :delete, class: 'btn btn-danger') if @record.editable_by?(current_user)
 
   - else
 
