@@ -2,6 +2,8 @@ class RecordsController < ApplicationController
 
   skip_before_filter :verify_authenticity_token, :only => [:create]
 
+  before_filter :find_record, :only => [:show, :edit, :update, :destroy]
+
   respond_to :html, :json, :atom
 
   def index
@@ -14,15 +16,8 @@ class RecordsController < ApplicationController
   end
 
   def show
-    @record = Record.find(params[:id])
     @record.hit!(current_user) if request.format.json?
     respond_with @record
-  rescue Mongoid::Errors::DocumentNotFound
-    render :no_such_record
-  end
-
-  def edit
-    @record = Record.find(params[:id])
   end
 
   def create
@@ -45,7 +40,6 @@ class RecordsController < ApplicationController
   end
 
   def update
-    @record = Record.find(params[:id])
     if @record.editable_by?(current_user)
       if @record.update_attributes(params[:record])
         flash[:notice] = 'Record was succesfully updated.'
@@ -59,7 +53,6 @@ class RecordsController < ApplicationController
   end
 
   def destroy
-    @record = Record.find(params[:id])
     if @record.destroy
       flash[:notice] = "Record was destroyed!"
       redirect_to records_path
@@ -75,5 +68,13 @@ class RecordsController < ApplicationController
       paginate page: params[:page] || 1
     end.results
     respond_with @records
+  end
+
+  private
+
+  def find_record
+    @record = Record.find(params[:id])
+  rescue Mongoid::Errors::DocumentNotFound
+    render :no_such_record
   end
 end

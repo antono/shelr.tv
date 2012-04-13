@@ -3,14 +3,13 @@ class UsersController < ApplicationController
   respond_to :html, :json, :atom
 
   before_filter :login_required, except: [:show, :login, :authenticate, :index]
+  before_filter :find_user, only: [:show, :edit, :update]
 
   def index
     @users = User.desc(:created_at).page(params[:page]).per(10)
   end
 
   def show
-    @user = User.find(params[:id])
-
     respond_to do |format|
       # rendering feed
       format.atom do
@@ -26,12 +25,7 @@ class UsersController < ApplicationController
     end
   end
 
-  def edit
-    @user = User.find(params[:id])
-  end
-
   def update
-    @user = User.find(params[:id])
     if @user.editable_by?(current_user)
       flash[:notice] = "Updated!"
       @user.update_attributes(params[:user])
@@ -48,11 +42,7 @@ class UsersController < ApplicationController
 
   def logout
     session.delete(:user_id)
-    redirect_to '/'
-  end
-
-  def login
-    # render
+    redirect_to root_path
   end
 
   def authenticate
@@ -84,5 +74,11 @@ class UsersController < ApplicationController
         redirect_to root_url
       end
     end
+  end
+
+  private
+
+  def find_user
+    @user = User.find(params[:id])
   end
 end

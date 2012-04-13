@@ -9,9 +9,6 @@ class HomeController < ApplicationController
     end
   end
 
-  def about
-  end
-
   def opensearch
     response.headers["Content-Type"] = 'application/opensearchdescription+xml'
     render :layout => false
