@@ -98,6 +98,7 @@ end
 
 task :refresh_sitemaps do
   run "cd #{latest_release} && RAILS_ENV=production bundle exec rake sitemap:refresh"
+  run "cd #{latest_release} && mv public/sitemap* public/assets/"
 end
 
 after 'deploy:update_code', 'config:cp'
