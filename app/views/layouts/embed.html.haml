@@ -9,4 +9,6 @@
     = auto_discovery_link_tag :atom, "/records.atom", title: 'Shelr.tv - new records'
     = yield :head
     = yield :meta
-  %body{ class: 'embed', style: "background-image: none; background-color: #{params[:bg]}" }= yield
+  %body{ class: 'embed', style: "background-image: none; background-color: #{params[:bg]}" }
+    = yield
+    = render 'shared/analytics'
