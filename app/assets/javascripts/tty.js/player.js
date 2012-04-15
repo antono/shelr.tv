@@ -106,7 +106,7 @@ VT.Player.prototype.load = function(path) {
     player.setData(player.record.typescript);
     player.createTimeline();
     player.enableButtons();
-  }).error(function (resp) { alert(resp) });
+  }).error(function (resp) { console.log("Error downloading record:", resp) });
 }
 
 VT.Player.prototype.setTiming = function(data) {
