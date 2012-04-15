@@ -15,6 +15,9 @@
     = auto_discovery_link_tag :atom, "/records.atom", title: 'Shelr.tv - new records'
     = yield :head
     = yield :meta
+    = auto_discovery_link_tag :atom, "/records.atom", title: 'Shelr.tv - new records'
+    = yield :head
+    = yield :meta
 
 %body{ class: controller_and_action_class_names }
   .wrapper

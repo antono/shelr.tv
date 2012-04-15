@@ -9,8 +9,7 @@
 
 = player_for(@record)
 
--# TODO: cleanup
-- if @record.comments.any?
+- if logged_in?
   %h2.comm Comments
 
 .comments

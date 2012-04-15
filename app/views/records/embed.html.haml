@@ -1,0 +1,8 @@
+- content_for :title do
+  = @record.title + ' < '.html_safe
+
+- content_for :meta do
+  %meta{ name: 'title', content: @record.title }
+  %meta{ name: 'description', content: @record.description }
+
+= player_for(@record)

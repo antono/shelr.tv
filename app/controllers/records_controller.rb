@@ -2,7 +2,7 @@ class RecordsController < ApplicationController
 
   skip_before_filter :verify_authenticity_token, :only => [:create]
 
-  before_filter :find_record, :only => [:show, :edit, :update, :destroy]
+  before_filter :find_record, :only => [:show, :edit, :update, :destroy, :embed]
 
   respond_to :html, :json, :atom
 
@@ -19,6 +19,10 @@ class RecordsController < ApplicationController
   def show
     @record.hit!(current_user) if request.format.json?
     respond_with @record
+  end
+
+  def embed
+    render :embed, :layout => 'embed'
   end
 
   def create

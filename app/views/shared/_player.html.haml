@@ -23,6 +23,9 @@
     %br
     %input{ :type => :text, :value => "shelr play #{record_path(@record, :only_path => false, :format => :json)}", :class => 'cmdline hidden' }
 
+.hidden
+  %iframe{ src: embed_record_path(record, only_path: false), scrolling: 'no', style: 'border: 0', border: '0', width: 10 + (record.columns * 7), height: (record.rows * 13) + 32 + 10 + 30 + 10 }
+
 .social= render partial: 'shared/addthis'
 
 :javascript
