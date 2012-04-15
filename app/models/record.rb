@@ -87,9 +87,7 @@ class Record
     end
   end
 
-  def owner
-    self.user
-  end
+  alias owner user
 
   def title
     if read_attribute(:title).blank?
