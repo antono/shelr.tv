@@ -16,6 +16,10 @@ step "I visit :path page" do |path|
   visit path
 end
 
+step "give me pry" do |path|
+  binding.pry
+end
+
 step "I click link :title" do |title|
   click_link title
 end

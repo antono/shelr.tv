@@ -67,4 +67,13 @@ steps_for :records do
     @_records[title].user = User.where(email: 'self@antono.info').first
     @_records[title].save
   end
+
+  step "I am not owner of :title record" do |title|
+    @_records[title].user = create(:user)
+    @_records[title].save
+  end
+
+  step "I visit profile of :title owner" do |title|
+    visit user_path(@_records[title].user)
+  end
 end

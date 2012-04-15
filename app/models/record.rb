@@ -20,6 +20,7 @@ class Record
   field :term,                 type: String
   field :shell,                type: String
   field :uname,                type: String
+  field :xdg_current_desktop,  type: String
   # blog post, wiki page or documentation page for this record
   field :related_url,          type: String
   field :private,              type: Boolean,  index: true, default: false
@@ -27,7 +28,6 @@ class Record
   field :hits,                 type: Integer,  index: true, default: 0
   field :created_at,           type: DateTime, index: true
   field :updated_at,           type: DateTime, index: true
-  field :xdg_current_desktop,  type: String
 
   belongs_to :user, index: true
   has_many :comments, :as => :commentable
@@ -46,9 +46,19 @@ class Record
 
   before_save :update_description_html
 
-  default_scope where(private: false)
+  scope :publ, where(private: false)
+  scope :priv, where(private: true)
+
+  scope :visible_by, lambda { |user = false|
+    if user
+      any_of({ private: true, user_id: user.id.to_s }, { private: false })
+    else
+      publ
+    end
+  }
 
   searchable do
+    boolean :private
     text :title, :boost => 5.0
     text :description_html, :boost => 3.0
     text :tags, :boost => 4.0 do

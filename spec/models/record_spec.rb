@@ -5,6 +5,7 @@ describe Record do
   subject { build :record }
 
   it_behaves_like "editable with restrictions"
+
   it_behaves_like "editable by God"
   it_behaves_like "editable by Owner"
 
@@ -15,11 +16,61 @@ describe Record do
   its(:private)    { should == false     }
   its(:access_key) { should == ''        }
 
-  describe "default scope" do
-    it "should not find private records by default" do
-      priv = create(:record, private: true)
-      publ = create(:record, private: true)
-      Record.all.should_not include priv
+  describe "scope" do
+    let!(:priv) { create(:record, private: true)  }
+    let!(:publ) { create(:record, private: false) }
+
+    describe ".publ" do
+      it "finds public records" do
+        Record.publ.all.should_not include priv
+        Record.publ.all.should include publ
+      end
+    end
+
+    describe ".priv" do
+      it "returns private records" do
+        Record.priv.all.should include priv
+        Record.priv.all.should_not include publ
+      end
+    end
+  end
+
+
+  describe ".visible_by(user)" do
+    let!(:owner) { create(:user) }
+    let!(:other) { create(:user) }
+
+    before do
+      @private = 3.times.reduce([]) do
+        create(:record, user: owner, private: true)
+      end
+      @public = create(:record, private: false, user: other)
+    end
+
+    context "when user is owner" do
+      it "should include public records" do
+        Record.visible_by(owner).all.should include @public
+      end
+
+      it "shoud include user's private records" do
+        Record.visible_by(owner).all.should include @private
+      end
+    end
+
+    context "when user is not owner" do
+      it "shoud not include other user's private records" do
+        Record.visible_by(other).all.should_not include @private
+      end
+    end
+
+    context "when user is nil" do
+      it "should include public" do
+        Record.visible_by(nil).all.should include @public
+      end
+
+      it "should not include private" do
+        Record.visible_by(nil).all.should_not include @private
+      end
     end
   end
 

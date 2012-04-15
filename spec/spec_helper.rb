@@ -23,6 +23,7 @@ Spork.prefork do
 
   RSpec.configure do |config|
     config.include FactoryGirl::Syntax::Methods
+    config.include Mongoid::Matchers
 
     # == Mock Framework
     #

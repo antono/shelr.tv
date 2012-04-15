@@ -7,10 +7,11 @@ class RecordsController < ApplicationController
   respond_to :html, :json, :atom
 
   def index
+    @query = Record.desc(:created_at).without(:typescript, :timing).visible_by(current_user)
     if params[:tags]
-      @records = Record.desc(:created_at).where(:tags.in => params[:tags]).page(params[:page])
+      @records = @query.where(:tags.in => params[:tags]).page(params[:page])
     else
-      @records = Record.desc(:created_at).page(params[:page])
+      @records = @query.page(params[:page])
     end
     respond_with @records
   end
@@ -30,8 +31,12 @@ class RecordsController < ApplicationController
 
     if record.save
       user.records << record
-      user.save
-      render json: { ok: true,  id: record.id.to_s, message: 'Record published!' }
+      render json: {
+        ok: true,
+        id: record.id.to_s,
+        url: record_path(record, only_path: false, access_key: record.access_key),
+        message: 'Record published!'
+      }
     else
       render json: { ok: false, message: 'Cannot publish the record :(' }
     end
@@ -65,6 +70,7 @@ class RecordsController < ApplicationController
   def search
     @records = Record.solr_search do
       fulltext params[:q]
+      with :private, false
       paginate page: params[:page] || 1
     end.results
     respond_with @records
@@ -73,7 +79,11 @@ class RecordsController < ApplicationController
   private
 
   def find_record
-    @record = Record.find(params[:id])
+    if params[:access_key].present?
+      @record = Record.priv.where(access_key: params[:access_key]).find(params[:id])
+    else
+      @record = Record.visible_by(current_user).find(params[:id])
+    end
   rescue Mongoid::Errors::DocumentNotFound
     render :no_such_record
   end

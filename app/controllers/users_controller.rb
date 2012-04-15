@@ -10,19 +10,8 @@ class UsersController < ApplicationController
   end
 
   def show
-    respond_to do |format|
-      # rendering feed
-      format.atom do
-        @records = Record.desc(:created_at).page(params[:page]).limit(25)
-        respond_with @records
-      end
-
-      # rendering user profile
-      format.html do
-        @records = @user.records.desc(:created_at).page(params[:page]).per(5)
-        respond_with @user
-      end
-    end
+    @records = @user.records.desc(:created_at).visible_by(current_user).page(params[:page])
+    respond_with @user
   end
 
   def update
