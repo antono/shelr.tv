@@ -61,6 +61,7 @@ group :development, :test do
 
   gem 'rspec'
   gem 'rspec-rails'
+  gem 'mongoid-rspec'
   gem 'shoulda-matchers'
   gem 'sunspot_matchers'
 end
