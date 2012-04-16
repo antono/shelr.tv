@@ -63,9 +63,9 @@ class Contributor
 class Contributors
   constructor: ->
     @users = {}
-    $.getJSON('https://api.github.com/orgs/shelr/repos?callback=?', @repos_callback)
+    $.getJSON('https://api.github.com/orgs/shelr/repos?callback=?', @reposCallback)
 
-  repos_callback: (data) =>
+  reposCallback: (data) =>
     @url = 0
     @urls = []
 
