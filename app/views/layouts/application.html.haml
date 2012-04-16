@@ -38,7 +38,7 @@
               %li= link_to 'Login', '/login'
 
     %section.flashes
-      - if cookies['saw-alert-1'].blank?
+      - if cookies['saw-alert-1'].blank? && !Rails.env.test?
         #alert-1.alert.alert-info
           %a{ class: 'close', :'data-dismiss' => "alert" } &times;
           %a{ href: 'http://antono.info/eng/2012/4/shelr-tv-embedded-screencasts', target: '_blank' } Introducing embedded and private records!
