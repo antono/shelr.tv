@@ -63,17 +63,19 @@ class Contributor
 class Contributors
   constructor: ->
     @users = {}
-    @urls = [
-      'http://github.com/api/v2/json/repos/show/shelr/shelr.tv/contributors?callback=?',
-      'http://github.com/api/v2/json/repos/show/shelr/shelr/contributors?callback=?',
-      'http://github.com/api/v2/json/repos/show/shelr/shelr-hubot/contributors?callback=?'
-    ]
+    $.getJSON('https://api.github.com/orgs/shelr/repos?callback=?', @repos_callback)
 
+  repos_callback: (data) =>
     @url = 0
+    @urls = []
+
+    for repo in data.data
+      @urls.push("https://api.github.com/repos/shelr/#{repo.name}/contributors?callback=?")
+
     $.getJSON(@urls[@url], @callback)
 
   callback: (data) =>
-    users = data.contributors
+    users = data.data
 
     for user in users
       if @users[user.login]
