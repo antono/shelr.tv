@@ -38,10 +38,10 @@
               %li= link_to 'Login', '/login'
 
     %section.flashes
-      .alert.alert-error
-        New bugfix release v0.13.2. Please upgrade!
-        &rarr;
-        %code sudo gem install shelr
+      - if cookies['saw-alert-1'].blank? && !Rails.env.test?
+        #alert-1.alert.alert-info
+          %a{ class: 'close', :'data-dismiss' => "alert" } &times;
+          %a{ href: 'http://antono.info/eng/2012/4/shelr-tv-embedded-screencasts', target: '_blank' } Introducing embedded and private records!
       - [:error, :notice].each do |type|
         - unless flash[type].blank?
           .alert{ class: { error: 'alert-error', notice: 'alert-success', info: 'alert-info' }[type] }= flash[type]
@@ -51,7 +51,7 @@
 
     %footer
       %p.follow
-        = render :partial => 'shared/twitter_follow'
+        = render 'shared/twitter_follow'
       %p.copy
         %a{ href: 'https://github.com/shelr' } Shelr is fully free software written in Ruby and Rails.
       %p.copy
@@ -67,6 +67,6 @@
         
         
 
-    = render partial: 'shared/analytics'
-    = render partial: 'shared/fork_me'
-    = render partial: 'shared/login_modal'
+    = render 'shared/analytics'
+    = render 'shared/fork_me'
+    = render 'shared/login_modal'

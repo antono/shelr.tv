@@ -32,15 +32,6 @@ class User
   before_create :maybe_assign_nickname_placeholder
   after_create :generate_api_key!
 
-  def avatar_url(size)
-    return "/assets/avatars/anonymous-#{size}.png" if nickname == 'Anonymous'
-    if email.blank?
-      return "/assets/avatars/default-#{size}.png"
-    else
-      return "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email)}?s=#{size}"
-    end
-  end
-
   def owner
     self
   end
@@ -64,12 +55,7 @@ class User
   end
 
   def comments_for_records(page = 1)
-    comments = []
-    records.each do |record|
-      comments += Comment.for('record', record.id)
-    end
-
-    comments.sort! { |a, b| b.updated_at <=> a.updated_at }
+    comments = records.map(&:comments).flatten.compact.sort! { |a, b| b.updated_at <=> a.updated_at }
     Kaminari.paginate_array(comments).page(page).per(20)
   end
 

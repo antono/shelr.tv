@@ -17,6 +17,9 @@
           %li= link_to 'edit', edit_record_path(@record), method: 'get'
           %li= link_to 'destroy', @record, method: 'delete', confirm: 'Really Destroy?'
     %li.sc-label
+      %a{ href: record_path(@record, only_path: false), target: '_blank' }
+        %strong Shelr.tv
+    %li.sc-label
       Speed:
     %li.speed-container
       %input.speed{ type: 'text', value: '2.5' }
@@ -27,7 +30,7 @@
 %textarea.embed-code
   %iframe{ id: dom_id(record, "shelr"), src: embed_record_path(record, only_path: false), scrolling: 'no', style: 'border: 0', border: '0', width: 10 + (record.columns * 7), height: (record.rows * 13) + 32 + 10 + 30 + 10 }
 
-.social= render partial: 'shared/addthis'
+.social= render 'shared/addthis'
 
 :javascript
   jQuery(function() {
