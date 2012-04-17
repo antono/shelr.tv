@@ -32,6 +32,8 @@
 
 .social= render 'shared/addthis'
 
+- url = record.private? ? record_path(record, format: 'json', access_key: record.access_key) : record_path(record, format: 'json')
+
 :javascript
   jQuery(function() {
     window.term = new Terminal(#{@record.columns || 80}, #{@record.rows || 24}, function(data) {
@@ -40,5 +42,5 @@
     window.term.id = 1;
     term.open(document.getElementById('term'));
     window.player = new VT.Player(term);
-    window.player.load('#{record_path(@record.id, :format => :json)}');
+    window.player.load('#{url}');
   })
