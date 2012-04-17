@@ -56,5 +56,9 @@ module Shelr
     config.sass.cache = true
     config.sass.read_cache = true
     config.sass.cache_store = Sass::CacheStores::Memory.new
+
+
+    # speedup assets precompilation
+    config.assets.initialize_on_precompile = false
   end
 end

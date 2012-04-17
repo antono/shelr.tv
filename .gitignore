@@ -16,3 +16,4 @@ solr/*
 config/config.yml
 public/*.xml.gz
 vendor/bundle
+public/assets
