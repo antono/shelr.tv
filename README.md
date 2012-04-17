@@ -9,7 +9,7 @@ Service allow you to share your terminal records like
 
 # Quickstart for Developers
 
-Ruby 1.9.2+ required.
+Ruby 1.9.1+ required.
 
     sudo apt-get install mongodb-server openjdk-6-jre
     bundle install
