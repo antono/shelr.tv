@@ -1,3 +1,4 @@
+//= require mustache
 //= require jquery
 //= require jquery_ujs
 //= require_tree ./jquery
@@ -6,6 +7,8 @@
 //= require backbone_rails_sync
 //= require backbone_datalink
 //= require backbone/shelr
-//= require_tree ./slider
+//= require slider
+//= require tty
+//= require bootstrap
 //= require_tree .
 

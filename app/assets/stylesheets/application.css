@@ -1,8 +1,9 @@
 //= require_self
-//= require_tree ./slider
+//= require slider
 //= require base
 //= require home
 //= require users
 //= require records
 //= require comments
 //= require player
+//= require contributors
