@@ -63,16 +63,7 @@
     IRC:
     %a{ href: "irc://irc.freenode.net#shelr" } #shelr at freenode.net
 
-  - if Shelr.config['team']
-    %h2 Meet the Team
-    .users.team
-      - Shelr.config['team'].each_pair do |member, attrs|
-        = render 'users/user', user: UserDecorator.find(attrs['id']), role: attrs['role']
-      - if logged_in?
-        - unless Shelr.config['team'].values.map { |v| v['id'] }.include? current_user.id.to_s
-          = render 'users/user', user: UserDecorator.decorate(current_user), role: 'Just imagine! :)'
-
-  %h2 Contributors
+  %h2 Meet the Team!
   .contributors.users.team
     = image_tag(asset_path('bar-loader.gif'), class: 'loader')
 
