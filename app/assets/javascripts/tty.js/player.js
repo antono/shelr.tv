@@ -87,7 +87,6 @@ VT.Player.prototype.initProgress = function() {
     var pixPosition = e.pageX - this.offsetLeft;
     var percentPix = $(this).width() / 100;
     var percent = pixPosition / percentPix;
-    console.log(Math.floor(percent));
     player.jumpTo(percent);
   })
 
@@ -134,7 +133,9 @@ VT.Player.prototype.load = function(path) {
     player.calculateTotalTime();
     player.mapFrameToPercents();
     player.enableButtons();
-  }).error(function (resp) { console.log("Error downloading record:", resp) });
+  }).error(function (resp) {
+    console.log("Error downloading record:", resp)
+  });
 }
 
 VT.Player.prototype.setTiming = function(data) {
@@ -168,8 +169,8 @@ VT.Player.prototype.calculateTotalTime = function() {
   this.totalTime = totalTime;
   this.onePercentTime = totalTime / 100;
 
-  console.log('total time', this.totalTime);
-  console.log('one percent time', this.onePercentTime);
+  // console.log('total time', this.totalTime);
+  // console.log('one percent time', this.onePercentTime);
 }
 
 VT.Player.prototype.mapFrameToPercents = function() {
@@ -244,7 +245,7 @@ VT.Player.prototype.play = function() {
       }, (chunk[0] / player.speedup));
     } else {
       if (!player.playing) {
-        console.log('paused')
+        // console.log('paused')
       } else {
         player.currentFrame = 0;
         player.pause();
