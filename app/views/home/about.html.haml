@@ -70,7 +70,7 @@
         = render 'users/user', user: UserDecorator.find(attrs['id']), role: attrs['role']
       - if logged_in?
         - unless Shelr.config['team'].values.map { |v| v['id'] }.include? current_user.id.to_s
-          = render 'users/user', user: current_user, role: 'Just imagine! :)'
+          = render 'users/user', user: UserDecorator.decorate(current_user), role: 'Just imagine! :)'
 
 
   %h2 Contribute
