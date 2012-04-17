@@ -30,6 +30,8 @@ gem 'progress_bar'
 gem 'sass-rails', '~> 3.2.3'
 gem 'uglifier', '>= 1.0.3'
 
+gem 'airbrake'
+
 # Gems used only for assets and not required
 group :assets do
   gem 'rails-backbone'
