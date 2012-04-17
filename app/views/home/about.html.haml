@@ -67,7 +67,7 @@
     %h2 Meet the Team
     .users.team
       - Shelr.config['team'].each_pair do |member, attrs|
-        = render 'users/user', user: User.find(attrs['id']), role: attrs['role']
+        = render 'users/user', user: UserDecorator.find(attrs['id']), role: attrs['role']
       - if logged_in?
         - unless Shelr.config['team'].values.map { |v| v['id'] }.include? current_user.id.to_s
           = render 'users/user', user: current_user, role: 'Just imagine! :)'
