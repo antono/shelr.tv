@@ -41,8 +41,6 @@ VT.Player.prototype.onError = function() {
 VT.Player.prototype.initSpeedControl = function() {
   var speed = jQuery('.speed');
   var player = this;
-  speed.change(function(e) {
-  })
   fdSlider.createSlider({
     inp: document.getElementsByClassName("speed")[0],
     value: 2.5,
@@ -61,15 +59,40 @@ VT.Player.prototype.initSpeedControl = function() {
   });
 }
 
-VT.Player.prototype.jumpTo = function(position) {
+VT.Player.prototype.jumpTo = function(percent) {
+  var player = this;
+  var i;
+
+  this.setProgress(percent);
+  for (i = 0; i < percent; i++) {
+    if (this.framesByPercent[i]) {
+      this.framesByPercent[i].forEach(function(frameNumber) {
+        player.term.write(player.frames[frameNumber][1]);
+        player.currentFrame = frameNumber;
+      });
+    }
+  }
+}
+
+VT.Player.prototype.percentToFrameNumber = function(percent) {
+  return this.framesByPercent[percent];
 }
 
 VT.Player.prototype.initProgress = function() {
+  var player = this;
   this.progress = this.el.find('.progress');
   this.progressBar = this.progress.find('.bar');
+
   this.progress.click(function(e) {
-    console.log(e);
+    var pixPosition = e.pageX - this.offsetLeft;
+    var percentPix = $(this).width() / 100;
+    var percent = pixPosition / percentPix;
+    console.log(Math.floor(percent));
+    player.jumpTo(percent);
   })
+
+  this.progress.prop('max', 100);
+  this.setProgress(0);
 }
 
 VT.Player.prototype.initControls = function() {
@@ -107,7 +130,9 @@ VT.Player.prototype.load = function(path) {
     player.record = resp;
     player.setTiming(player.record.timing);
     player.setData(player.record.typescript);
-    player.createTimeline();
+    player.prepareFrames();
+    player.calculateTotalTime();
+    player.mapFrameToPercents();
     player.enableButtons();
   }).error(function (resp) { console.log("Error downloading record:", resp) });
 }
@@ -131,19 +156,53 @@ VT.Player.prototype.setData = function(data) {
   this.data += "\n";
 }
 
-VT.Player.prototype.createTimeline = function(data) {
-  var timeline = [];
+
+VT.Player.prototype.calculateTotalTime = function() {
+  var totalTime = 0;
+  var onePercentTime;
+
+  // Calculating full time and time of 1%
+  this.frames.forEach(function(frame) {
+    totalTime += frame[0];
+  });
+  this.totalTime = totalTime;
+  this.onePercentTime = totalTime / 100;
+
+  console.log('total time', this.totalTime);
+  console.log('one percent time', this.onePercentTime);
+}
+
+VT.Player.prototype.mapFrameToPercents = function() {
+  // Moving all frames to object { percent: [ .. frame numbers .. ] }
+  var framesByPercent = {};
+  var player = this;
+  var frameNumber = 0;
+  var currentFrameAtPercent;
+  var currentTotalTime = 0;
+  this.frames.forEach(function(frame) {
+    currentTotalTime += frame[0];
+    currentFrameAtPercent = Math.floor(currentTotalTime / player.onePercentTime);
+    if (!framesByPercent[currentFrameAtPercent]) {
+      framesByPercent[currentFrameAtPercent] = [];
+    }
+    frame.push(currentFrameAtPercent);
+    framesByPercent[currentFrameAtPercent].push(frameNumber);
+    frameNumber  += 1;
+  });
+  this.framesByPercent = framesByPercent;
+}
+
+VT.Player.prototype.prepareFrames = function(data) {
+  var frames = [];
   var data = this.data;
   var bOffset = 0;
 
   this.timing.forEach(function(chunk) {
     var bytes = data.slice(bOffset, bOffset += chunk[1]);
-    timeline.push([chunk[0] * 1000, bytes]);
+    frames.push([chunk[0] * 1000, bytes]);
   })
 
-  this.timeline = timeline;
-  this.progress.prop('max', timeline.length);
-  this.setProgress(0);
+  this.frames = frames;
 }
 
 VT.Player.prototype.enableButtons = function(data) {
@@ -169,33 +228,31 @@ VT.Player.prototype.play = function() {
   player.hoverHide();
 
   if (player.playing) return;
-  // if (player.timelinePosition == 0) player.term.t;
+  // if (player.currentFrame == 0) player.term.t;
 
   player.playing = true;
 
-  function scheduleChunked(timeline) {
-    var chunk = timeline[player.timelinePosition];
+  function scheduleChunked(frames) {
+    var chunk = frames[player.currentFrame];
     var debug = 0;
-    var txt;
     if (chunk && player.playing) {
-      txt = chunk[1];
-      player.term.write(txt)
+      player.term.write(chunk[1])
       setTimeout(function() {
-        player.updateTimelinePosition(+1);
-        scheduleChunked(timeline);
+        player.currentFrame += 1
+        player.setProgress(chunk[2]);
+        scheduleChunked(frames);
       }, (chunk[0] / player.speedup));
     } else {
       if (!player.playing) {
         console.log('paused')
       } else {
-        player.timelinePosition = 0;
+        player.currentFrame = 0;
         player.pause();
       }
       player.hoverShow();
     }
   }
-
-  scheduleChunked(player.timeline);
+  scheduleChunked(player.frames);
 }
 
 VT.Player.prototype.pause = function() {
@@ -214,13 +271,15 @@ VT.Player.prototype.settings = function() {
 }
 
 VT.Player.prototype.updateTimelinePosition = function(val) {
-  this.timelinePosition = this.timelinePosition + val;
-  this.progressBar.css("width", ((100.0 / this.timeline.length) * this.timelinePosition) + '%' );
+  this.currentFrame = this.currentFrame + val;
+  // TODO: frame -> percent
+  // this.progressBar.css("width", ((100.0 / this.frames.length) * this.currentFrame) + '%' );
 }
 
 VT.Player.prototype.setProgress = function(val) {
-  this.timelinePosition = val;
-  this.progress.prop('value', val);
+  // this.currentFrame = val; // FIXME percent -> frame
+  this.progress.prop('value', val); 
+  this.progressBar.css("width", val + '%' );
 }
 
 VT.Player.prototype.initHover = function(content) {
