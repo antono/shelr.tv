@@ -63,6 +63,8 @@ VT.Player.prototype.jumpTo = function(percent) {
   var player = this;
   var i;
 
+  this.term.reset();
+
   this.setProgress(percent);
   for (i = 0; i < percent; i++) {
     if (this.framesByPercent[i]) {
