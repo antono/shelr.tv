@@ -13,6 +13,7 @@ VT.Player = function(term) {
   this.element = document.getElementById('player');
   this.el = $(this.element);
   this.speedup = 1;
+  this.currentFrame = 0;
   this.calculateTermSize();
   this.initSpeedControl();
   this.initHover();
