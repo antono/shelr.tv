@@ -16,6 +16,9 @@
       = f.label :tags
       = f.text_field :tags
     %p
+      = f.label :private
+      = f.check_box :private
+    %p
       .btn-group
         = button_to_function 'Cancel', 'history.back()', class: 'btn'
         = f.submit 'Save', class: 'btn btn-success'
