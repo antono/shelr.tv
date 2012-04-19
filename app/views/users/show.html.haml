@@ -1,5 +1,5 @@
 - content_for :title do
-  = @user.nickname + ' < '
+  == Shelr.tv user: #{@user.nickname}
 
 - content_for :head do
   = auto_discovery_link_tag :atom, user_url(@user, :format => :atom), title: "Shelr.tv - records from #{@user.nickname}"

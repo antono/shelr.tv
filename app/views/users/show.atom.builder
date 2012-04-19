@@ -1,6 +1,6 @@
 atom_feed :language => 'en-US' do |feed|
   feed.title "Shelr.tv - records from #{@user.nickname}"
-  feed.updated @records.first.created_at
+  feed.updated @records.first.try(:created_at)
 
   @records.each do |item|
     feed.entry(item) do |entry|
