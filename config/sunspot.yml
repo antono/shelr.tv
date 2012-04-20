@@ -1,5 +1,7 @@
 production:
   solr:
+    min_memory: 30M
+    max_memory: 100M
     hostname: localhost
     port: 8983
     log_level: WARNING
