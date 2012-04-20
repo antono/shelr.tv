@@ -40,7 +40,7 @@ steps_for :records do
   step "there are following records" do |table|
     @_records = {}
     table.hashes.each do |hash|
-      record_json = load_record('ls.json')
+      record_json = JSON.parse(load_record_fixture('ls.json'))
       record_json.delete('created_at')
       record = build(:record, record_json)
       record.title = hash['title']

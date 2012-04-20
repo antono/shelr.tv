@@ -110,11 +110,50 @@ describe RecordsController do
   end
 
   describe "POST create" do
-    it "should not verify authenticy token (we use API key here)" do
-      pending
+    let(:record) { load_record_fixture 'ls.json' }
+    let(:user)   { create(:user) }
+
+    it "skips authenticy token verification" do
       controller.should_not_receive(:verify_authenticity_token)
-      controller.stub(:create)
-      post :create
+      post :create, record: record, api_key: user.api_key
+    end
+
+    it "creates new record" do
+      lambda {
+        post :create, record: record, api_key: user.api_key
+      }.should change(Record, :count).by(1)
+    end
+
+    context "when api key given" do
+      it "assigns user with given api key as record.user" do
+        post :create, record: record, api_key: user.api_key
+        assigns(:record).user.should == user
+      end
+    end
+
+    context "when NO api key given" do
+      it "assigns Anonymous as user" do
+        anonymous = create :user, nickname: 'Anonymous'
+        post :create, record: record
+        assigns(:record).user.should == anonymous
+      end
+    end
+
+    context "when record is private" do
+      let(:private_record) { extend_record_fixture 'ls.json', private: true }
+      it "renders api_key for record in response" do
+        post :create, record: private_record, api_key: user.api_key
+        JSON.parse(response.body)['url'].should match(/access_key/)
+      end
+    end
+
+    context "when record is public" do
+      let(:public_record) { extend_record_fixture 'ls.json', private: false }
+      it "should not contain api_key for record in response" do
+        post :create, record: public_record, api_key: user.api_key
+        JSON.parse(response.body)['url']
+          .should_not match /access_key/
+      end
     end
   end
 end
