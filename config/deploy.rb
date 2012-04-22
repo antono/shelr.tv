@@ -5,7 +5,7 @@ set :application, "shelr"
 
 set :scm, :git
 set :repository, "git://github.com/antono/shelr.tv.git"
-set :user, 'ubuntu'
+set :user, 'shelr'
 set :branch, :master
 set :deploy_via, :remote_cache
 
@@ -16,6 +16,7 @@ role :web, "shelr"                          # Your HTTP server, Apache/etc
 role :app, "shelr"                          # This may be the same as your `Web` server
 role :db,  "shelr", :primary => true        # This is where Rails migrations will run
 
+default_run_options[:pty] = true
 
 def restart_unicorn signal = 'USR2'
   run "kill -#{signal} `cat #{shared_path}/pids/unicorn.pid`"
