@@ -12,7 +12,7 @@
 - if logged_in?
   %h2.comm Comments
 
-.comments
+#comments.comments
   - if @record.comments.any?
     - @record.comments.each do |comment|
       = render comment

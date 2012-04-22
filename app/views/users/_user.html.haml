@@ -1,31 +1,34 @@
-.user.big
+.user.big{ itemscope: true, itemtype: defined?(record) ? 'http://schema.org/CreativeWork' : 'http://schema.org/Person' }
 
   = link_to(image_tag(user.avatar_url(100)), user, :class => 'avatar')
 
   .desc
     %strong Nick
-    = link_to sanitize(user.nickname), user
+    = link_to sanitize(user.nickname), user, itemprop: 'author'
 
   - if defined?(record)
+    .desc.hidden
+      %img{ src: image_path('shell.png'), itemprop: 'image' }
+      %img{ src: image_path('shell.png'), itemprop: 'thumbnailUrl' }
+      %a{ href: record_path(record, anchor: 'comments'), itemprop: 'discussionUrl' }
+
     - if record.description.present?
       .desc
         %strong Description
-        .long=sanitize record.description_html
+        .long{ itemprop: 'description' }=sanitize record.description_html
       - if record.related_url.present?
         .desc
           %strong Read Also
-          .long= link_to record.related_url, record.related_url
+          .long= link_to truncate(record.related_url), record.related_url
     .desc
       %strong Statistics
-      - anon_count = @record.views(:anonymous)
-      - reg_count  = @record.views(:registered)
       .long
-        == #{pluralize anon_count, 'view'} by Anonymous and
-        == #{pluralize reg_count, 'view'} by registered users
+        == #{pluralize @record.views(:anonymous),  'view'} by Anonymous and
+        == #{pluralize @record.views(:registered), 'view'} by registered users
     - unless record.tags.blank?
       .desc.tags
         %strong Tags
-        .tags.long
+        .tags.long{ itemprop: 'keywords' }
         - record.tags.split(",").map(&:strip).each do |tag|
           = link_to sanitize(tag), records_path(:tags => [tag])
       .desc
