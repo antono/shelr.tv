@@ -1,6 +1,6 @@
 module ApplicationHelper
   def player_for(record, options = {})
-    render partial: 'shared/player', locals: { record: record, embed: options[:embed] }
+    render 'shared/player', record: record, embed: options[:embed]
   end
 
   def controller_and_action_class_names

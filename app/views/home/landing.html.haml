@@ -13,16 +13,15 @@
   %a{ href: '/about', class: 'btn btn-success btn-large'} NOW!
   %br
   %br
-  = render :partial => 'shared/google_plus'
+  = render 'shared/google_plus'
   %br
-  = render :partial => 'shared/tweet_landing'
+  = render 'shared/tweet_landing'
   %br
-  = render :partial => 'shared/flattr_button'
-  
+  = render 'shared/flattr_button'
+
 
 %ul.records
-  - @records.each do |record|
-    = render :partial => 'records/record', locals: { record: record, show_user: true }
+  = render @records, show_user: true
 
 .more
   %a{ href: '/records?page=2', class: 'btn btn-primary btn-large' } show me moar!

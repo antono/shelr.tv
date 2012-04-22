@@ -4,15 +4,14 @@
 - content_for :head do
   = auto_discovery_link_tag :atom, user_url(@user, :format => :atom), title: "Shelr.tv - records from #{@user.nickname}"
 
-.profile= render :partial => 'user', :locals => { :user => @user }
+.profile= render @user
 
 - if @user.records.any?
   %ul.records
-    - @records.each do |record|
-      = render :partial => 'records/record', locals: { record: record, show_user: false }
+    = render @records, show_user: false
 
   = paginate @user.records.page(params[:page]).per 5
-  
+
 - else
   .info
     - if current_user && @user.id == current_user.id
@@ -26,7 +25,7 @@
                 shelr setup #{@user.api_key}
                 shelr record
                 shelr push last
-          
+
     - else
       .alert.alert-block
         %p Ninja have no records yet...

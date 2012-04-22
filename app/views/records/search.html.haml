@@ -14,8 +14,7 @@
 
 %ul.records
   - if @records.any?
-    - @records.each do |record|
-      = render :partial => 'records/record', locals: { record: RecordDecorator.decorate(record), show_user: true }
+    = render @records, show_user: true
   - else
     %li.record
       .centered
