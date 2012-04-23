@@ -14,7 +14,7 @@
 
 %ul.records
   - if @records.any?
-    = render @records, show_user: true
+    = render RecordDecorator.decorate(@records), show_user: true
   - else
     %li.record
       .centered

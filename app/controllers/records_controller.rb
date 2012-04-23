@@ -84,6 +84,7 @@ class RecordsController < ApplicationController
       with :private, false
       paginate page: params[:page] || 1
     end.results
+
     respond_with @records
   end
 

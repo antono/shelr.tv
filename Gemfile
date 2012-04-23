@@ -24,7 +24,6 @@ gem 'sitemap_generator'
 # Search
 gem 'sunspot_rails'
 gem 'sunspot_solr'
-gem 'sunspot_with_kaminari'
 gem 'sunspot_mongo', git: 'https://github.com/derekharmel/sunspot_mongo.git'
 gem 'progress_bar'
 
