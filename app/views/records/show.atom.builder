@@ -18,7 +18,3 @@ atom_feed :language => 'en-US' do |feed|
     end
   end
 end
-
-# Local Variables:
-# mode: ruby
-# End:
