@@ -1,6 +1,6 @@
 atom_feed :language => 'en-US' do |feed|
   feed.title "Shelr.tv - new comments for \"#{@record.title}\""
-  feed.updated @record.comments.last.updated_at
+  feed.updated @record.comments.last.try(:updated_at)
 
   @record.comments.each do |comment|
     feed.entry(comment) do |entry|
