@@ -1,6 +1,6 @@
 = div_for(comment) do
   .badge
-    .avatar= image_tag(comment.user.avatar_url(50))
-    .nick= link_to(comment.user.nickname, comment.user)
-  .body= comment_link(comment, sanitize(comment.body))
-  .updated_at= comment_link(comment, l(comment.updated_at, format: :short))
+    .avatar= comment.avatar
+    .nick= comment.nickname
+  .body= comment.body
+  .updated_at= comment.updated_at
