@@ -1,6 +1,5 @@
-- user = comment.user || current_user
 = div_for(comment) do
   .badge
-    .avatar= image_tag user.avatar_url(50)
-    .nick= link_to user.nickname, user
-  .body=sanitize comment.body
+    .avatar= comment.avatar
+    .nick= comment.nickname
+  .body= comment.body

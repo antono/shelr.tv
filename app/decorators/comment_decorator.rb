@@ -2,8 +2,12 @@ class CommentDecorator < ApplicationDecorator
   decorates :comment
   decorates_association :user
 
-  def body
+  def body_link
     h.link_to(h.sanitize(model.body), record_path)
+  end
+
+  def body
+    h.sanitize(model.body)
   end
 
   def updated_at
@@ -11,16 +15,20 @@ class CommentDecorator < ApplicationDecorator
   end
 
   def nickname
-    h.link_to(model.user.nickname, model.user)
+    h.link_to(commentator.nickname, commentator)
   end
 
   def avatar
-    h.image_tag(self.user.avatar_url(50))
+    h.image_tag(commentator.avatar_url(50))
   end
 
   private
 
   def record_path
     h.record_path(model.commentable, anchor: h.dom_id(model))
+  end
+
+  def commentator
+    user = self.user || h.current_user
   end
 end
