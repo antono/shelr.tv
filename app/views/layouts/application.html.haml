@@ -37,9 +37,9 @@
             %li.divider-vertical
             - if logged_in?
               %li= link_to current_user.nickname, current_user
-              %li= link_to 'logout', logout_url
+              %li= link_to 'log out', [:session], :method => :delete
             - else
-              %li= link_to 'Login', '/login'
+              %li= link_to 'Login', login_session_path
 
     %section.flashes
       - if cookies['saw-alert-1'].blank? && !Rails.env.test?
@@ -61,15 +61,15 @@
       %p.copy
         %a{ href: 'https://github.com/shelr' }
           %strong Join the Fun!
-        
+
       %p.copy
         %span{ :class => 'left' } Written by
         %a{ href: 'http://twitter.com/antono' } Antono Vasiljev
         and
         %a{ href: 'https://github.com/shelr/shelr.tv/contributors' } other
         %a{ href: 'https://github.com/shelr/shelr/contributors' } contributors.
-        
-        
+
+
 
     = render 'shared/analytics'
     = render 'shared/fork_me'
