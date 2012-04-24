@@ -22,9 +22,7 @@ class Comment
     end
   end
 
-  def owner
-    user
-  end
+  alias owner user
 
   def editable_by?(usr)
     return false if not usr.is_a?(User)
