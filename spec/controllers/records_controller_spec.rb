@@ -95,31 +95,35 @@ describe RecordsController do
         response.should render_template :no_such_record
       end
     end
-
-    context "when format is json" do
+    describe 'formats' do
       let(:user)   { create :user }
       let(:record) { create :record }
 
-      it "hits the record with current_user" do
-        controller.stub(:current_user).and_return(user)
-        Record.stub_chain(:visible_by, :find).and_return(record)
-        record.should_receive(:hit!).with(user)
-        get :show, id: record.id.to_s, format: 'json'
-      end
-    end
-
-    context "when format is atom" do
-      let(:user)   { create :user }
-      let(:record) { create :record }
-
-      it "add record to assigns" do
-        get :show, id: record.id.to_s, format: 'atom'
-        assigns[:record].model.should eql(record)
+      context "when format is json" do
+        it "hits the record with current_user" do
+          controller.stub(:current_user).and_return(user)
+          Record.stub_chain(:visible_by, :find).and_return(record)
+          record.should_receive(:hit!).with(user)
+          get :show, id: record.id.to_s, format: 'json'
+        end
       end
 
-      it "should render show.atom.builder" do
-        get :show, id: record.id.to_s, format: 'atom'
-        response.should render_template :show
+      context "when format is atom" do
+        it "add record to assigns" do
+          get :show, id: record.id.to_s, format: 'atom'
+          assigns[:record].model.should eql(record)
+        end
+
+        it "should render show.atom.builder" do
+          get :show, id: record.id.to_s, format: 'atom'
+          response.should render_template :show
+        end
+      end
+
+      context "when wrong format" do
+        it "should hot raise exception" do
+          get :show, id: record.id.to_s, format: 'jsonN'
+        end
       end
     end
   end
