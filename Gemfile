@@ -73,4 +73,5 @@ end
 
 group :development do
   gem 'foreman'
+  gem 'capistrano'
 end
