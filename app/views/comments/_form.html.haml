@@ -4,6 +4,8 @@
       = f.text_area :body, :cols => 700, :rows => 10, placeholder: 'Your comment here...'
       .btn-group
         = f.submit 'Submit', class: 'btn submit btn-primary'
+        .info-group
+          Comments are parsed with Markdown
     .comment-template.hidden
       = render CommentDecorator.decorate(Comment.new(user: current_user))
   - else
