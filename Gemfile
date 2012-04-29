@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rake', '0.8.7' # https://twitter.com/#!/dhh/status/71966528744071169
+gem 'rake', '0.9.2' # https://twitter.com/#!/dhh/status/71966528744071169
 gem 'unicorn'
 
 gem 'rails', '~> 3.2.1'
