@@ -1,5 +1,6 @@
 source 'http://rubygems.org'
 
+gem 'rake', '0.8.7' # https://twitter.com/#!/dhh/status/71966528744071169
 gem 'unicorn'
 
 gem 'rails', '~> 3.2.1'
@@ -61,7 +62,6 @@ group :development, :test do
   gem 'guard-bundler'
   gem 'guard-ctags-bundler', git: 'git://github.com/antono/guard-ctags-bundler.git'
 
-  gem 'rake'
   gem 'pry'
   gem 'pry-nav'
 
