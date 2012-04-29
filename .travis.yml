@@ -1,5 +1,5 @@
 language: ruby
-gemfile: Gemfile.ci
+gemfile: Gemfile
 script: "./script/build.sh"
 before_script:
   - "export DISPLAY=:99.0"
