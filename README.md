@@ -13,7 +13,7 @@ GitHub: [shelr/shelr.tv](https://github.com/shelr/shelr.tv) [issues](https://git
 
 Ruby 1.9.1+ required.
 
-    sudo apt-get install mongodb-server openjdk-6-jre
+    sudo apt-get install mongodb-server openjdk-6-jre python-pygments
     bundle install
     bundle exec rake db:seed
     bundle exec foreman start
