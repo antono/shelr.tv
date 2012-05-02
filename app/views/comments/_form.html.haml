@@ -5,7 +5,8 @@
       .btn-group
         = f.submit 'Submit', class: 'btn submit btn-primary'
         .info-group
-          Comments are parsed with Markdown
+          Comments are parsed with
+          %a{ href: 'http://en.wikipedia.org/wiki/Markdown' } Markdown
     .comment-template.hidden
       = render CommentDecorator.decorate(Comment.new(user: current_user))
   - else
