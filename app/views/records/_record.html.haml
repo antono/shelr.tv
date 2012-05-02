@@ -10,7 +10,10 @@
       %sup= record.size
 
   %h3.title
-    = link_to sanitize(record.title), record
+    - if record.private?
+      = link_to sanitize(record.title), record_path(record, access_key: record.access_key)
+    - else    
+      = link_to sanitize(record.title), record
   .desc
     %time{ datetime: record.created_at }
       = time_ago_in_words(record.created_at)
