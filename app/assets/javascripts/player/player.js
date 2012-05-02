@@ -157,7 +157,7 @@ VT.Player.prototype.setData = function(data) {
   var dArr  = data.split("\n");
   // drop first and last strings
   this.data = dArr.slice(1, dArr.length - 2).join("\n");
-  this.data += "\n";
+  this.data = "\r\n" + this.data + "\n";
 }
 
 
@@ -232,7 +232,7 @@ VT.Player.prototype.play = function() {
   player.hoverHide();
 
   if (player.playing) return;
-  // if (player.currentFrame == 0) player.term.t;
+  if (player.currentFrame == 0) player.term.reset();
 
   player.playing = true;
 
