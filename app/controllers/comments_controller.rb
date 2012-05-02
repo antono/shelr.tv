@@ -13,9 +13,7 @@ class CommentsController < ApplicationController
     @comment = commentable.comments.build(params[:comment])
     @comment.user = current_user
     @comment.save
-
-    @comment.body = view_context.markdown(@comment.body)
-    render json: @comment
+    render json: CommentDecorator.decorate(@comment)
   end
 
   def preview
