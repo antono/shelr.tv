@@ -11,6 +11,7 @@ textarea.embed-code
   +wrap
   display: block
   overflow: hidden
+  
 .records
   +wrap
   +shadow
@@ -22,8 +23,10 @@ textarea.embed-code
     border: 1px #ccc solid
     border-bottom: none
     overflow: auto
+    &.private
+      background-image: url('/assets/record/private-bg.png')
     &:hover, &:last-child:hover
-      background: #fafafa
+      background-color: #fafafa
     &:first-child
       border-top: 1px #ccc solid
     &:last-child

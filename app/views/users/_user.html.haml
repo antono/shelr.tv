@@ -1,4 +1,4 @@
-.user.big{ itemscope: true, itemtype: defined?(record) ? 'http://schema.org/CreativeWork' : 'http://schema.org/Person' }
+.user.big{ itemscope: true, itemtype: defined?(record) ? 'http://schema.org/CreativeWork' : 'http://schema.org/Person', class: defined?(record) && record.private? ? 'private' : '' }
 
   = link_to(image_tag(user.avatar_url(100)), user, :class => 'avatar')
 
