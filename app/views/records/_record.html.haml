@@ -12,13 +12,13 @@
   %h3.title
     - if record.private?
       = link_to sanitize(record.title), record_path(record, access_key: record.access_key)
-    - else    
+    - else
       = link_to sanitize(record.title), record
   .desc
     %time{ datetime: record.created_at }
       = time_ago_in_words(record.created_at)
       ago
-    
+
   .desc.description
     =sanitize record.description_html
   - unless record.tags.blank?
