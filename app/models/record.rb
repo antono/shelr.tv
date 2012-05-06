@@ -26,12 +26,16 @@ class Record
   field :private,              type: Boolean,  index: true, default: false
   field :access_key,           type: String,   index: true, default: ''
   field :hits,                 type: Integer,  index: true, default: 0
+  field :rating,               type: Integer,  index: true, default: 0
   field :created_at,           type: DateTime, index: true
   field :updated_at,           type: DateTime, index: true
 
   belongs_to :user, index: true
   has_many :comments, :as => :commentable
-  has_and_belongs_to_many :viewers, :class_name => 'User', :inverse_of => nil
+
+  has_and_belongs_to_many :viewers,    :class_name => 'User', :inverse_of => nil
+  has_and_belongs_to_many :upvoters,   :class_name => 'User', :inverse_of => nil
+  has_and_belongs_to_many :downvoters, :class_name => 'User', :inverse_of => nil
 
   validates :user, presence: true
 
@@ -122,6 +126,29 @@ class Record
       self.viewers << user unless self.viewers.include?(user)
     else
       self.inc(:hits, 1)
+    end
+  end
+
+  def vote!(direction, user)
+    case direction
+    when :up
+      if self.downvoters.include?(user)
+        self.inc(:rating, +2)
+        self.downvoters.delete(user)
+        self.upvoters.push(user)
+      elsif not self.upvoters.include?(user)
+        self.inc(:rating, 1)
+        self.upvoters.push(user)
+      end
+    when :down
+      if self.upvoters.include?(user)
+        self.inc(:rating, -2)
+        self.upvoters.delete(user)
+        self.downvoters.push(user)
+      elsif not self.downvoters.include?(user)
+        self.inc(:rating, -1)
+        self.downvoters.push(user)
+      end
     end
   end
 

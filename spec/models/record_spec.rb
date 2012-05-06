@@ -118,6 +118,92 @@ describe Record do
     end
   end
 
+  describe "#vote!(direction, user)" do
+
+    subject     { create :record }
+    let(:voter) { create :user }
+
+    context "when direction is :up" do
+      it "increments reating" do
+        lambda { subject.vote!(:up, voter) }.should change(subject.reload, :rating).by 1
+      end
+
+      it "adds voter to #upvoters" do
+        subject.upvoters.should_not include(voter)
+        subject.vote!(:up, voter)
+        subject.upvoters.should include(voter)
+      end
+
+      context "and user is already voted up" do
+        before :each do
+          subject.vote!(:up, voter)
+        end
+
+        it "should not change rating" do
+          -> { subject.vote!(:up, voter) }.should change(subject.reload, :rating).by 0
+        end
+      end
+
+      context "and user is already voted down" do
+        before :each do
+          subject.vote!(:down, voter)
+          subject.downvoters.should include voter
+          subject.upvoters.should_not include voter
+        end
+
+        it "moves user from downvoters to upvoters" do
+          subject.vote!(:up, voter)
+          subject.downvoters.should_not include voter
+          subject.upvoters.should include voter
+        end
+
+        it "it increments rating by +2" do
+          -> { subject.vote!(:up, voter) }.should change(subject.reload, :rating).by +2
+        end
+      end
+    end
+
+    context "when direction is :down" do
+      it "decrements rating" do
+        lambda { subject.vote!(:down, voter) }.should change(subject.reload, :rating).by -1
+      end
+
+      it "adds voter to #downvoters" do
+        subject.upvoters.should_not include(voter)
+        subject.vote!(:up, voter)
+        subject.upvoters.should include(voter)
+      end
+
+      context "and user is already voted down" do
+        before :each do
+          subject.vote!(:down, voter)
+        end
+
+        it "should not change rating" do
+          -> { subject.vote!(:down, voter) }.should change(subject.reload, :rating).by 0
+        end
+      end
+
+      context "and user is already voted up" do
+        before :each do
+          subject.vote!(:up, voter)
+        end
+
+        it "changes rating by -2" do
+          -> { subject.vote!(:down, voter) }.should change(subject.reload, :rating).by -2
+        end
+
+        it "moves user from upvoters to downvoters" do
+          subject.upvoters.should include voter
+          subject.downvoters.should_not include voter
+          subject.vote!(:down, voter)
+          subject.upvoters.should_not include voter
+          subject.downvoters.should include voter
+        end
+      end
+    end
+  end
+
   describe "#tags=(tags)" do
     it "should split tags with ',' and assign them" do
       subject.tags = "one, two"
