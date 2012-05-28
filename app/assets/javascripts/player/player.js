@@ -290,6 +290,7 @@ VT.Player.prototype.setProgress = function(val) {
 VT.Player.prototype.initExtraTools = function() {
   // Setup widths for comments and everything below terminal screen
   $('.extra-tools, .comments, h2.comm, .comment-form, .embed-area, .embed-code').css('width', this.termWidth);
+  $('.comment-form .markItUpEditor').css('width', this.termWidth - 60);
   $('.comment-form .markItUp').css('width', this.termWidth).css('border', 0);
 
   // Embed and Share buttons
