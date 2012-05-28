@@ -138,7 +138,7 @@ describe RecordsController do
     end
 
     it "creates new record" do
-      lambda {
+      -> {
         post :create, record: record, api_key: user.api_key
       }.should change(Record, :count).by(1)
     end
@@ -173,6 +173,17 @@ describe RecordsController do
         JSON.parse(response.body)['url']
           .should_not match /access_key/
       end
+    end
+  end
+
+  describe "POST vote" do
+    let!(:record) { create :record }
+    let!(:user)   { create :user   }
+
+    it "should call vote!(direction, curent_user)" do
+      controller.stub(current_user: user, current_record: record)
+      record.should_receive(:vote!).with(:any, user)
+      post :vote, id: record.id.to_s, direction: 'any'
     end
   end
 end

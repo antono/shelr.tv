@@ -22,6 +22,7 @@ VT.Player = function(term) {
   this.initProgress();
   this.initControls();
   this.initCmdline();
+  this.initExtraTools();
 }
 
 VT.Player.prototype.onError = function() {
@@ -284,6 +285,17 @@ VT.Player.prototype.setProgress = function(val) {
   // this.currentFrame = val; // FIXME percent -> frame
   this.progress.prop('value', val); 
   this.progressBar.css("width", val + '%' );
+}
+
+VT.Player.prototype.initExtraTools = function() {
+  // Setup widths for comments and everything below terminal screen
+  $('.extra-tools, .comments, h2.comm, .comment-form, .embed-area, .embed-code').css('width', this.termWidth);
+  $('.comment-form .markItUp').css('width', this.termWidth).css('border', 0);
+
+  // Embed and Share buttons
+  $('button.embed').click(function(ev) {
+    $('.embed-area').toggle().toggleClass('hidden');
+  });
 }
 
 VT.Player.prototype.initHover = function(content) {

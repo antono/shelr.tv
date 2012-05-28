@@ -130,22 +130,30 @@ class Record
   end
 
   def vote!(direction, user)
+    return if user.blank?
+
     case direction
     when :up
-      if self.downvoters.include?(user)
-        self.inc(:rating, +2)
+      if self.downvoters.where(_id: user.id.to_s).any?
+        self.inc(:rating, 2)
         self.downvoters.delete(user)
         self.upvoters.push(user)
-      elsif not self.upvoters.include?(user)
+        return
+      end
+
+      unless self.upvoters.where(_id: user.id.to_s).any?
         self.inc(:rating, 1)
         self.upvoters.push(user)
       end
     when :down
-      if self.upvoters.include?(user)
+      if self.upvoters.where(_id: user.id.to_s).any?
         self.inc(:rating, -2)
         self.upvoters.delete(user)
         self.downvoters.push(user)
-      elsif not self.downvoters.include?(user)
+        return
+      end
+
+      unless self.downvoters.where(_id: user.id.to_s).any?
         self.inc(:rating, -1)
         self.downvoters.push(user)
       end

@@ -53,7 +53,7 @@
     .bar
       width: 0%
   .speed-container
-    width: 300px
+    width: 100px
   .fd-slider
     height: 20px
     margin-top: 5px
@@ -81,6 +81,11 @@
     .sc-settings
       display: none
 
+.extra-tools.btn-toolbar, .embed-area
+  +wrap
+
+.social
+
 #player-hover
   text-align: center
   color: white
@@ -92,7 +97,8 @@
       color: gray
   &.enabled
     -webkit-transition-property: background
-    -webkit-transition-duration: 5s
+
+      -webkit-transition-duration: 5s
     -webkit-transition-timing-function: default
     background-color: rgba(0,0,0,0.7)
     &.error

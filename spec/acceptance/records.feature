@@ -57,3 +57,17 @@ Feature: Records
     Given I am the owner of "shelr manual" record
     When I change "shelr manual" record title to "new shelr manual"
     Then I should see "Record was succesfully updated."
+
+  Scenario: registered user can vote for records
+    Given record "shelr manual" has 3 upvotes and 2 downvotes
+    When I visit "shelr manual" record page
+    Then I should see +1 button
+    And  I should see -1 button
+    When I click +1 button
+    Then rating of "shelr manual" should be 2
+    When I click +1 button
+    Then rating of "shelr manual" should be 2
+    When I click -1 button
+    Then rating of "shelr manual" should be 0
+    When I click -1 button
+    Then rating of "shelr manual" should be 0

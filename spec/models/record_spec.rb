@@ -5,7 +5,6 @@ describe Record do
   subject { build :record }
 
   it_behaves_like "editable with restrictions"
-
   it_behaves_like "editable by God"
   it_behaves_like "editable by Owner"
 
@@ -15,6 +14,9 @@ describe Record do
   its(:hits)       { should == 0         }
   its(:private)    { should == false     }
   its(:access_key) { should == ''        }
+  its(:rating)     { should == 0         }
+  its(:upvoters)   { should == []        }
+  its(:downvoters) { should == []        }
 
   describe "scope" do
     let!(:priv) { create(:record, private: true)  }
@@ -123,9 +125,16 @@ describe Record do
     subject     { create :record }
     let(:voter) { create :user }
 
+    context "when user is nil" do
+      it "should not change rating" do
+        -> { subject.vote!(:up, nil)   }.should_not change(subject.reload, :rating)
+        -> { subject.vote!(:down, nil) }.should_not change(subject.reload, :rating)
+      end
+    end
+
     context "when direction is :up" do
-      it "increments reating" do
-        lambda { subject.vote!(:up, voter) }.should change(subject.reload, :rating).by 1
+      it "increments rating" do
+        -> { subject.vote!(:up, voter) }.should change(subject.reload, :rating).by 1
       end
 
       it "adds voter to #upvoters" do
@@ -135,12 +144,13 @@ describe Record do
       end
 
       context "and user is already voted up" do
-        before :each do
-          subject.vote!(:up, voter)
-        end
+        before(:each) { subject.vote!(:up, voter) }
 
         it "should not change rating" do
-          -> { subject.vote!(:up, voter) }.should change(subject.reload, :rating).by 0
+          subject.upvoters.should include voter
+          subject.rating.should == 1
+          -> { subject.vote!(:up, voter) }.should_not change(subject.reload, :rating)
+          subject.rating.should == 1
         end
       end
 
@@ -165,7 +175,7 @@ describe Record do
 
     context "when direction is :down" do
       it "decrements rating" do
-        lambda { subject.vote!(:down, voter) }.should change(subject.reload, :rating).by -1
+        -> { subject.vote!(:down, voter) }.should change(subject.reload, :rating).by -1
       end
 
       it "adds voter to #downvoters" do
@@ -260,7 +270,7 @@ describe Record do
 
     context "when user is nil" do
       it "ircreases hits count" do
-        expect { subject.hit! }.to change(subject, :hits).by(1)
+        -> { subject.hit! }.should change(subject, :hits).by(1)
       end
     end
   end

@@ -24,6 +24,7 @@ Spork.prefork do
   RSpec.configure do |config|
     config.include FactoryGirl::Syntax::Methods
     config.include Mongoid::Matchers
+    config.before(:each) { Mongoid::IdentityMap.clear }
 
     # == Mock Framework
     #
@@ -47,6 +48,7 @@ Spork.prefork do
     config.include SunspotMatchers
     config.before do
       Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
+
     end
 
     config.after :each do

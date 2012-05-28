@@ -2,7 +2,7 @@ class RecordsController < ApplicationController
 
   skip_before_filter :verify_authenticity_token, :only => [:create]
 
-  before_filter :find_record, :only => [:show, :edit, :update, :destroy, :embed]
+  before_filter :find_record, :only => [:show, :edit, :update, :destroy, :embed, :vote]
 
   respond_to :html, :json, :atom
 
@@ -72,6 +72,11 @@ class RecordsController < ApplicationController
     end
   end
 
+  def vote
+    current_record.vote!(params[:direction].to_sym, current_user)
+    render json: { rating: @record.rating }
+  end
+
   def search
     @records = Record.solr_search do
       fulltext params[:q]
@@ -84,13 +89,17 @@ class RecordsController < ApplicationController
 
   private
 
+  def current_record
+    find_record
+    @record.reload
+  end
+
   def find_record
     if params[:access_key].present?
       @record = RecordDecorator.decorate(Record.priv.where(access_key: params[:access_key]).find(params[:id]))
     else
       @record = RecordDecorator.decorate(Record.visible_by(current_user).find(params[:id]))
     end
-
   rescue Mongoid::Errors::DocumentNotFound
     render :no_such_record
   end

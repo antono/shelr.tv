@@ -4,7 +4,11 @@ Shelr::Application.routes.draw do
     resources :comments
 
     get :search, :on => :collection
-    get :embed,  :on => :member
+
+    member do
+      get :embed
+      post :vote
+    end
   end
 
   resources :users

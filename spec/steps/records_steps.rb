@@ -83,4 +83,29 @@ steps_for :records do
   step "I visit profile of :title owner" do |title|
     visit user_path(@_records[title].user)
   end
+
+  step "record :title has :up upvote(s) and :down downvote(s)" do |title, up, down|
+    up.to_i.times   { @_records[title].vote!(:up, create(:user)) }
+    down.to_i.times { @_records[title].vote!(:down, create(:user)) }
+  end
+
+  step "I should see +1 button" do
+    page.should have_css 'button.upvote'
+  end
+
+  step "I should see -1 button" do
+    page.should have_css 'button.downvote'
+  end
+
+  step "I click +1 button" do
+    page.find('button.upvote').click
+  end
+
+  step "I click -1 button" do
+    page.find('button.downvote').click
+  end
+
+  step "rating of :title should be :rating" do |title, rating|
+    @_records[title].reload.rating.should == rating.to_i
+  end
 end
