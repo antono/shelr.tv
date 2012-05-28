@@ -4,6 +4,6 @@
 
 jQuery ->
   $('.alert').alert().bind 'closed', (ev) ->
-    jQuery.cookie("saw-#{$(ev.target).attr('id')}", true);
+    jQuery.cookie("saw-#{$(ev.target).attr('id')}", true, { expires: 30, path: '/' });
   $('.dashboard .comment').click (ev) ->
     location.href = $(this).find('.updated_at a').attr('href')
