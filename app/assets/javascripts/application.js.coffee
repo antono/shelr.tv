@@ -1,6 +1,7 @@
 //= require mustache
 //= require jquery
 //= require jquery_ujs
+//= require jquery/jquery.cookie
 //= require underscore
 //= require backbone
 //= require backbone_rails_sync
