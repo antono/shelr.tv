@@ -134,30 +134,14 @@ class Record
 
     case direction
     when :up
-      if self.downvoters.where(_id: user.id.to_s).any?
-        self.inc(:rating, 2)
-        self.downvoters.delete(user)
-        self.upvoters.push(user)
-        return
-      end
-
-      unless self.upvoters.where(_id: user.id.to_s).any?
-        self.inc(:rating, 1)
-        self.upvoters.push(user)
-      end
+      self.downvoters.delete(user)
+      self.upvoters.push(user)
     when :down
-      if self.upvoters.where(_id: user.id.to_s).any?
-        self.inc(:rating, -2)
-        self.upvoters.delete(user)
-        self.downvoters.push(user)
-        return
-      end
-
-      unless self.downvoters.where(_id: user.id.to_s).any?
-        self.inc(:rating, -1)
-        self.downvoters.push(user)
-      end
+      self.upvoters.delete(user)
+      self.downvoters.push(user)
     end
+    self.rating = upvoters.count - downvoters.count
+    save
   end
 
   def views(type = :all)
