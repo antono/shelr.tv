@@ -73,7 +73,6 @@ class RecordsController < ApplicationController
   end
 
   def vote
-    raise
     current_record.vote!(params[:direction].to_sym, current_user)
     render json: { rating: @record.rating }
   end
