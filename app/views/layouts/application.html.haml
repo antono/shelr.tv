@@ -29,7 +29,6 @@
             %li{ class: active_if(/^\/records/)    }= link_to "Records <sup>#{Record.count}</sup>".html_safe, "/records"
             %li{ class: active_if(/^\/users/)      }= link_to "Users".html_safe, '/users'
             %li{ class: active_if(/^\/about/)      }= link_to "What's up?", '/about'
-            -# %li{ class: active_if(/^\/blog/)       }= link_to 'Blog', '/blog'
           %ul{ class: "nav pull-right" }
             %li
               = form_tag '/records/search', :method => :get, :class => 'navbar-search pull-right' do
@@ -42,10 +41,10 @@
               %li= link_to 'Login', login_session_path
 
     %section.flashes
-      - if cookies['saw-alert-1'].blank? && !Rails.env.test?
-        #alert-1.alert.alert-info
-          %a{ class: 'close', :'data-dismiss' => "alert" } &times;
-          %a{ href: 'http://antono.info/eng/2012/4/shelr-tv-embedded-screencasts', target: '_blank' } Introducing embedded and private records!
+      -# - if cookies['saw-alert-1'].blank? && !Rails.env.test?
+      -#   #alert-1.alert.alert-info
+      -#     %a{ class: 'close', :'data-dismiss' => "alert" } &times;
+      -#     %a{ href: 'http://antono.info/eng/2012/4/shelr-tv-embedded-screencasts', target: '_blank' } Introducing embedded and private records!
       - [:error, :notice].each do |type|
         - unless flash[type].blank?
           .alert{ class: { error: 'alert-error', notice: 'alert-success', info: 'alert-info' }[type] }= flash[type]
