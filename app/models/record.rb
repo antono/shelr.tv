@@ -134,11 +134,11 @@ class Record
 
     case direction
     when :up
-      self.downvoters.delete(user)
-      self.upvoters.push(user)
+      self.downvoters.delete(user) rescue nil
+      self.upvoters.push(user) rescue nil
     when :down
-      self.upvoters.delete(user)
-      self.downvoters.push(user)
+      self.upvoters.delete(user) rescue nil
+      self.downvoters.push(user) rescue nil
     end
     self.rating = upvoters.count - downvoters.count
     save
