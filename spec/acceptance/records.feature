@@ -71,3 +71,5 @@ Feature: Records
     Then rating of "shelr manual" should be 0
     When I click -1 button
     Then rating of "shelr manual" should be 0
+    When I click +1 button
+    Then rating of "shelr manual" should be 2
