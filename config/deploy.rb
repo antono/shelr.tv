@@ -111,7 +111,7 @@ _cset(:skip_backup_tables, ['sessions'])
 namespace :backup do
 
   def latest
-    capture("cd #{current_path}; bundle exec rake -s db:backup:latest BACKUP_DIR=#{backup_path}").strip
+    capture("cd #{backup_path} && ls -t | head -1").strip
   end
 
   desc "Create a backup on the server"
@@ -141,6 +141,7 @@ namespace :backup do
 
 end
 
+before "deploy", "backup:create"
 after 'deploy:update_code', 'config:cp'
 after "deploy:update_code", "sitemap:copy_old"
 after "deploy", "sitemap:refresh"
