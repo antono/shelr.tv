@@ -31,9 +31,9 @@
 - unless embed or record.private?
   .extra-tools.btn-toolbar
     .btn-group
-      %button.btn.btn-success.upvote{ data: { voteurl: vote_record_path(record) } } +1
+      %button.btn.btn-success.upvote{  data: { voteurl: vote_record_path(record), direction: 'up'   }} +1
       %button.btn.rating= @record.rating
-      %button.btn.btn-danger.downvote{ data: { voteurl: vote_record_path(record) } } -1
+      %button.btn.btn-danger.downvote{ data: { voteurl: vote_record_path(record), direction: 'down' }} -1
 
     .btn-group
       %button.btn.embed Embed
