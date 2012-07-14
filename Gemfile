@@ -65,7 +65,7 @@ group :development, :test do
   gem 'pry'
   gem 'pry-nav'
 
-  gem 'turnip', git: "git://github.com/jnicklas/turnip.git"
+  gem 'turnip'
   gem 'capybara'
   gem 'database_cleaner'
 
