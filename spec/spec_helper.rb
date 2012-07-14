@@ -58,7 +58,8 @@ Spork.prefork do
     #
     # Turnip
     #
-    Turnip::Config.step_dirs = Rails.root.join('spec', 'steps')
+    Dir.glob("spec/steps/**/*steps.rb") { |f| load f, true }
+
     #
     # Datablase cleaner
     #
@@ -78,6 +79,5 @@ Spork.each_run do
   # Requires supporting ruby files with custom matchers and macros, etc,
   # in spec/support/ and its subdirectories.
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
-  Turnip::StepLoader.steps_loaded = false
-  Turnip::StepLoader.load_steps
+  Dir.glob("spec/steps/**/*steps.rb") { |f| load f, true }
 end
