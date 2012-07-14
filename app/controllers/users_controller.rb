@@ -21,7 +21,7 @@ class UsersController < ApplicationController
     else
       flash[:error] = "Heh. No Way, man :)"
     end
-    redirect_to @user
+    redirect_to_target_or_default @user
   end
 
   private
