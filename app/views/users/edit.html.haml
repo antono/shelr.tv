@@ -10,5 +10,4 @@
     = f.input :api_key, label: 'API key', disabled: true, hint: "shelr setup #{@user.api_key}"
 
     .form-actions
-      = button_to_function 'Cancel', 'history.back()', :class => 'btn'
       = f.button :submit, 'Save', :class => 'btn-success'
