@@ -60,7 +60,7 @@ group :development, :test do
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-bundler'
-  gem 'guard-ctags-bundler', git: 'git://github.com/antono/guard-ctags-bundler.git'
+  gem 'guard-ctags-bundler'
 
   gem 'pry'
   gem 'pry-nav'

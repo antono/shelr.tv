@@ -9,13 +9,6 @@ GIT
       redcarpet
 
 GIT
-  remote: git://github.com/antono/guard-ctags-bundler.git
-  revision: 819284437cd2b98b219675bedf42f9aa36838096
-  specs:
-    guard-ctags-bundler (0.0.5)
-      guard (>= 0.4.0)
-
-GIT
   remote: https://github.com/derekharmel/sunspot_mongo.git
   revision: 411960f0dd67cc5aa3e54d6346371b9d6ce8c600
   specs:
@@ -132,6 +125,8 @@ GEM
     guard-bundler (1.0.0)
       bundler (~> 1.0)
       guard (~> 1.1)
+    guard-ctags-bundler (0.1.1)
+      guard (>= 1.0.0)
     guard-rspec (1.2.0)
       guard (>= 1.1)
     guard-spork (1.1.0)
@@ -376,7 +371,7 @@ DEPENDENCIES
   fivemat
   foreman
   guard-bundler
-  guard-ctags-bundler!
+  guard-ctags-bundler
   guard-rspec
   guard-spork
   haml-rails
