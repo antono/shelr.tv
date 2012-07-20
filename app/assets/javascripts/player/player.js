@@ -17,7 +17,7 @@ VT.Player = function(term) {
   this.currentFrame = 0;
   this.calculateTermSize();
   this.initSpeedControl();
-  this.initHover();
+  this.initOverlay();
   this.initTermContainer();
   this.initHeader();
   this.initProgress();
@@ -38,17 +38,6 @@ VT.Player.prototype.spinerOptions = {
   shadow: false, // Whether to render a shadow
   hwaccel: false, // Whether to use hardware acceleration
   zIndex: 2e9 // The z-index (defaults to 2000000000)
-}
-
-VT.Player.prototype.onError = function() {
-  this.pause()
-  this.term.reset()
-  this.hover.addClass('error')
-  this.hoverHide = function() {};
-  this.hoverShow("<br/><div class='img'>" +
-                 "<img src='/assets/harakiri.png' alt='So sorry...'/></div>切腹" +
-                 "<p>Something went wrong.<br/>" +
-                 "Try commandline client instead!<br/>")
 }
 
 VT.Player.prototype.initSpeedControl = function() {
@@ -141,7 +130,7 @@ VT.Player.prototype.initTermContainer = function() {
 VT.Player.prototype.load = function(path) {
   var player = this;
   
-  this.hoverLoading()
+  this.overlayLoading()
 
   jQuery.get(path).success(function(resp){
     player.record = resp;
@@ -151,7 +140,7 @@ VT.Player.prototype.load = function(path) {
     player.calculateTotalTime();
     player.mapFrameToPercents();
     player.enableButtons();
-    player.hoverHide();
+    player.overlayHide();
   }).error(function (resp) {
     player.onError();
     console.log("Error downloading record:", resp)
@@ -246,7 +235,7 @@ VT.Player.prototype.play = function() {
   button.setAttribute('data-action', 'pause');
   button.getElementsByTagName('img')[0].setAttribute('src', '/assets/term/playback-pause.png');
 
-  player.hoverHide();
+  player.overlayHide();
 
   if (player.playing) return;
   if (player.currentFrame == 0) player.term.reset();
@@ -270,7 +259,7 @@ VT.Player.prototype.play = function() {
         player.currentFrame = 0;
         player.pause();
       }
-      player.hoverShow();
+      player.overlayShow();
     }
   }
   scheduleChunked(player.frames);
@@ -281,7 +270,7 @@ VT.Player.prototype.pause = function() {
   button.getElementsByTagName('img')[0].setAttribute('src', '/assets/term/playback-start.png')
   button.setAttribute('data-action', 'play');
   this.playing = false;
-  this.hoverShow();
+  this.overlayShow();
 }
 
 VT.Player.prototype.toggle = function() {
@@ -317,34 +306,32 @@ VT.Player.prototype.initExtraTools = function() {
   });
 }
 
-VT.Player.prototype.initHover = function(content) {
+VT.Player.prototype.initOverlay = function(content) {
   var player  = this
   var termEl  = this.el.find('#term')
 
-  this.hover = $('<div/>')
-  this.el.append(this.hover)
+  this.overlay = $('<div/>')
+  this.el.append(this.overlay)
 
   termEl.mouseleave(function(ev) {
     console.log(ev)
     if (!player.playing) {
-      player.hoverShow()
+      player.overlayShow()
     } else {
       ev.stopPropagation()
     }
   })
 
-  this.hover.mouseenter(function(ev) {
-    if (!player.playing) player.hoverHide()
+  this.overlay.mouseenter(function(ev) {
+    if (!player.playing) player.overlayHide()
   })
 }
 
-VT.Player.prototype.hoverShow = function(content) {
-
-  var hover   = this.hover
+VT.Player.prototype.overlayShow = function(content) {
   var offsets = this.el.find('#term').offset()
 
-  hover.removeClass('disabled')
-  hover.css({
+  this.overlay.removeClass('disabled')
+  this.overlay.css({
     position: 'absolute',
     top: offsets.top + 'px',
     left: offsets.left + 'px',
@@ -352,24 +339,36 @@ VT.Player.prototype.hoverShow = function(content) {
     height: this.termHeight
   })
 
-  hover.attr('id', 'player-hover')
-  hover.addClass('enabled')
-  hover.html(content)
-  hover.show()
+  this.overlay
+    .attr('id', 'player-overlay')
+    .addClass('enabled')
+    .html(content).show()
 }
 
-VT.Player.prototype.hoverHide = function() {
-  this.hover.removeClass('enabled')
-  this.hover.addClass('disabled')
-  this.hover.html('')
-  this.hover.css({width: 0, height: 0})
+VT.Player.prototype.overlayHide = function() {
+  this.overlay.removeClass('enabled')
+  this.overlay.addClass('disabled')
+  this.overlay.html('')
+  this.overlay.css({width: 0, height: 0})
 }
 
-VT.Player.prototype.hoverLoading = function () {
+VT.Player.prototype.overlayLoading = function () {
   var spinOptions = $.extend({
     top: (player.termHeight / 2) - player.spinerOptions.radius * 2,
     left: (player.termWidth / 2) - player.spinerOptions.radius * 2
   }, player.spinerOptions)
 
-  this.hoverShow($('<div>').spin(spinOptions))
+  this.overlayShow($('<div>').spin(spinOptions))
 }
+
+VT.Player.prototype.onError = function() {
+  this.pause()
+  this.term.reset()
+  this.overlay.addClass('error')
+  this.overlayHide = function() {};
+  this.overlayShow("<br/><div class='img'>" +
+                 "<img src='/assets/harakiri.png' alt='So sorry...'/></div>切腹" +
+                 "<p>Something went wrong.<br/>" +
+                 "Try commandline client instead!<br/>")
+}
+
