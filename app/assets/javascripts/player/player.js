@@ -11,8 +11,9 @@ VT.Player = function(term) {
   this.data    = null;
   this.timing  = null;
   this.element = document.getElementById('player');
-  this.el = $(this.element);
+  this.el      = $(this.element);
   this.speedup = 1;
+
   this.currentFrame = 0;
   this.calculateTermSize();
   this.initSpeedControl();
@@ -26,18 +27,14 @@ VT.Player = function(term) {
 }
 
 VT.Player.prototype.onError = function() {
-  this.pause();
-  // this.term.clear();
-  this.hoverShow();
-  this.hover.classList.add('error');
+  this.pause()
+  this.term.reset()
+  this.hover.addClass('error')
   this.hoverHide = function() {};
-  this.hover.innerHTML = "<br/><div class='img'><img src='/assets/harakiri.png' alt='So sorry...'/></div>切腹"
-  this.hover.innerHTML += "<p>Sorry we cannot emulate this shellcast in HTML.<br/>" +
-    "Use commandline client instead!<br/>" +
-    "<span class='donate'> And consider small <a href='http://weusecoins.com' target='_blank'>bitcoin</a> " +
-    "donation to fix this: 17tKDsdjKiS9bmnpH93NBeJnykWgLYbntL  </span>  <br/> &darr; &darr; &darr;</p>"
-  this.cmdline.classList.remove('hidden');
-  this.controls.classList.add('hidden');
+  this.hoverShow("<br/><div class='img'>" +
+                 "<img src='/assets/harakiri.png' alt='So sorry...'/></div>切腹" +
+                 "<p>Something went wrong.<br/>" +
+                 "Try commandline client instead!<br/>")
 }
 
 VT.Player.prototype.initSpeedControl = function() {
@@ -73,7 +70,7 @@ VT.Player.prototype.jumpTo = function(percent) {
       this.framesByPercent[i].forEach(function(frameNumber) {
         player.term.write(player.frames[frameNumber][1]);
         player.currentFrame = frameNumber;
-      });
+      })
     }
   }
 }
@@ -129,6 +126,7 @@ VT.Player.prototype.initTermContainer = function() {
 
 VT.Player.prototype.load = function(path) {
   var player = this;
+  player.hoverShow("<img src='/assets/bar-loader.gif' alt='loading...'>")
   jQuery.get(path).success(function(resp){
     player.record = resp;
     player.setTiming(player.record.timing);
@@ -137,7 +135,9 @@ VT.Player.prototype.load = function(path) {
     player.calculateTotalTime();
     player.mapFrameToPercents();
     player.enableButtons();
+    player.hoverHide();
   }).error(function (resp) {
+    player.onError();
     console.log("Error downloading record:", resp)
   });
 }
@@ -265,6 +265,7 @@ VT.Player.prototype.pause = function() {
   button.getElementsByTagName('img')[0].setAttribute('src', '/assets/term/playback-start.png')
   button.setAttribute('data-action', 'play');
   this.playing = false;
+  this.hoverShow();
 }
 
 VT.Player.prototype.toggle = function() {
@@ -283,13 +284,14 @@ VT.Player.prototype.updateTimelinePosition = function(val) {
 
 VT.Player.prototype.setProgress = function(val) {
   // this.currentFrame = val; // FIXME percent -> frame
-  this.progress.prop('value', val); 
+  this.progress.prop('value', val);
   this.progressBar.css("width", val + '%' );
 }
 
 VT.Player.prototype.initExtraTools = function() {
   // Setup widths for comments and everything below terminal screen
-  $('.extra-tools, .comments, h2.comm, .comment-form, .embed-area, .embed-code').css('width', this.termWidth);
+  $('.extra-tools, .comments, h2.comm, .comment-form, .embed-area, .embed-code')
+    .css('width', this.termWidth);
   $('.comment-form .markItUpEditor').css('width', this.termWidth - 60);
   $('.comment-form .markItUp').css('width', this.termWidth).css('border', 0);
 
@@ -300,49 +302,49 @@ VT.Player.prototype.initExtraTools = function() {
 }
 
 VT.Player.prototype.initHover = function(content) {
-  // var player = this;
-  this.hover = document.createElement('div');
-  // this.term.element.appendChild(this.hover);
+  var player  = this
+  var termEl  = this.el.find('#term')
 
-  // this.vt.canvas.container.addEventListener('mouseout', function(ev) {
-  //   if (!player.playing && ev.target.classList.contains('canvas')) {
-  //     //console.log(ev.target.classList)
-  //     player.hoverShow();
-  //   } else {
-  //     ev.stopPropagation();
-  //   }
-  // }, false)
+  this.hover = $('<div/>')
+  this.el.append(this.hover)
 
-  // this.hover.addEventListener('mouseover', function(ev) {
-  //   if (!player.playing)  {
-  //     player.hoverHide();
-  //   }
-  // }, false);
+  termEl.mouseleave(function(ev) {
+    console.log(ev)
+    if (!player.playing) {
+      player.hoverShow()
+    } else {
+      ev.stopPropagation()
+    }
+  })
+
+  this.hover.mouseenter(function(ev) {
+    if (!player.playing) player.hoverHide()
+  })
 }
 
 VT.Player.prototype.hoverShow = function(content) {
-  return true;
-  if (player.playing) {
-    this.hoverHide();
-    return;
-  }
-  var offsets = this.vt.canvas.getHtmlOffsets();
-  var hover  = this.hover;
-  hover.classList.remove('disabled');
-  hover.style.display    = 'block';
-  hover.style.position   = 'absolute';
-  hover.style.top    = offsets.offsetTop+5+'px';
-  hover.style.left   = offsets.offsetLeft+5+'px';
-  hover.style.width  = offsets.offsetWidth-10+'px';
-  hover.style.height = offsets.offsetHeight-10+'px';
-  hover.setAttribute('id', 'player-hover');
-  hover.classList.add('enabled');
+
+  var hover   = this.hover
+  var offsets = this.el.find('#term').offset()
+
+  hover.removeClass('disabled')
+  hover.css({
+    position: 'absolute',
+    top: offsets.top + 'px',
+    left: offsets.left + 'px',
+    width: this.termWidth,
+    height: this.termHeight
+  })
+
+  hover.attr('id', 'player-hover')
+  hover.addClass('enabled')
+  hover.html(content)
+  hover.show()
 }
 
 VT.Player.prototype.hoverHide = function() {
-  this.hover.style.width  = 0;
-  this.hover.style.height = 0;
-  this.hover.classList.remove('enabled');
-  this.hover.classList.add('disabled');
-  this.hover.innerHTML = ''
+  this.hover.removeClass('enabled')
+  this.hover.addClass('disabled')
+  this.hover.html('')
+  this.hover.css({width: 0, height: 0})
 }
