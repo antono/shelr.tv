@@ -26,6 +26,20 @@ VT.Player = function(term) {
   this.initExtraTools();
 }
 
+VT.Player.prototype.spinerOptions = {
+  lines: 12,  // The number of lines to draw
+  length: 23, // The length of each line
+  width: 7,   // The line thickness
+  radius: 40, // The radius of the inner circle
+  rotate: 44, // The rotation offset
+  color: '#fff', // #rgb or #rrggbb
+  speed: 0.7, // Rounds per second
+  trail: 50, // Afterglow percentage
+  shadow: false, // Whether to render a shadow
+  hwaccel: false, // Whether to use hardware acceleration
+  zIndex: 2e9 // The z-index (defaults to 2000000000)
+}
+
 VT.Player.prototype.onError = function() {
   this.pause()
   this.term.reset()
@@ -126,7 +140,9 @@ VT.Player.prototype.initTermContainer = function() {
 
 VT.Player.prototype.load = function(path) {
   var player = this;
-  player.hoverShow("<img src='/assets/bar-loader.gif' alt='loading...'>")
+  
+  this.hoverLoading()
+
   jQuery.get(path).success(function(resp){
     player.record = resp;
     player.setTiming(player.record.timing);
@@ -347,4 +363,13 @@ VT.Player.prototype.hoverHide = function() {
   this.hover.addClass('disabled')
   this.hover.html('')
   this.hover.css({width: 0, height: 0})
+}
+
+VT.Player.prototype.hoverLoading = function () {
+  var spinOptions = $.extend({
+    top: (player.termHeight / 2) - player.spinerOptions.radius * 2,
+    left: (player.termWidth / 2) - player.spinerOptions.radius * 2
+  }, player.spinerOptions)
+
+  this.hoverShow($('<div>').spin(spinOptions))
 }
