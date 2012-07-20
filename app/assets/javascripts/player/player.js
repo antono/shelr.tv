@@ -330,8 +330,7 @@ VT.Player.prototype.initOverlay = function(content) {
 VT.Player.prototype.overlayShow = function(content) {
   var offsets = this.el.find('#term').offset()
 
-  this.overlay.removeClass('disabled')
-  this.overlay.css({
+  this.overlay.removeClass('disabled').css({
     position: 'absolute',
     top: offsets.top + 'px',
     left: offsets.left + 'px',
@@ -339,17 +338,14 @@ VT.Player.prototype.overlayShow = function(content) {
     height: this.termHeight
   })
 
-  this.overlay
-    .attr('id', 'player-overlay')
+  this.overlay.attr('id', 'player-overlay')
     .addClass('enabled')
     .html(content).show()
 }
 
 VT.Player.prototype.overlayHide = function() {
-  this.overlay.removeClass('enabled')
-  this.overlay.addClass('disabled')
-  this.overlay.html('')
-  this.overlay.css({width: 0, height: 0})
+  this.overlay.removeClass('enabled').addClass('disabled')
+    .html('').css({width: 0, height: 0})
 }
 
 VT.Player.prototype.overlayLoading = function () {
