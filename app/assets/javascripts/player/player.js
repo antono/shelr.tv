@@ -11,12 +11,13 @@ VT.Player = function(term) {
   this.data    = null;
   this.timing  = null;
   this.element = document.getElementById('player');
-  this.el = $(this.element);
+  this.el      = $(this.element);
   this.speedup = 1;
+
   this.currentFrame = 0;
   this.calculateTermSize();
   this.initSpeedControl();
-  this.initHover();
+  this.initOverlay();
   this.initTermContainer();
   this.initHeader();
   this.initProgress();
@@ -25,19 +26,18 @@ VT.Player = function(term) {
   this.initExtraTools();
 }
 
-VT.Player.prototype.onError = function() {
-  this.pause();
-  // this.term.clear();
-  this.hoverShow();
-  this.hover.classList.add('error');
-  this.hoverHide = function() {};
-  this.hover.innerHTML = "<br/><div class='img'><img src='/assets/harakiri.png' alt='So sorry...'/></div>切腹"
-  this.hover.innerHTML += "<p>Sorry we cannot emulate this shellcast in HTML.<br/>" +
-    "Use commandline client instead!<br/>" +
-    "<span class='donate'> And consider small <a href='http://weusecoins.com' target='_blank'>bitcoin</a> " +
-    "donation to fix this: 17tKDsdjKiS9bmnpH93NBeJnykWgLYbntL  </span>  <br/> &darr; &darr; &darr;</p>"
-  this.cmdline.classList.remove('hidden');
-  this.controls.classList.add('hidden');
+VT.Player.prototype.spinerOptions = {
+  lines: 12,  // The number of lines to draw
+  length: 23, // The length of each line
+  width: 7,   // The line thickness
+  radius: 40, // The radius of the inner circle
+  rotate: 44, // The rotation offset
+  color: '#fff', // #rgb or #rrggbb
+  speed: 0.7, // Rounds per second
+  trail: 50, // Afterglow percentage
+  shadow: false, // Whether to render a shadow
+  hwaccel: false, // Whether to use hardware acceleration
+  zIndex: 2e9 // The z-index (defaults to 2000000000)
 }
 
 VT.Player.prototype.initSpeedControl = function() {
@@ -73,7 +73,7 @@ VT.Player.prototype.jumpTo = function(percent) {
       this.framesByPercent[i].forEach(function(frameNumber) {
         player.term.write(player.frames[frameNumber][1]);
         player.currentFrame = frameNumber;
-      });
+      })
     }
   }
 }
@@ -129,6 +129,9 @@ VT.Player.prototype.initTermContainer = function() {
 
 VT.Player.prototype.load = function(path) {
   var player = this;
+  
+  this.overlayLoading()
+
   jQuery.get(path).success(function(resp){
     player.record = resp;
     player.setTiming(player.record.timing);
@@ -137,7 +140,9 @@ VT.Player.prototype.load = function(path) {
     player.calculateTotalTime();
     player.mapFrameToPercents();
     player.enableButtons();
+    player.overlayHide();
   }).error(function (resp) {
+    player.onError();
     console.log("Error downloading record:", resp)
   });
 }
@@ -230,7 +235,7 @@ VT.Player.prototype.play = function() {
   button.setAttribute('data-action', 'pause');
   button.getElementsByTagName('img')[0].setAttribute('src', '/assets/term/playback-pause.png');
 
-  player.hoverHide();
+  player.overlayHide();
 
   if (player.playing) return;
   if (player.currentFrame == 0) player.term.reset();
@@ -254,7 +259,7 @@ VT.Player.prototype.play = function() {
         player.currentFrame = 0;
         player.pause();
       }
-      player.hoverShow();
+      player.overlayShow();
     }
   }
   scheduleChunked(player.frames);
@@ -265,6 +270,7 @@ VT.Player.prototype.pause = function() {
   button.getElementsByTagName('img')[0].setAttribute('src', '/assets/term/playback-start.png')
   button.setAttribute('data-action', 'play');
   this.playing = false;
+  this.overlayShow();
 }
 
 VT.Player.prototype.toggle = function() {
@@ -283,13 +289,14 @@ VT.Player.prototype.updateTimelinePosition = function(val) {
 
 VT.Player.prototype.setProgress = function(val) {
   // this.currentFrame = val; // FIXME percent -> frame
-  this.progress.prop('value', val); 
+  this.progress.prop('value', val);
   this.progressBar.css("width", val + '%' );
 }
 
 VT.Player.prototype.initExtraTools = function() {
   // Setup widths for comments and everything below terminal screen
-  $('.extra-tools, .comments, h2.comm, .comment-form, .embed-area, .embed-code').css('width', this.termWidth);
+  $('.extra-tools, .comments, h2.comm, .comment-form, .embed-area, .embed-code')
+    .css('width', this.termWidth);
   $('.comment-form .markItUpEditor').css('width', this.termWidth - 60);
   $('.comment-form .markItUp').css('width', this.termWidth).css('border', 0);
 
@@ -299,50 +306,65 @@ VT.Player.prototype.initExtraTools = function() {
   });
 }
 
-VT.Player.prototype.initHover = function(content) {
-  // var player = this;
-  this.hover = document.createElement('div');
-  // this.term.element.appendChild(this.hover);
+VT.Player.prototype.initOverlay = function(content) {
+  var player  = this
+  var termEl  = this.el.find('#term')
 
-  // this.vt.canvas.container.addEventListener('mouseout', function(ev) {
-  //   if (!player.playing && ev.target.classList.contains('canvas')) {
-  //     //console.log(ev.target.classList)
-  //     player.hoverShow();
-  //   } else {
-  //     ev.stopPropagation();
-  //   }
-  // }, false)
+  this.overlay = $('<div/>')
+  this.el.append(this.overlay)
 
-  // this.hover.addEventListener('mouseover', function(ev) {
-  //   if (!player.playing)  {
-  //     player.hoverHide();
-  //   }
-  // }, false);
+  termEl.mouseleave(function(ev) {
+    console.log(ev)
+    if (!player.playing) {
+      player.overlayShow()
+    } else {
+      ev.stopPropagation()
+    }
+  })
+
+  this.overlay.mouseenter(function(ev) {
+    if (!player.playing) player.overlayHide()
+  })
 }
 
-VT.Player.prototype.hoverShow = function(content) {
-  return true;
-  if (player.playing) {
-    this.hoverHide();
-    return;
-  }
-  var offsets = this.vt.canvas.getHtmlOffsets();
-  var hover  = this.hover;
-  hover.classList.remove('disabled');
-  hover.style.display    = 'block';
-  hover.style.position   = 'absolute';
-  hover.style.top    = offsets.offsetTop+5+'px';
-  hover.style.left   = offsets.offsetLeft+5+'px';
-  hover.style.width  = offsets.offsetWidth-10+'px';
-  hover.style.height = offsets.offsetHeight-10+'px';
-  hover.setAttribute('id', 'player-hover');
-  hover.classList.add('enabled');
+VT.Player.prototype.overlayShow = function(content) {
+  var offsets = this.el.find('#term').offset()
+
+  this.overlay.removeClass('disabled').css({
+    position: 'absolute',
+    top: offsets.top + 'px',
+    left: offsets.left + 'px',
+    width: this.termWidth,
+    height: this.termHeight
+  })
+
+  this.overlay.attr('id', 'player-overlay')
+    .addClass('enabled')
+    .html(content).show()
 }
 
-VT.Player.prototype.hoverHide = function() {
-  this.hover.style.width  = 0;
-  this.hover.style.height = 0;
-  this.hover.classList.remove('enabled');
-  this.hover.classList.add('disabled');
-  this.hover.innerHTML = ''
+VT.Player.prototype.overlayHide = function() {
+  this.overlay.removeClass('enabled').addClass('disabled')
+    .html('').css({width: 0, height: 0})
 }
+
+VT.Player.prototype.overlayLoading = function () {
+  var spinOptions = $.extend({
+    top: (player.termHeight / 2) - player.spinerOptions.radius * 2,
+    left: (player.termWidth / 2) - player.spinerOptions.radius * 2
+  }, player.spinerOptions)
+
+  this.overlayShow($('<div>').spin(spinOptions))
+}
+
+VT.Player.prototype.onError = function() {
+  this.pause()
+  this.term.reset()
+  this.overlay.addClass('error')
+  this.overlayHide = function() {};
+  this.overlayShow("<br/><div class='img'>" +
+                 "<img src='/assets/harakiri.png' alt='So sorry...'/></div>切腹" +
+                 "<p>Something went wrong.<br/>" +
+                 "Try commandline client instead!<br/>")
+}
+

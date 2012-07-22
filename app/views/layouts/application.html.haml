@@ -16,6 +16,8 @@
       = auto_discovery_link_tag :atom,
         dashboard_url(key: current_user.atom_key, format: :atom),
         title: "Shelr.tv - new activity for #{current_user.nickname}"
+    %script
+      window.userLoggedIn = #{logged_in? ? 'true' : 'false'}
     = yield :head
     = yield :meta
 

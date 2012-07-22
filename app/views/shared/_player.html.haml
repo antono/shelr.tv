@@ -16,7 +16,7 @@
         %li Play in Your terminal
         - if @record.editable_by?(current_user)
           %li= link_to 'edit', edit_record_path(@record), method: 'get'
-          %li= link_to 'destroy', @record, method: 'delete', confirm: 'Really Destroy?'
+          %li= link_to 'destroy', @record, method: 'delete', data: { confirm: 'Really Destroy?' }
     %li.sc-label
       %a{ href: record_path(@record, only_path: false), target: '_blank' }
         %strong Shelr.tv
@@ -31,9 +31,9 @@
 - unless embed or record.private?
   .extra-tools.btn-toolbar
     .btn-group
-      %button.btn.btn-success.upvote{ data: { voteurl: vote_record_path(record) } } +1
+      %button.btn.btn-success.upvote{  data: { voteurl: vote_record_path(record), direction: 'up'   }} +1
       %button.btn.rating= @record.rating
-      %button.btn.btn-danger.downvote{ data: { voteurl: vote_record_path(record) } } -1
+      %button.btn.btn-danger.downvote{ data: { voteurl: vote_record_path(record), direction: 'down' }} -1
 
     .btn-group
       %button.btn.embed Embed

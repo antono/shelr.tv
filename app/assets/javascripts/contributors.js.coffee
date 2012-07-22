@@ -102,9 +102,7 @@ class Contributors
     for login, user of @users
       users.push(user)
 
-    users.sort((a,b) ->
-      b.contributions - a.contributions
-    )
+    users.sort (a,b) -> b.contributions - a.contributions
 
 
 @Contributors = Contributors

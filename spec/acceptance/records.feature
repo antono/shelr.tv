@@ -12,9 +12,9 @@ Feature: Records
       | goodbye world  | ls.json | ntanyone |
       | shelr manual   | ls.json | antono   |
       | private record | ls.json | someone  |
-    And I signed in
 
   Scenario: browsing records
+    Given I signed in
     When I visit "/records" page
     And I click link "hello world"
     Then I should see player for "hello world"
@@ -23,6 +23,7 @@ Feature: Records
     Then I should see player for "goodbye world"
 
   Scenario: private records are hidden
+    Given I signed in
     Given record "private record" is private
     And I am not owner of "private record" record
     When I visit "/records" page
@@ -33,12 +34,14 @@ Feature: Records
     Then I should not see "private record"
 
   Scenario: visiting private records without access key
+    Given I signed in
     Given record "private record" is private
     When I visit "private record" record page
     Then I should not see "private record"
     And I should see "No such record"
 
   Scenario: visiting private record with access key
+    Given I signed in
     Given record "hello world" is private
     When I visit "hello world" record page with access key
     Then I should see "hello world"
@@ -46,6 +49,7 @@ Feature: Records
     And I should not see "No such record"
 
   Scenario: owner always can see his private records
+    Given I signed in
     Given record "shelr manual" is private
     And I am the owner of "shelr manual" record
     When I visit "/records" page
@@ -54,11 +58,13 @@ Feature: Records
     Then I should see player for "shelr manual"
 
   Scenario: owner can edit own record
+    Given I signed in
     Given I am the owner of "shelr manual" record
     When I change "shelr manual" record title to "new shelr manual"
     Then I should see "Record was succesfully updated."
 
   Scenario: registered user can vote for records
+    Given I signed in
     Given record "shelr manual" has 3 upvotes and 2 downvotes
     When I visit "shelr manual" record page
     Then I should see +1 button
@@ -73,3 +79,9 @@ Feature: Records
     Then rating of "shelr manual" should be 0
     When I click +1 button
     Then rating of "shelr manual" should be 2
+
+  Scenario: anonymous user tries to vote for records
+    Given record "shelr manual" has 3 upvotes and 2 downvotes
+    When I visit "shelr manual" record page
+    When I click +1 button
+    Then I should see login modal dialog

@@ -17,7 +17,6 @@ class ApplicationController < ActionController::Base
   def login_required
     unless logged_in?
       flash[:error] = "You must first log in or sign up before accessing this page."
-      store_target_location
       redirect_to login_session_url
     end
   end
@@ -25,10 +24,6 @@ class ApplicationController < ActionController::Base
   def redirect_to_target_or_default(default)
     redirect_to(session[:return_to] || default)
     session[:return_to] = nil
-  end
-
-  def store_target_location
-    session[:return_to] = request.fullpath
   end
 
 end

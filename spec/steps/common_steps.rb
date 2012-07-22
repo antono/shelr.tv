@@ -8,6 +8,10 @@ step "I signed in" do
   click_button 'Save'
 end
 
+step "I should see login modal dialog" do
+  page.should have_css '#login-modal'
+end
+
 step "I'm on the :path page" do |path|
   visit path
 end
