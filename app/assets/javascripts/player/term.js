@@ -31,6 +31,75 @@
 'use strict';
 
 /**
+ * Shared
+ */
+
+var window = this
+  , document = this.document;
+
+/**
+ * EventEmitter
+ */
+
+function EventEmitter() {
+  this._events = {};
+}
+
+EventEmitter.prototype.addListener = function(type, listener) {
+  this._events[type] = this._events[type] || [];
+  this._events[type].push(listener);
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.removeListener = function(type, listener) {
+  if (!this._events[type]) return;
+
+  var obj = this._events[type]
+    , i = obj.length;
+
+  while (i--) {
+    if (obj[i] === listener || obj[i].listener === listener) {
+      obj.splice(i, 1);
+      return;
+    }
+  }
+};
+
+EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+
+EventEmitter.prototype.removeAllListeners = function(type) {
+  if (this._events[type]) delete this._events[type];
+};
+
+EventEmitter.prototype.once = function(type, listener) {
+  function on() {
+    var args = Array.prototype.slice.call(arguments);
+    this.removeListener(type, on);
+    return listener.apply(this, args);
+  }
+  on.listener = listener;
+  return this.on(type, on);
+};
+
+EventEmitter.prototype.emit = function(type) {
+  if (!this._events[type]) return;
+
+  var args = Array.prototype.slice.call(arguments, 1)
+    , obj = this._events[type]
+    , l = obj.length
+    , i = 0;
+
+  for (; i < l; i++) {
+    obj[i].apply(this, args);
+  }
+};
+
+EventEmitter.prototype.listeners = function(type) {
+  return this._events[type] = this._events[type] || [];
+};
+
+/**
  * States
  */
 
@@ -38,16 +107,32 @@ var normal = 0
   , escaped = 1
   , csi = 2
   , osc = 3
-  , charset = 4;
+  , charset = 4
+  , dcs = 5
+  , ignore = 6;
 
 /**
  * Terminal
  */
 
-var Terminal = function(cols, rows, handler) {
-  this.cols = cols;
-  this.rows = rows;
-  if (handler) this.handler = handler;
+function Terminal(cols, rows, handler) {
+  EventEmitter.call(this);
+
+  var options;
+  if (typeof cols === 'object') {
+    options = cols;
+    cols = options.cols;
+    rows = options.rows;
+    handler = options.handler;
+  }
+  this._options = options || {};
+
+  this.cols = cols || Terminal.geometry[0];
+  this.rows = rows || Terminal.geometry[1];
+
+  if (handler) {
+    this.on('data', handler);
+  }
 
   this.ybase = 0;
   this.ydisp = 0;
@@ -57,38 +142,73 @@ var Terminal = function(cols, rows, handler) {
   this.cursorHidden = false;
   this.convertEol = false;
   this.state = 0;
-  this.outputQueue = '';
+  this.queue = '';
   this.scrollTop = 0;
   this.scrollBottom = this.rows - 1;
 
+  // modes
   this.applicationKeypad = false;
   this.originMode = false;
   this.insertMode = false;
   this.wraparoundMode = false;
-  this.mouseEvents;
-  this.tabs = [];
-  this.charset = null;
   this.normal = null;
+
+  // charset
+  this.charset = null;
+  this.gcharset = null;
+  this.glevel = 0;
+  this.charsets = [null];
+
+  // mouse properties
+  this.decLocator;
+  this.x10Mouse;
+  this.vt200Mouse;
+  this.vt300Mouse;
+  this.normalMouse;
+  this.mouseEvents;
+  this.sendFocus;
+  this.utfMouse;
+  this.sgrMouse;
+  this.urxvtMouse;
+
+  // misc
+  this.element;
+  this.children;
+  this.refreshStart;
+  this.refreshEnd;
+  this.savedX;
+  this.savedY;
+  this.savedCols;
+
+  // stream
+  this.readable = true;
+  this.writable = true;
 
   this.defAttr = (257 << 9) | 256;
   this.curAttr = this.defAttr;
-  this.keyState = 0;
-  this.keyStr = '';
 
   this.params = [];
   this.currentParam = 0;
+  this.prefix = '';
+  this.postfix = '';
 
   this.lines = [];
   var i = this.rows;
   while (i--) {
     this.lines.push(this.blankLine());
   }
-};
+
+  this.tabs;
+  this.setupStops();
+}
+
+inherits(Terminal, EventEmitter);
 
 /**
- * Options
+ * Colors
  */
 
+// Colors 0-15
 Terminal.colors = [
   // dark:
   '#2e3436',
@@ -110,87 +230,60 @@ Terminal.colors = [
   '#eeeeec'
 ];
 
-// Convert xterm 256 color codes into CSS hex codes.
+// Colors 16-255
 // Much thanks to TooTallNate for writing this.
-Terminal.colors = function() {
-  var colors
-    , r
-    , i
-    , c;
+Terminal.colors = (function() {
+  var colors = Terminal.colors
+    , r = [0x00, 0x5f, 0x87, 0xaf, 0xd7, 0xff]
+    , i;
 
-  // Basic first 16 colors
-  colors = [
-    [0x00, 0x00, 0x00], [0xcd, 0x00, 0x00],
-    [0x00, 0xcd, 0x00], [0xcd, 0xcd, 0x00],
-    [0x00, 0x00, 0xee], [0xcd, 0x00, 0xcd],
-    [0x00, 0xcd, 0xcd], [0xe5, 0xe5, 0xe5],
-    [0x7f, 0x7f, 0x7f], [0xff, 0x00, 0x00],
-    [0x00, 0xff, 0x00], [0xff, 0xff, 0x00],
-    [0x5c, 0x5c, 0xff], [0xff, 0x00, 0xff],
-    [0x00, 0xff, 0xff], [0xff, 0xff, 0xff]
-  ];
-
-  // Numbers used to generate the conversion table
-  r = [0x00, 0x5f, 0x87, 0xaf, 0xd7, 0xff];
-
-  // Middle 218 colors, 6 sets of 6 tables of 6
+  // 16-231
   i = 0;
-  for (; i < 217; i++) {
-    colors.push([r[(i / 36) % 6 | 0], r[(i / 6) % 6 | 0], r[i % 6]]);
+  for (; i < 216; i++) {
+    out(r[(i / 36) % 6 | 0], r[(i / 6) % 6 | 0], r[i % 6]);
   }
 
-  // Ending with grayscale for the remainder
+  // 232-255 (grey)
   i = 0;
-  for (; i < 23; i++){
+  for (; i < 24; i++) {
     r = 8 + i * 10;
-    colors.push([r, r, r]);
+    out(r, r, r);
   }
 
-  // Now convert to CSS hex codes
-  i = 0;
-  for (; i < 256; i++) {
-    c = colors[i];
-
-    c[0] = c[0].toString(16);
-    c[1] = c[1].toString(16);
-    c[2] = c[2].toString(16);
-
-    if (c[0].length < 2) {
-      c[0] = '0' + c[0];
-    }
-
-    if (c[1].length < 2) {
-      c[1] = '0' + c[1];
-    }
-
-    if (c[2].length < 2) {
-      c[2] = '0' + c[2];
-    }
-
-    colors[i] = '#' + c.join('');
+  function out(r, g, b) {
+    colors.push('#' + hex(r) + hex(g) + hex(b));
   }
 
-  colors = Terminal.colors.concat(colors.slice(16));
+  function hex(c) {
+    c = c.toString(16);
+    return c.length < 2 ? '0' + c : c;
+  }
 
   return colors;
-}();
+})();
 
-// save fallback
-Terminal._colors = Terminal.colors;
-
-// default bg/fg
+// Default BG/FG
 Terminal.defaultColors = {
   bg: '#000000',
   fg: '#f0f0f0'
 };
 
-Terminal.termName = '';
-Terminal.geometry = [80, 30];
+Terminal.colors[256] = Terminal.defaultColors.bg;
+Terminal.colors[257] = Terminal.defaultColors.fg;
+
+/**
+ * Options
+ */
+
+Terminal.termName = 'xterm';
+Terminal.geometry = [80, 24];
 Terminal.cursorBlink = true;
 Terminal.visualBell = false;
 Terminal.popOnBell = false;
 Terminal.scrollback = 1000;
 Terminal.screenKeys = false;
+Terminal.programFeatures = false;
+Terminal.debug = false;
 
 /**
  * Focused Terminal
@@ -203,8 +296,10 @@ Terminal.prototype.focus = function() {
   if (Terminal.focus) {
     Terminal.focus.cursorState = 0;
     Terminal.focus.refresh(Terminal.focus.y, Terminal.focus.y);
+    if (Terminal.focus.sendFocus) Terminal.focus.send('\x1b[O');
   }
   Terminal.focus = this;
+  if (this.sendFocus) this.send('\x1b[I');
   this.showCursor();
 };
 
@@ -215,15 +310,15 @@ Terminal.prototype.focus = function() {
 Terminal.bindKeys = function() {
   if (Terminal.focus) return;
 
-  // We could put an "if (Term.focus)" check
+  // We could put an "if (Terminal.focus)" check
   // here, but it shouldn't be necessary.
-  // on(document, 'keydown', function(key) {
-  //   return Terminal.focus.keyDownHandler(key);
-  // }, true);
+  on(document, 'keydown', function(ev) {
+    return Terminal.focus.keyDown(ev);
+  }, true);
 
-  // on(document, 'keypress', function(key) {
-  //   return Terminal.focus.keyPressHandler(key);
-  // }, true);
+  on(document, 'keypress', function(ev) {
+    return Terminal.focus.keyPress(ev);
+  }, true);
 };
 
 /**
@@ -245,7 +340,7 @@ Terminal.prototype.open = function(container) {
     this.children.push(div);
   }
 
-  container.appendChild(this.element);
+  container.appendChild(this.element)
 
   this.refresh(0, this.rows - 1);
 
@@ -283,9 +378,9 @@ Terminal.prototype.open = function(container) {
 
   on(this.element, 'paste', function(ev) {
     if (ev.clipboardData) {
-      self.queueChars(ev.clipboardData.getData('text/plain'));
+      self.send(ev.clipboardData.getData('text/plain'));
     } else if (window.clipboardData) {
-      self.queueChars(window.clipboardData.getData('Text'));
+      self.send(window.clipboardData.getData('Text'));
     }
     // Not necessary. Do it anyway for good measure.
     self.element.contentEditable = 'inherit';
@@ -302,6 +397,8 @@ Terminal.prototype.open = function(container) {
   // sync default bg/fg colors
   this.element.style.backgroundColor = Terminal.defaultColors.bg;
   this.element.style.color = Terminal.defaultColors.fg;
+
+  //this.emit('open');
 };
 
 // XTerm mouse events
@@ -370,10 +467,107 @@ Terminal.prototype.bindMouse = function() {
     sendEvent(button, pos);
   }
 
+  // encode button and
+  // position to characters
+  function encode(data, ch) {
+    if (!self.utfMouse) {
+      if (ch === 255) return data.push(0);
+      if (ch > 127) ch = 127;
+      data.push(ch);
+    } else {
+      if (ch === 2047) return data.push(0);
+      if (ch < 127) {
+        data.push(ch);
+      } else {
+        if (ch > 2047) ch = 2047;
+        data.push(0xC0 | (ch >> 6));
+        data.push(0x80 | (ch & 0x3F));
+      }
+    }
+  }
+
   // send a mouse event:
-  // ^[[M Cb Cx Cy
+  // regular/utf8: ^[[M Cb Cx Cy
+  // urxvt: ^[[ Cb ; Cx ; Cy M
+  // sgr: ^[[ Cb ; Cx ; Cy M/m
+  // vt300: ^[[ 24(1/3/5)~ [ Cx , Cy ] \r
+  // locator: CSI P e ; P b ; P r ; P c ; P p & w
   function sendEvent(button, pos) {
-    self.queueChars('\x1b[M' + String.fromCharCode(button, pos.x, pos.y));
+    // self.emit('mouse', {
+    //   x: pos.x - 32,
+    //   y: pos.x - 32,
+    //   button: button
+    // });
+
+    if (self.vt300Mouse) {
+      // NOTE: Unstable.
+      // http://www.vt100.net/docs/vt3xx-gp/chapter15.html
+      button &= 3;
+      pos.x -= 32;
+      pos.y -= 32;
+      var data = '\x1b[24';
+      if (button === 0) data += '1';
+      else if (button === 1) data += '3';
+      else if (button === 2) data += '5';
+      else if (button === 3) return;
+      else data += '0';
+      data += '~[' + pos.x + ',' + pos.y + ']\r';
+      self.send(data);
+      return;
+    }
+
+    if (self.decLocator) {
+      // NOTE: Unstable.
+      button &= 3;
+      pos.x -= 32;
+      pos.y -= 32;
+      if (button === 0) button = 2;
+      else if (button === 1) button = 4;
+      else if (button === 2) button = 6;
+      else if (button === 3) button = 3;
+      self.send('\x1b['
+        + button
+        + ';'
+        + (button === 3 ? 4 : 0)
+        + ';'
+        + pos.y
+        + ';'
+        + pos.x
+        + ';'
+        + (pos.page || 0)
+        + '&w');
+      return;
+    }
+
+    if (self.urxvtMouse) {
+      pos.x -= 32;
+      pos.y -= 32;
+      pos.x++;
+      pos.y++;
+      self.send('\x1b[' + button + ';' + pos.x + ';' + pos.y + 'M');
+      return;
+    }
+
+    if (self.sgrMouse) {
+      pos.x -= 32;
+      pos.y -= 32;
+      self.send('\x1b[<'
+        + ((button & 3) === 3 ? button & ~3 : button)
+        + ';'
+        + pos.x
+        + ';'
+        + pos.y
+        + ((button & 3) === 3 ? 'm' : 'M'));
+      return;
+    }
+
+    var data = [];
+
+    encode(data, button);
+    encode(data, pos.x);
+    encode(data, pos.y);
+
+    self.send('\x1b[M' + String.fromCharCode.apply(String, data));
   }
 
   function getButton(ev) {
@@ -424,6 +618,14 @@ Terminal.prototype.bindMouse = function() {
     ctrl = ev.ctrlKey ? 16 : 0;
     mod = shift | meta | ctrl;
 
+    // no mods
+    if (self.vt200Mouse) {
+      // ctrl only
+      mod &= ctrl;
+    } else if (!self.normalMouse) {
+      mod = 0;
+    }
+
     // increment to SP
     button = (32 + (mod << 2)) + button;
 
@@ -467,7 +669,14 @@ Terminal.prototype.bindMouse = function() {
     x += 32;
     y += 32;
 
-    return { x: x, y: y };
+    return {
+      x: x,
+      y: y,
+      down: ev.type === 'mousedown',
+      up: ev.type === 'mouseup',
+      wheel: ev.type === wheelEvent,
+      move: ev.type === 'mousemove'
+    };
   }
 
   on(el, 'mousedown', function(ev) {
@@ -479,20 +688,33 @@ Terminal.prototype.bindMouse = function() {
     // ensure focus
     self.focus();
 
-    // bind events
-    on(document, 'mousemove', sendMove);
-    on(document, 'mouseup', function up(ev) {
-      sendButton(ev);
-      off(document, 'mousemove', sendMove);
-      off(document, 'mouseup', up);
+    // fix for odd bug
+    if (self.vt200Mouse) {
+      sendButton({ __proto__: ev, type: 'mouseup' });
       return cancel(ev);
-    });
+    }
+
+    // bind events
+    if (self.normalMouse) on(document, 'mousemove', sendMove);
+
+    // x10 compatibility mode can't send button releases
+    if (!self.x10Mouse) {
+      on(document, 'mouseup', function up(ev) {
+        sendButton(ev);
+        if (self.normalMouse) off(document, 'mousemove', sendMove);
+        off(document, 'mouseup', up);
+        return cancel(ev);
+      });
+    }
 
     return cancel(ev);
   });
 
   on(el, wheelEvent, function(ev) {
     if (!self.mouseEvents) return;
+    if (self.x10Mouse
+        || self.vt300Mouse
+        || self.decLocator) return;
     sendButton(ev);
     return cancel(ev);
   });
@@ -509,6 +731,19 @@ Terminal.prototype.bindMouse = function() {
     }
     return cancel(ev);
   });
+};
+
+/**
+ * Destroy Terminal
+ */
+
+Terminal.prototype.destroy = function() {
+  this.readable = false;
+  this.writable = false;
+  this._events = {};
+  this.handler = function() {};
+  this.write = function() {};
+  //this.emit('close');
 };
 
 /**
@@ -565,8 +800,9 @@ Terminal.prototype.refresh = function(start, end) {
     }
 
     attr = this.defAttr;
+    i = 0;
 
-    for (i = 0; i < width; i++) {
+    for (; i < width; i++) {
       data = line[i][0];
       ch = line[i][1];
 
@@ -600,15 +836,13 @@ Terminal.prototype.refresh = function(start, end) {
 
             if (bgColor !== 256) {
               out += 'background-color:'
-                + (Terminal.colors[bgColor]
-                  || Terminal._colors[bgColor])
+                + Terminal.colors[bgColor]
                 + ';';
             }
 
             if (fgColor !== 257) {
               out += 'color:'
-                + (Terminal.colors[fgColor]
-                  || Terminal._colors[fgColor])
+                + Terminal.colors[fgColor]
                 + ';';
             }
 
@@ -714,6 +948,10 @@ Terminal.prototype.scroll = function() {
     }
     this.lines.splice(this.ybase + this.scrollTop, 1);
   }
+
+  // this.maxRange();
+  this.updateRange(this.scrollTop);
+  this.updateRange(this.scrollBottom);
 };
 
 Terminal.prototype.scrollDisp = function(disp) {
@@ -728,12 +966,11 @@ Terminal.prototype.scrollDisp = function(disp) {
   this.refresh(0, this.rows - 1);
 };
 
-Terminal.prototype.write = function(str) {
-  var l = str.length
+Terminal.prototype.write = function(data) {
+  var l = data.length
     , i = 0
-    , ch
-    , param
-    , row;
+    , cs
+    , ch;
 
   this.refreshStart = this.y;
   this.refreshEnd = this.y;
@@ -743,16 +980,16 @@ Terminal.prototype.write = function(str) {
     this.maxRange();
   }
 
-  // console.log(JSON.stringify(str.replace(/\x1b/g, '^[')));
+  // this.log(JSON.stringify(data.replace(/\x1b/g, '^[')));
 
   for (; i < l; i++) {
-    ch = str[i];
+    ch = data[i];
     switch (this.state) {
       case normal:
         switch (ch) {
           // '\0'
-          case '\0':
-            break;
+          // case '\0':
+          //   break;
 
           // '\a'
           case '\x07':
@@ -767,10 +1004,9 @@ Terminal.prototype.write = function(str) {
               this.x = 0;
             }
             this.y++;
-            if (this.y >= this.scrollBottom + 1) {
+            if (this.y > this.scrollBottom) {
               this.y--;
               this.scroll();
-              this.maxRange();
             }
             break;
 
@@ -788,11 +1024,17 @@ Terminal.prototype.write = function(str) {
 
           // '\t'
           case '\t':
-            // should check tabstops
-            param = (this.x + 8) & ~7;
-            if (param <= this.cols) {
-              this.x = param;
-            }
+            this.x = this.nextStop();
+            break;
+
+          // shift out
+          case '\x0e':
+            this.setgLevel(1);
+            break;
+
+          // shift in
+          case '\x0f':
+            this.setgLevel(0);
             break;
 
           // '\e'
@@ -809,16 +1051,14 @@ Terminal.prototype.write = function(str) {
               if (this.x >= this.cols) {
                 this.x = 0;
                 this.y++;
-                if (this.y >= this.scrollBottom + 1) {
+                if (this.y > this.scrollBottom) {
                   this.y--;
                   this.scroll();
-                  this.maxRange();
                 }
               }
-              row = this.y + this.ybase;
-              this.lines[row][this.x] = [this.curAttr, ch];
+              this.lines[this.y + this.ybase][this.x] = [this.curAttr, ch];
               this.x++;
-              this.updateRange();
+              this.updateRange(this.y);
             }
             break;
         }
@@ -841,23 +1081,19 @@ Terminal.prototype.write = function(str) {
 
           // ESC P Device Control String ( DCS is 0x90).
           case 'P':
-            this.params = [-1];
+            this.params = [];
             this.currentParam = 0;
-            this.state = osc;
+            this.state = dcs;
             break;
 
           // ESC _ Application Program Command ( APC is 0x9f).
           case '_':
-            this.params = [-1];
-            this.currentParam = 0;
-            this.state = osc;
+            this.state = ignore;
             break;
 
           // ESC ^ Privacy Message ( PM is 0x9e).
           case '^':
-            this.params = [-1];
-            this.currentParam = 0;
-            this.state = osc;
+            this.state = ignore;
             break;
 
           // ESC c Full Reset (RIS).
@@ -882,7 +1118,9 @@ Terminal.prototype.write = function(str) {
           // ESC % Select default/utf-8 character set.
           // @ = default, G = utf-8
           case '%':
-            this.charset = null;
+            //this.charset = null;
+            this.setgLevel(0);
+            this.setgCharset(0, Terminal.charsets.US);
             this.state = normal;
             i++;
             break;
@@ -894,6 +1132,26 @@ Terminal.prototype.write = function(str) {
           case '+':
           case '-':
           case '.':
+            switch (ch) {
+              case '(':
+                this.gcharset = 0;
+                break;
+              case ')':
+                this.gcharset = 1;
+                break;
+              case '*':
+                this.gcharset = 2;
+                break;
+              case '+':
+                this.gcharset = 3;
+                break;
+              case '-':
+                this.gcharset = 1;
+                break;
+              case '.':
+                this.gcharset = 2;
+                break;
+            }
             this.state = charset;
             break;
 
@@ -901,9 +1159,45 @@ Terminal.prototype.write = function(str) {
           // A = ISO Latin-1 Supplemental.
           // Not implemented.
           case '/':
-            this.charset = null;
-            this.state = normal;
-            i++;
+            this.gcharset = 3;
+            this.state = charset;
+            i--;
+            break;
+
+          // ESC N
+          // Single Shift Select of G2 Character Set
+          // ( SS2 is 0x8e). This affects next character only.
+          case 'N':
+            break;
+          // ESC O
+          // Single Shift Select of G3 Character Set
+          // ( SS3 is 0x8f). This affects next character only.
+          case 'O':
+            break;
+          // ESC n
+          // Invoke the G2 Character Set as GL (LS2).
+          case 'n':
+            this.setgLevel(2);
+            break;
+          // ESC o
+          // Invoke the G3 Character Set as GL (LS3).
+          case 'o':
+            this.setgLevel(3);
+            break;
+          // ESC |
+          // Invoke the G3 Character Set as GR (LS3R).
+          case '|':
+            this.setgLevel(3);
+            break;
+          // ESC }
+          // Invoke the G2 Character Set as GR (LS2R).
+          case '}':
+            this.setgLevel(2);
+            break;
+          // ESC ~
+          // Invoke the G1 Character Set as GR (LS1R).
+          case '~':
+            this.setgLevel(1);
             break;
 
           // ESC 7 Save Cursor (DECSC).
@@ -924,10 +1218,9 @@ Terminal.prototype.write = function(str) {
             i++;
             break;
 
-          // ESC H Tab Set ( HTS is 0x88).
+          // ESC H Tab Set (HTS is 0x88).
           case 'H':
-            // this.tabSet(this.x);
-            this.state = normal;
+            this.tabSet();
             break;
 
           // ESC = Application Keypad (DECPAM).
@@ -946,23 +1239,65 @@ Terminal.prototype.write = function(str) {
 
           default:
             this.state = normal;
-            this.error('Unknown ESC control: ' + ch + '.');
+            this.error('Unknown ESC control: %s.', ch);
             break;
         }
         break;
 
       case charset:
         switch (ch) {
-          // DEC Special Character and Line Drawing Set.
-          case '0':
-            this.charset = SCLD;
+          case '0': // DEC Special Character and Line Drawing Set.
+            cs = Terminal.charsets.SCLD;
             break;
-          // United States (USASCII).
-          case 'B':
-          default:
-            this.charset = null;
+          case 'A': // UK
+            cs = Terminal.charsets.UK;
+            break;
+          case 'B': // United States (USASCII).
+            cs = Terminal.charsets.US;
+            break;
+          case '4': // Dutch
+            cs = Terminal.charsets.Dutch;
+            break;
+          case 'C': // Finnish
+          case '5':
+            cs = Terminal.charsets.Finnish;
+            break;
+          case 'R': // French
+            cs = Terminal.charsets.French;
+            break;
+          case 'Q': // FrenchCanadian
+            cs = Terminal.charsets.FrenchCanadian;
+            break;
+          case 'K': // German
+            cs = Terminal.charsets.German;
+            break;
+          case 'Y': // Italian
+            cs = Terminal.charsets.Italian;
+            break;
+          case 'E': // NorwegianDanish
+          case '6':
+            cs = Terminal.charsets.NorwegianDanish;
+            break;
+          case 'Z': // Spanish
+            cs = Terminal.charsets.Spanish;
+            break;
+          case 'H': // Swedish
+          case '7':
+            cs = Terminal.charsets.Swedish;
+            break;
+          case '=': // Swiss
+            cs = Terminal.charsets.Swiss;
+            break;
+          case '/': // ISOLatin (actually /A)
+            cs = Terminal.charsets.ISOLatin;
+            i++;
+            break;
+          default: // Default
+            cs = Terminal.charsets.US;
             break;
         }
+        this.setgCharset(this.gcharset, cs);
+        this.gcharset = null;
         this.state = normal;
         break;
 
@@ -980,7 +1315,8 @@ Terminal.prototype.write = function(str) {
             case 1:
             case 2:
               if (this.params[1]) {
-                this.handleTitle(this.params[1]);
+                this.title = this.params[1];
+                this.handleTitle(this.title);
               }
               break;
             case 3:
@@ -1057,7 +1393,6 @@ Terminal.prototype.write = function(str) {
         // 0 - 9
         if (ch >= '0' && ch <= '9') {
           this.currentParam = this.currentParam * 10 + ch.charCodeAt(0) - 48;
-          // this.currentParam += ch;
           break;
         }
 
@@ -1068,7 +1403,6 @@ Terminal.prototype.write = function(str) {
         }
 
         this.params.push(this.currentParam);
-        // this.params.push(+this.currentParam);
         this.currentParam = 0;
 
         // ';'
@@ -1272,11 +1606,13 @@ Terminal.prototype.write = function(str) {
             //   this.resetTitleModes(this.params);
             //   break;
             // }
-            // if (this.params.length > 1) {
+            // if (this.params.length > 2) {
             //   this.initMouseTracking(this.params);
             //   break;
             // }
-            this.scrollDown(this.params);
+            if (this.params.length < 2 && !this.prefix) {
+              this.scrollDown(this.params);
+            }
             break;
 
           // CSI Ps Z
@@ -1291,9 +1627,9 @@ Terminal.prototype.write = function(str) {
             break;
 
           // CSI Ps g  Tab Clear (TBC).
-          // case 'g':
-          //   this.tabClear(this.params);
-          //   break;
+          case 'g':
+            this.tabClear(this.params);
+            break;
 
           // CSI Pm i  Media Copy (MC).
           // CSI ? Pm i
@@ -1489,115 +1825,211 @@ Terminal.prototype.write = function(str) {
           //   break;
 
           default:
-            this.error('Unknown CSI code: %s', ch, this.params);
+            this.error('Unknown CSI code: %s.', ch);
             break;
         }
 
         this.prefix = '';
         this.postfix = '';
+        break;
 
-        this.updateRange();
+      case dcs:
+        if (ch === '\x1b' || ch === '\x07') {
+          if (ch === '\x1b') i++;
+
+          switch (this.prefix) {
+            // User-Defined Keys (DECUDK).
+            case '':
+              break;
+
+            // Request Status String (DECRQSS).
+            // test: echo -e '\eP$q"p\e\\'
+            case '$q':
+              var pt = this.currentParam
+                , valid = false;
+
+              switch (pt) {
+                // DECSCA
+                case '"q':
+                  pt = '0"q';
+                  break;
+
+                // DECSCL
+                case '"p':
+                  pt = '61"p';
+                  break;
+
+                // DECSTBM
+                case 'r':
+                  pt = ''
+                    + (this.scrollTop + 1)
+                    + ';'
+                    + (this.scrollBottom + 1)
+                    + 'r';
+                  break;
+
+                // SGR
+                case 'm':
+                  pt = '0m';
+                  break;
+
+                default:
+                  this.error('Unknown DCS Pt: %s.', pt);
+                  pt = '';
+                  break;
+              }
+
+              this.send('\x1bP' + +valid + '$r' + pt + '\x1b\\');
+              break;
+
+            // Set Termcap/Terminfo Data (xterm, experimental).
+            case '+p':
+              break;
+
+            // Request Termcap/Terminfo String (xterm, experimental)
+            // Regular xterm does not even respond to this sequence.
+            // This can cause a small glitch in vim.
+            // test: echo -ne '\eP+q6b64\e\\'
+            case '+q':
+              var pt = this.currentParam
+                , valid = false;
+
+              this.send('\x1bP' + +valid + '+r' + pt + '\x1b\\');
+              break;
+
+            default:
+              this.error('Unknown DCS prefix: %s.', this.prefix);
+              break;
+          }
+
+          this.currentParam = 0;
+          this.prefix = '';
+          this.state = normal;
+        } else if (!this.currentParam) {
+          if (!this.prefix && ch !== '$' && ch !== '+') {
+            this.currentParam = ch;
+          } else if (this.prefix.length === 2) {
+            this.currentParam = ch;
+          } else {
+            this.prefix += ch;
+          }
+        } else {
+          this.currentParam += ch;
+        }
+        break;
+
+      case ignore:
+        // For PM and APC.
+        if (ch === '\x1b' || ch === '\x07') {
+          if (ch === '\x1b') i++;
+          this.state = normal;
+        }
         break;
     }
   }
 
-  this.updateRange();
-
-  if (this.refreshEnd >= this.refreshStart) {
-    this.refresh(this.refreshStart, this.refreshEnd);
-  }
+  this.updateRange(this.y);
+  this.refresh(this.refreshStart, this.refreshEnd);
 };
 
-Terminal.prototype.writeln = function(str) {
-  this.write(str + '\r\n');
+Terminal.prototype.writeln = function(data) {
+  this.write(data + '\r\n');
 };
 
-Terminal.prototype.keyDownHandler = function(ev) {
-  var str = '';
+Terminal.prototype.keyDown = function(ev) {
+  var key;
+
   switch (ev.keyCode) {
     // backspace
     case 8:
-      str = '\x7f'; // ^?
-      //str = '\x08'; // ^H
+      if (ev.shiftKey) {
+        key = '\x08'; // ^H
+        break;
+      }
+      key = '\x7f'; // ^?
       break;
     // tab
     case 9:
-      str = '\t';
+      if (ev.shiftKey) {
+        key = '\x1b[Z';
+        break;
+      }
+      key = '\t';
       break;
     // return/enter
     case 13:
-      str = '\r';
+      key = '\r';
       break;
     // escape
     case 27:
-      str = '\x1b';
+      key = '\x1b';
       break;
     // left-arrow
     case 37:
       if (this.applicationKeypad) {
-        str = '\x1bOD'; // SS3 as ^[O for 7-bit
-        //str = '\x8fD'; // SS3 as 0x8f for 8-bit
+        key = '\x1bOD'; // SS3 as ^[O for 7-bit
+        //key = '\x8fD'; // SS3 as 0x8f for 8-bit
         break;
       }
-      str = '\x1b[D';
+      key = '\x1b[D';
       break;
     // right-arrow
     case 39:
       if (this.applicationKeypad) {
-        str = '\x1bOC';
+        key = '\x1bOC';
         break;
       }
-      str = '\x1b[C';
+      key = '\x1b[C';
       break;
     // up-arrow
     case 38:
       if (this.applicationKeypad) {
-        str = '\x1bOA';
+        key = '\x1bOA';
         break;
       }
       if (ev.ctrlKey) {
         this.scrollDisp(-1);
         return cancel(ev);
       } else {
-        str = '\x1b[A';
+        key = '\x1b[A';
       }
       break;
     // down-arrow
     case 40:
       if (this.applicationKeypad) {
-        str = '\x1bOB';
+        key = '\x1bOB';
         break;
       }
       if (ev.ctrlKey) {
         this.scrollDisp(1);
         return cancel(ev);
       } else {
-        str = '\x1b[B';
+        key = '\x1b[B';
       }
       break;
     // delete
     case 46:
-      str = '\x1b[3~';
+      key = '\x1b[3~';
       break;
     // insert
     case 45:
-      str = '\x1b[2~';
+      key = '\x1b[2~';
       break;
     // home
     case 36:
       if (this.applicationKeypad) {
-        str = '\x1bOH';
+        key = '\x1bOH';
         break;
       }
-      str = '\x1bOH';
+      key = '\x1bOH';
       break;
     // end
     case 35:
       if (this.applicationKeypad) {
-        str = '\x1bOF';
+        key = '\x1bOF';
         break;
       }
-      str = '\x1bOF';
+      key = '\x1bOF';
       break;
     // page up
     case 33:
@@ -1605,7 +2037,7 @@ Terminal.prototype.keyDownHandler = function(ev) {
         this.scrollDisp(-(this.rows - 1));
         return cancel(ev);
       } else {
-        str = '\x1b[5~';
+        key = '\x1b[5~';
       }
       break;
     // page down
@@ -1614,157 +2046,155 @@ Terminal.prototype.keyDownHandler = function(ev) {
         this.scrollDisp(this.rows - 1);
         return cancel(ev);
       } else {
-        str = '\x1b[6~';
+        key = '\x1b[6~';
       }
       break;
     // F1
     case 112:
-      str = '\x1bOP';
+      key = '\x1bOP';
       break;
     // F2
     case 113:
-      str = '\x1bOQ';
+      key = '\x1bOQ';
       break;
     // F3
     case 114:
-      str = '\x1bOR';
+      key = '\x1bOR';
       break;
     // F4
     case 115:
-      str = '\x1bOS';
+      key = '\x1bOS';
       break;
     // F5
     case 116:
-      str = '\x1b[15~';
+      key = '\x1b[15~';
       break;
     // F6
     case 117:
-      str = '\x1b[17~';
+      key = '\x1b[17~';
       break;
     // F7
     case 118:
-      str = '\x1b[18~';
+      key = '\x1b[18~';
       break;
     // F8
     case 119:
-      str = '\x1b[19~';
+      key = '\x1b[19~';
       break;
     // F9
     case 120:
-      str = '\x1b[20~';
+      key = '\x1b[20~';
       break;
     // F10
     case 121:
-      str = '\x1b[21~';
+      key = '\x1b[21~';
       break;
     // F11
     case 122:
-      str = '\x1b[23~';
+      key = '\x1b[23~';
       break;
     // F12
     case 123:
-      str = '\x1b[24~';
+      key = '\x1b[24~';
       break;
     default:
       // a-z and space
       if (ev.ctrlKey) {
         if (ev.keyCode >= 65 && ev.keyCode <= 90) {
-          str = String.fromCharCode(ev.keyCode - 64);
+          key = String.fromCharCode(ev.keyCode - 64);
         } else if (ev.keyCode === 32) {
           // NUL
-          str = String.fromCharCode(0);
+          key = String.fromCharCode(0);
         } else if (ev.keyCode >= 51 && ev.keyCode <= 55) {
           // escape, file sep, group sep, record sep, unit sep
-          str = String.fromCharCode(ev.keyCode - 51 + 27);
+          key = String.fromCharCode(ev.keyCode - 51 + 27);
         } else if (ev.keyCode === 56) {
           // delete
-          str = String.fromCharCode(127);
+          key = String.fromCharCode(127);
         } else if (ev.keyCode === 219) {
           // ^[ - escape
-          str = String.fromCharCode(27);
+          key = String.fromCharCode(27);
         } else if (ev.keyCode === 221) {
           // ^] - group sep
-          str = String.fromCharCode(29);
+          key = String.fromCharCode(29);
         }
       } else if ((!isMac && ev.altKey) || (isMac && ev.metaKey)) {
         if (ev.keyCode >= 65 && ev.keyCode <= 90) {
-          str = '\x1b' + String.fromCharCode(ev.keyCode + 32);
+          key = '\x1b' + String.fromCharCode(ev.keyCode + 32);
+        } else if (ev.keyCode === 192) {
+          key = '\x1b`';
         } else if (ev.keyCode >= 48 && ev.keyCode <= 57) {
-          str = '\x1b' + (ev.keyCode - 48);
+          key = '\x1b' + (ev.keyCode - 48);
         }
       }
       break;
   }
 
-  if (str) {
-    cancel(ev);
+  this.emit('keydown', ev);
+
+  if (key) {
+    this.emit('key', key, ev);
 
     this.showCursor();
-    this.keyState = 1;
-    this.keyStr = str;
-    this.handler(str);
+    this.handler(key);
 
-    return false;
-  } else {
-    this.keyState = 0;
-    return true;
+    return cancel(ev);
+  }
+
+  return true;
+};
+
+Terminal.prototype.setgLevel = function(g) {
+  this.glevel = g;
+  this.charset = this.charsets[g];
+};
+
+Terminal.prototype.setgCharset = function(g, charset) {
+  this.charsets[g] = charset;
+  if (this.glevel === g) {
+    this.charset = charset;
   }
 };
 
-Terminal.prototype.keyPressHandler = function(ev) {
-  var str = ''
-    , key;
+Terminal.prototype.keyPress = function(ev) {
+  var key;
 
   cancel(ev);
 
-  if (!('charCode' in ev)) {
-    key = ev.keyCode;
-    if (this.keyState === 1) {
-      this.keyState = 2;
-      return false;
-    } else if (this.keyState === 2) {
-      this.showCursor();
-      this.handler(this.keyStr);
-      return false;
-    }
-  } else {
+  if (ev.charCode) {
     key = ev.charCode;
-  }
-
-  if (key !== 0) {
-    if (!ev.ctrlKey
-        && ((!isMac && !ev.altKey)
-        || (isMac && !ev.metaKey))) {
-      str = String.fromCharCode(key);
-    }
-  }
-
-  if (str) {
-    this.showCursor();
-    this.handler(str);
-    return false;
+  } else if (ev.which == null) {
+    key = ev.keyCode;
+  } else if (ev.which !== 0 && ev.charCode !== 0) {
+    key = ev.which;
   } else {
-    return true;
+    return false;
   }
+
+  if (!key || ev.ctrlKey || ev.altKey || ev.metaKey) return false;
+
+  key = String.fromCharCode(key);
+
+  this.emit('keypress', key, ev);
+  this.emit('key', key, ev);
+
+  this.showCursor();
+  this.handler(key);
+
+  return false;
 };
 
-Terminal.prototype.queueChars = function(str) {
+Terminal.prototype.send = function(data) {
   var self = this;
 
-  this.outputQueue += str;
-
-  if (this.outputQueue) {
+  if (!this.queue) {
     setTimeout(function() {
-      self.outputHandler();
+      self.handler(self.queue);
+      self.queue = '';
     }, 1);
   }
-};
 
-Terminal.prototype.outputHandler = function() {
-  if (this.outputQueue) {
-    this.handler(this.outputQueue);
-    this.outputQueue = '';
-  }
+  this.queue += data;
 };
 
 Terminal.prototype.bell = function() {
@@ -1777,23 +2207,26 @@ Terminal.prototype.bell = function() {
   if (Terminal.popOnBell) this.focus();
 };
 
-Terminal.prototype.log = function(data) {
+Terminal.prototype.log = function() {
   if (!Terminal.debug) return;
   if (!window.console || !window.console.log) return;
-  window.console.log(data);
+  var args = Array.prototype.slice.call(arguments);
+  window.console.log.apply(window.console, args);
 };
 
-Terminal.prototype.error = function(data) {
+Terminal.prototype.error = function() {
   if (!Terminal.debug) return;
   if (!window.console || !window.console.error) return;
-  window.console.error(data);
+  var args = Array.prototype.slice.call(arguments);
+  window.console.error.apply(window.console, args);
 };
 
 Terminal.prototype.resize = function(x, y) {
   var line
     , el
     , i
-    , j;
+    , j
+    , ch;
 
   if (x < 1) x = 1;
   if (y < 1) y = 1;
@@ -1801,10 +2234,11 @@ Terminal.prototype.resize = function(x, y) {
   // resize cols
   j = this.cols;
   if (j < x) {
+    ch = [this.defAttr, ' '];
     i = this.lines.length;
     while (i--) {
       while (this.lines[i].length < x) {
-        this.lines[i].push([this.defAttr, ' ']);
+        this.lines[i].push(ch);
       }
     }
   } else if (j > x) {
@@ -1815,6 +2249,7 @@ Terminal.prototype.resize = function(x, y) {
       }
     }
   }
+  this.setupStops(j);
   this.cols = x;
 
   // resize rows
@@ -1861,9 +2296,9 @@ Terminal.prototype.resize = function(x, y) {
   this.normal = null;
 };
 
-Terminal.prototype.updateRange = function() {
-  this.refreshStart = Math.min(this.refreshStart, this.y);
-  this.refreshEnd = Math.max(this.refreshEnd, this.y);
+Terminal.prototype.updateRange = function(y) {
+  if (y < this.refreshStart) this.refreshStart = y;
+  if (y > this.refreshEnd) this.refreshEnd = y;
 };
 
 Terminal.prototype.maxRange = function() {
@@ -1871,21 +2306,56 @@ Terminal.prototype.maxRange = function() {
   this.refreshEnd = this.rows - 1;
 };
 
+Terminal.prototype.setupStops = function(i) {
+  if (i != null) {
+    if (!this.tabs[i]) {
+      i = this.prevStop(i);
+    }
+  } else {
+    this.tabs = {};
+    i = 0;
+  }
+
+  for (; i < this.cols; i += 8) {
+    this.tabs[i] = true;
+  }
+};
+
+Terminal.prototype.prevStop = function(x) {
+  if (x == null) x = this.x;
+  while (!this.tabs[--x] && x > 0);
+  return x >= this.cols
+    ? this.cols - 1
+    : x < 0 ? 0 : x;
+};
+
+Terminal.prototype.nextStop = function(x) {
+  if (x == null) x = this.x;
+  while (!this.tabs[++x] && x < this.cols);
+  return x >= this.cols
+    ? this.cols - 1
+    : x < 0 ? 0 : x;
+};
+
 Terminal.prototype.eraseRight = function(x, y) {
   var line = this.lines[this.ybase + y]
-    , ch = [this.curAttr, ' '];
+    , ch = [this.curAttr, ' ']; // xterm
 
   for (; x < this.cols; x++) {
     line[x] = ch;
   }
+
+  this.updateRange(y);
 };
 
 Terminal.prototype.eraseLeft = function(x, y) {
   var line = this.lines[this.ybase + y]
-    , ch = [this.curAttr, ' '];
+    , ch = [this.curAttr, ' ']; // xterm
 
   x++;
   while (x--) line[x] = ch;
+
+  this.updateRange(y);
 };
 
 Terminal.prototype.eraseLine = function(y) {
@@ -1908,8 +2378,24 @@ Terminal.prototype.blankLine = function(cur) {
   return line;
 };
 
-Terminal.prototype.handler = function() {};
-Terminal.prototype.handleTitle = function() {};
+Terminal.prototype.ch = function(cur) {
+  return cur
+    ? [this.curAttr, ' ']
+    : [this.defAttr, ' '];
+};
+
+Terminal.prototype.is = function(term) {
+  var name = this.termName || Terminal.termName;
+  return (name + '').indexOf(term) === 0;
+};
+
+Terminal.prototype.handler = function(data) {
+  this.emit('data', data);
+};
+
+Terminal.prototype.handleTitle = function(title) {
+  this.emit('title', title);
+};
 
 /**
  * ESC
@@ -1918,10 +2404,9 @@ Terminal.prototype.handleTitle = function() {};
 // ESC D Index (IND is 0x84).
 Terminal.prototype.index = function() {
   this.y++;
-  if (this.y >= this.scrollBottom + 1) {
+  if (this.y > this.scrollBottom) {
     this.y--;
     this.scroll();
-    this.maxRange();
   }
   this.state = normal;
 };
@@ -1932,12 +2417,15 @@ Terminal.prototype.reverseIndex = function() {
   this.y--;
   if (this.y < this.scrollTop) {
     this.y++;
+    // possibly move the code below to term.reverseScroll();
     // test: echo -ne '\e[1;1H\e[44m\eM\e[0m'
     // blankLine(true) is xterm/linux behavior
     this.lines.splice(this.y + this.ybase, 0, this.blankLine(true));
     j = this.rows - 1 - this.scrollBottom;
     this.lines.splice(this.rows - 1 + this.ybase - j + 1, 1);
-    this.maxRange();
+    // this.maxRange();
+    this.updateRange(this.scrollTop);
+    this.updateRange(this.scrollBottom);
   }
   this.state = normal;
 };
@@ -1946,6 +2434,12 @@ Terminal.prototype.reverseIndex = function() {
 Terminal.prototype.reset = function() {
   Terminal.call(this, this.cols, this.rows);
   this.refresh(0, this.rows - 1);
+};
+
+// ESC H Tab Set (HTS is 0x88).
+Terminal.prototype.tabSet = function() {
+  this.tabs[this.x] = true;
+  this.state = normal;
 };
 
 /**
@@ -1978,7 +2472,7 @@ Terminal.prototype.cursorForward = function(params) {
   var param = params[0];
   if (param < 1) param = 1;
   this.x += param;
-  if (this.x >= this.cols - 1) {
+  if (this.x >= this.cols) {
     this.x = this.cols - 1;
   }
 };
@@ -1995,7 +2489,7 @@ Terminal.prototype.cursorBackward = function(params) {
 // CSI Ps ; Ps H
 // Cursor Position [row;column] (default = [1,1]) (CUP).
 Terminal.prototype.cursorPos = function(params) {
-  var param, row, col;
+  var row, col;
 
   row = params[0] - 1;
 
@@ -2033,7 +2527,7 @@ Terminal.prototype.cursorPos = function(params) {
 //     Ps = 2  -> Selective Erase All.
 Terminal.prototype.eraseInDisplay = function(params) {
   var j;
-  switch (params[0] || 0) {
+  switch (params[0]) {
     case 0:
       this.eraseRight(this.x, this.y);
       j = this.y + 1;
@@ -2068,7 +2562,7 @@ Terminal.prototype.eraseInDisplay = function(params) {
 //     Ps = 1  -> Selective Erase to Left.
 //     Ps = 2  -> Selective Erase All.
 Terminal.prototype.eraseInLine = function(params) {
-  switch (params[0] || 0) {
+  switch (params[0]) {
     case 0:
       this.eraseRight(this.x, this.y);
       break;
@@ -2144,16 +2638,11 @@ Terminal.prototype.eraseInLine = function(params) {
 //     Ps = 4 8  ; 5  ; Ps -> Set background color to the second
 //     Ps.
 Terminal.prototype.charAttributes = function(params) {
-  var i, l, p, bg, fg;
-
-  if (params.length === 0) {
-    // default
-    this.curAttr = this.defAttr;
-    return;
-  }
-
-  l = params.length;
-  i = 0;
+  var l = params.length
+    , i = 0
+    , bg
+    , fg
+    , p;
 
   for (; i < l; i++) {
     p = params[i];
@@ -2213,13 +2702,17 @@ Terminal.prototype.charAttributes = function(params) {
       // fg color 256
       if (params[i+1] !== 5) continue;
       i += 2;
-      p = params[i];
+      p = params[i] & 0xff;
+      // convert 88 colors to 256
+      // if (this.is('rxvt-unicode') && p < 88) p = p * 2.9090 | 0;
       this.curAttr = (this.curAttr & ~(0x1ff << 9)) | (p << 9);
     } else if (p === 48) {
       // bg color 256
       if (params[i+1] !== 5) continue;
       i += 2;
-      p = params[i];
+      p = params[i] & 0xff;
+      // convert 88 colors to 256
+      // if (this.is('rxvt-unicode') && p < 88) p = p * 2.9090 | 0;
       this.curAttr = (this.curAttr & ~0x1ff) | p;
     }
   }
@@ -2247,12 +2740,28 @@ Terminal.prototype.charAttributes = function(params) {
 //   CSI ? 5 3  n  Locator available, if compiled-in, or
 //   CSI ? 5 0  n  No Locator, if not.
 Terminal.prototype.deviceStatus = function(params) {
-  if (this.prefix === '?') {
+  if (!this.prefix) {
+    switch (params[0]) {
+      case 5:
+        // status report
+        this.send('\x1b[0n');
+        break;
+      case 6:
+        // cursor position
+        this.send('\x1b['
+          + (this.y + 1)
+          + ';'
+          + (this.x + 1)
+          + 'R');
+        break;
+    }
+  } else if (this.prefix === '?') {
     // modern xterm doesnt seem to
     // respond to any of these except ?6, 6, and 5
     switch (params[0]) {
       case 6:
-        this.queueChars('\x1b['
+        // cursor position
+        this.send('\x1b[?'
           + (this.y + 1)
           + ';'
           + (this.x + 1)
@@ -2260,33 +2769,21 @@ Terminal.prototype.deviceStatus = function(params) {
         break;
       case 15:
         // no printer
-        // this.queueChars('\x1b[?11n');
+        // this.send('\x1b[?11n');
         break;
       case 25:
         // dont support user defined keys
-        // this.queueChars('\x1b[?21n');
+        // this.send('\x1b[?21n');
         break;
       case 26:
-        // this.queueChars('\x1b[?27;1;0;0n');
+        // north american keyboard
+        // this.send('\x1b[?27;1;0;0n');
         break;
       case 53:
         // no dec locator/mouse
-        // this.queueChars('\x1b[?50n');
+        // this.send('\x1b[?50n');
         break;
     }
-    return;
-  }
-  switch (params[0]) {
-    case 5:
-      this.queueChars('\x1b[0n');
-      break;
-    case 6:
-      this.queueChars('\x1b['
-        + (this.y + 1)
-        + ';'
-        + (this.x + 1)
-        + 'R');
-      break;
   }
 };
 
@@ -2297,17 +2794,17 @@ Terminal.prototype.deviceStatus = function(params) {
 // CSI Ps @
 // Insert Ps (Blank) Character(s) (default = 1) (ICH).
 Terminal.prototype.insertChars = function(params) {
-  var param, row, j;
+  var param, row, j, ch;
 
   param = params[0];
   if (param < 1) param = 1;
 
   row = this.y + this.ybase;
   j = this.x;
+  ch = [this.curAttr, ' ']; // xterm
 
   while (param-- && j < this.cols) {
-    // xterm, linux:
-    this.lines[row].splice(j++, 0, [this.curAttr, ' ']);
+    this.lines[row].splice(j++, 0, ch);
     this.lines[row].pop();
   }
 };
@@ -2363,7 +2860,9 @@ Terminal.prototype.insertLines = function(params) {
     this.lines.splice(j, 1);
   }
 
-  this.maxRange();
+  // this.maxRange();
+  this.updateRange(this.y);
+  this.updateRange(this.scrollBottom);
 };
 
 // CSI Ps M
@@ -2385,40 +2884,42 @@ Terminal.prototype.deleteLines = function(params) {
     this.lines.splice(row, 1);
   }
 
-  this.maxRange();
+  // this.maxRange();
+  this.updateRange(this.y);
+  this.updateRange(this.scrollBottom);
 };
 
 // CSI Ps P
 // Delete Ps Character(s) (default = 1) (DCH).
 Terminal.prototype.deleteChars = function(params) {
-  var param, row;
+  var param, row, ch;
 
   param = params[0];
   if (param < 1) param = 1;
 
   row = this.y + this.ybase;
+  ch = [this.curAttr, ' ']; // xterm
 
   while (param--) {
     this.lines[row].splice(this.x, 1);
-    // xterm, linux:
-    this.lines[row].push([this.curAttr, ' ']);
+    this.lines[row].push(ch);
   }
 };
 
 // CSI Ps X
 // Erase Ps Character(s) (default = 1) (ECH).
 Terminal.prototype.eraseChars = function(params) {
-  var param, row, j;
+  var param, row, j, ch;
 
   param = params[0];
   if (param < 1) param = 1;
 
   row = this.y + this.ybase;
   j = this.x;
+  ch = [this.curAttr, ' ']; // xterm
 
   while (param-- && j < this.cols) {
-    // xterm, linux:
-    this.lines[row][j++] = [this.curAttr, ' '];
+    this.lines[row][j++] = ch;
   }
 };
 
@@ -2440,7 +2941,7 @@ Terminal.prototype.HPositionRelative = function(params) {
   var param = params[0];
   if (param < 1) param = 1;
   this.x += param;
-  if (this.x >= this.cols - 1) {
+  if (this.x >= this.cols) {
     this.x = this.cols - 1;
   }
 };
@@ -2477,20 +2978,35 @@ Terminal.prototype.HPositionRelative = function(params) {
 //   the XFree86 patch number, starting with 95).  In a DEC termi-
 //   nal, Pc indicates the ROM cartridge registration number and is
 //   always zero.
+// More information:
+//   xterm/charproc.c - line 2012, for more information.
+//   vim responds with ^[[?0c or ^[[?1c after the terminal's response (?)
 Terminal.prototype.sendDeviceAttributes = function(params) {
-  // This severely breaks things if
-  // TERM is set to `linux`. xterm
-  // is fine.
-  return;
+  if (params[0] > 0) return;
 
-  if (this.prefix !== '>') {
-    this.queueChars('\x1b[?1;2c');
-  } else {
-    // say we're a vt100 with
-    // firmware version 95
-    // this.queueChars('\x1b[>0;95;0c');
-    // modern xterm responds with:
-    this.queueChars('\x1b[>0;276;0c');
+  if (!this.prefix) {
+    if (this.is('xterm')
+        || this.is('rxvt-unicode')
+        || this.is('screen')) {
+      this.send('\x1b[?1;2c');
+    } else if (this.is('linux')) {
+      this.send('\x1b[?6c');
+    }
+  } else if (this.prefix === '>') {
+    // xterm and urxvt
+    // seem to spit this
+    // out around ~370 times (?).
+    if (this.is('xterm')) {
+      this.send('\x1b[>0;276;0c');
+    } else if (this.is('rxvt-unicode')) {
+      this.send('\x1b[>85;95;0c');
+    } else if (this.is('linux')) {
+      // not supported by linux console.
+      // linux console echoes parameters.
+      this.send(params[0] + 'c');
+    } else if (this.is('screen')) {
+      this.send('\x1b[>83;40003;0c');
+    }
   }
 };
 
@@ -2620,11 +3136,17 @@ Terminal.prototype.HVPosition = function(params) {
 //   http://vt100.net/docs/vt220-rm/chapter4.html
 Terminal.prototype.setMode = function(params) {
   if (typeof params === 'object') {
-    while (params.length) this.setMode(params.shift());
+    var l = params.length
+      , i = 0;
+
+    for (; i < l; i++) {
+      this.setMode(params[i]);
+    }
+
     return;
   }
 
-  if (this.prefix !== '?') {
+  if (!this.prefix) {
     switch (params) {
       case 4:
         this.insertMode = true;
@@ -2633,10 +3155,21 @@ Terminal.prototype.setMode = function(params) {
         //this.convertEol = true;
         break;
     }
-  } else {
+  } else if (this.prefix === '?') {
     switch (params) {
       case 1:
         this.applicationKeypad = true;
+        break;
+      case 2:
+        this.setgCharset(0, Terminal.charsets.US);
+        this.setgCharset(1, Terminal.charsets.US);
+        this.setgCharset(2, Terminal.charsets.US);
+        this.setgCharset(3, Terminal.charsets.US);
+        // set VT100 mode here
+        break;
+      case 3: // 132 col mode
+        this.savedCols = this.cols;
+        this.resize(132, this.rows);
         break;
       case 6:
         this.originMode = true;
@@ -2644,42 +3177,44 @@ Terminal.prototype.setMode = function(params) {
       case 7:
         this.wraparoundMode = true;
         break;
+      case 12:
+        // this.cursorBlink = true;
+        break;
       case 9: // X10 Mouse
-        // button press only.
-        break;
+        // no release, no motion, no wheel, no modifiers.
       case 1000: // vt200 mouse
-        // no wheel events, no motion.
-        // no modifiers except control.
-        // button press, release.
-        break;
-      case 1001: // vt200 highlight mouse
-        // no wheel events, no motion.
-        // first event is to send tracking instead
-        // of button press, *then* button release.
-        break;
+        // no motion.
+        // no modifiers, except control on the wheel.
       case 1002: // button event mouse
       case 1003: // any event mouse
-        // button press, release, wheel, and motion.
-        // no modifiers except control.
-        this.log('Binding to mouse events.');
+        // any event - sends motion events,
+        // even if there is no button held down.
+        this.x10Mouse = params === 9;
+        this.vt200Mouse = params === 1000;
+        this.normalMouse = params > 1000;
         this.mouseEvents = true;
         this.element.style.cursor = 'default';
+        this.log('Binding to mouse events.');
         break;
       case 1004: // send focusin/focusout events
-        // focusin: ^[[>I
-        // focusout: ^[[>O
+        // focusin: ^[[I
+        // focusout: ^[[O
+        this.sendFocus = true;
         break;
       case 1005: // utf8 ext mode mouse
+        this.utfMouse = true;
         // for wide terminals
         // simply encodes large values as utf8 characters
         break;
       case 1006: // sgr ext mode mouse
+        this.sgrMouse = true;
         // for wide terminals
         // does not add 32 to fields
         // press: ^[[<b;x;yM
         // release: ^[[<b;x;ym
         break;
       case 1015: // urxvt ext mode mouse
+        this.urxvtMouse = true;
         // for wide terminals
         // numbers for fields
         // press: ^[[b;x;yM
@@ -2701,7 +3236,12 @@ Terminal.prototype.setMode = function(params) {
             x: this.x,
             y: this.y,
             scrollTop: this.scrollTop,
-            scrollBottom: this.scrollBottom
+            scrollBottom: this.scrollBottom,
+            tabs: this.tabs
+            // XXX save charset(s) here?
+            // charset: this.charset,
+            // glevel: this.glevel,
+            // charsets: this.charsets
           };
           this.reset();
           this.normal = normal;
@@ -2794,11 +3334,17 @@ Terminal.prototype.setMode = function(params) {
 //     Ps = 2 0 0 4  -> Reset bracketed paste mode.
 Terminal.prototype.resetMode = function(params) {
   if (typeof params === 'object') {
-    while (params.length) this.resetMode(params.shift());
+    var l = params.length
+      , i = 0;
+
+    for (; i < l; i++) {
+      this.resetMode(params[i]);
+    }
+
     return;
   }
 
-  if (this.prefix !== '?') {
+  if (!this.prefix) {
     switch (params) {
       case 4:
         this.insertMode = false;
@@ -2807,10 +3353,16 @@ Terminal.prototype.resetMode = function(params) {
         //this.convertEol = false;
         break;
     }
-  } else {
+  } else if (this.prefix === '?') {
     switch (params) {
       case 1:
         this.applicationKeypad = false;
+        break;
+      case 3:
+        if (this.cols === 132 && this.savedCols) {
+          this.resize(this.savedCols, this.rows);
+        }
+        delete this.savedCols;
         break;
       case 6:
         this.originMode = false;
@@ -2818,15 +3370,30 @@ Terminal.prototype.resetMode = function(params) {
       case 7:
         this.wraparoundMode = false;
         break;
-      case 9:
-      case 1000:
-      case 1001:
-      case 1002:
-      case 1003:
-      case 1004:
-      case 1005:
+      case 12:
+        // this.cursorBlink = false;
+        break;
+      case 9: // X10 Mouse
+      case 1000: // vt200 mouse
+      case 1002: // button event mouse
+      case 1003: // any event mouse
+        this.x10Mouse = false;
+        this.vt200Mouse = false;
+        this.normalMouse = false;
         this.mouseEvents = false;
         this.element.style.cursor = '';
+        break;
+      case 1004: // send focusin/focusout events
+        this.sendFocus = false;
+        break;
+      case 1005: // utf8 ext mode mouse
+        this.utfMouse = false;
+        break;
+      case 1006: // sgr ext mode mouse
+        this.sgrMouse = false;
+        break;
+      case 1015: // urxvt ext mode mouse
+        this.urxvtMouse = false;
         break;
       case 25: // hide cursor
         this.cursorHidden = true;
@@ -2843,6 +3410,7 @@ Terminal.prototype.resetMode = function(params) {
           this.y = this.normal.y;
           this.scrollTop = this.normal.scrollTop;
           this.scrollBottom = this.normal.scrollBottom;
+          this.tabs = this.normal.tabs;
           this.normal = null;
           // if (params === 1049) {
           //   this.x = this.savedX;
@@ -2861,7 +3429,7 @@ Terminal.prototype.resetMode = function(params) {
 //   dow) (DECSTBM).
 // CSI ? Pm r
 Terminal.prototype.setScrollRegion = function(params) {
-  if (this.prefix === '?') return;
+  if (this.prefix) return;
   this.scrollTop = (params[0] || 1) - 1;
   this.scrollBottom = (params[1] || this.rows) - 1;
   this.x = 0;
@@ -2889,21 +3457,9 @@ Terminal.prototype.restoreCursor = function(params) {
 // CSI Ps I
 //   Cursor Forward Tabulation Ps tab stops (default = 1) (CHT).
 Terminal.prototype.cursorForwardTab = function(params) {
-  var row, param, line, ch;
-
-  param = params[0] || 1;
-  param = param * 8;
-  row = this.y + this.ybase;
-  line = this.lines[row];
-  ch = [this.defAttr, ' '];
-
+  var param = params[0] || 1;
   while (param--) {
-    line.splice(this.x++, 0, ch);
-    line.pop();
-    if (this.x === this.cols) {
-      this.x--;
-      break;
-    }
+    this.x = this.nextStop();
   }
 };
 
@@ -2914,7 +3470,9 @@ Terminal.prototype.scrollUp = function(params) {
     this.lines.splice(this.ybase + this.scrollTop, 1);
     this.lines.splice(this.ybase + this.scrollBottom, 0, this.blankLine());
   }
-  this.maxRange();
+  // this.maxRange();
+  this.updateRange(this.scrollTop);
+  this.updateRange(this.scrollBottom);
 };
 
 // CSI Ps T  Scroll down Ps lines (default = 1) (SD).
@@ -2924,7 +3482,9 @@ Terminal.prototype.scrollDown = function(params) {
     this.lines.splice(this.ybase + this.scrollBottom, 1);
     this.lines.splice(this.ybase + this.scrollTop, 0, this.blankLine());
   }
-  this.maxRange();
+  // this.maxRange();
+  this.updateRange(this.scrollTop);
+  this.updateRange(this.scrollBottom);
 };
 
 // CSI Ps ; Ps ; Ps ; Ps ; Ps T
@@ -2932,7 +3492,7 @@ Terminal.prototype.scrollDown = function(params) {
 //   [func;startx;starty;firstrow;lastrow].  See the section Mouse
 //   Tracking.
 Terminal.prototype.initMouseTracking = function(params) {
-  this.log('Enable Mouse Tracking');
+  // Relevant: DECSET 1001
 };
 
 // CSI > Ps; Ps T
@@ -2952,36 +3512,34 @@ Terminal.prototype.resetTitleModes = function(params) {
 
 // CSI Ps Z  Cursor Backward Tabulation Ps tab stops (default = 1) (CBT).
 Terminal.prototype.cursorBackwardTab = function(params) {
-  var row, param, line, ch;
-
-  param = params[0] || 1;
-  param = param * 8;
-  row = this.y + this.ybase;
-  line = this.lines[row];
-  ch = [this.defAttr, ' '];
-
+  var param = params[0] || 1;
   while (param--) {
-    line.splice(--this.x, 1);
-    line.push(ch);
-    if (this.x === 0) {
-      break;
-    }
+    this.x = this.prevStop();
   }
 };
 
 // CSI Ps b  Repeat the preceding graphic character Ps times (REP).
 Terminal.prototype.repeatPrecedingCharacter = function(params) {
-  var param = params[0] || 1;
-  var line = this.lines[this.ybase + this.y];
-  var ch = line[this.x - 1] || [this.defAttr, ' '];
+  var param = params[0] || 1
+    , line = this.lines[this.ybase + this.y]
+    , ch = line[this.x - 1] || [this.defAttr, ' '];
+
   while (param--) line[this.x++] = ch;
 };
 
 // CSI Ps g  Tab Clear (TBC).
 //     Ps = 0  -> Clear Current Column (default).
 //     Ps = 3  -> Clear All.
+// Potentially:
+//   Ps = 2  -> Clear Stops on Line.
+//   http://vt100.net/annarbor/aaa-ug/section6.html
 Terminal.prototype.tabClear = function(params) {
-  ;
+  var param = params[0];
+  if (param <= 0) {
+    delete this.tabs[this.x];
+  } else if (param === 3) {
+    this.tabs = {};
+  }
 };
 
 // CSI Pm i  Media Copy (MC).
@@ -3045,8 +3603,20 @@ Terminal.prototype.setPointerMode = function(params) {
 };
 
 // CSI ! p   Soft terminal reset (DECSTR).
+// http://vt100.net/docs/vt220-rm/table4-10.html
 Terminal.prototype.softReset = function(params) {
-  this.reset();
+  this.cursorHidden = false;
+  this.insertMode = false;
+  this.originMode = false;
+  this.wraparoundMode = false; // autowrap
+  this.applicationKeypad = false; // ?
+  this.scrollTop = 0;
+  this.scrollBottom = this.rows - 1;
+  this.curAttr = this.defAttr;
+  this.x = this.y = 0; // ?
+  this.charset = null;
+  this.glevel = 0; // ??
+  this.charsets = [null]; // ??
 };
 
 // CSI Ps$ p
@@ -3147,6 +3717,10 @@ Terminal.prototype.setAttrInRectangle = function(params) {
       line[i] = [attr, line[i][1]];
     }
   }
+
+  // this.maxRange();
+  this.updateRange(params[0]);
+  this.updateRange(params[2]);
 };
 
 // CSI ? Pm s
@@ -3316,6 +3890,10 @@ Terminal.prototype.fillRectangle = function(params) {
       line[i] = [line[i][0], String.fromCharCode(ch)];
     }
   }
+
+  // this.maxRange();
+  this.updateRange(params[1]);
+  this.updateRange(params[3]);
 };
 
 // CSI Ps ; Pu ' z
@@ -3331,7 +3909,9 @@ Terminal.prototype.fillRectangle = function(params) {
 //     Pu = 1  <- device physical pixels.
 //     Pu = 2  <- character cells.
 Terminal.prototype.enableLocatorReporting = function(params) {
-  ;
+  var val = params[0] > 0;
+  //this.mouseEvents = val;
+  //this.decLocator = val;
 };
 
 // CSI Pt; Pl; Pb; Pr$ z
@@ -3345,15 +3925,21 @@ Terminal.prototype.eraseRectangle = function(params) {
     , r = params[3];
 
   var line
-    , i;
+    , i
+    , ch;
+
+  ch = [this.curAttr, ' ']; // xterm?
 
   for (; t < b + 1; t++) {
     line = this.lines[this.ybase + t];
     for (i = l; i < r; i++) {
-      // curAttr for xterm behavior?
-      line[i] = [this.curAttr, ' '];
+      line[i] = ch;
     }
   }
+
+  // this.maxRange();
+  this.updateRange(params[0]);
+  this.updateRange(params[2]);
 };
 
 // CSI Pm ' {
@@ -3426,61 +4012,65 @@ Terminal.prototype.requestLocatorPosition = function(params) {
 // Insert P s Column(s) (default = 1) (DECIC), VT420 and up.
 // NOTE: xterm doesn't enable this code by default.
 Terminal.prototype.insertColumns = function() {
-  param = params[0];
-
-  var l = this.ybase + this.rows
+  var param = params[0]
+    , l = this.ybase + this.rows
+    , ch = [this.curAttr, ' '] // xterm?
     , i;
 
   while (param--) {
     for (i = this.ybase; i < l; i++) {
-      // xterm behavior uses curAttr?
-      this.lines[i].splice(this.x + 1, 0, [this.curAttr, ' ']);
+      this.lines[i].splice(this.x + 1, 0, ch);
       this.lines[i].pop();
     }
   }
+
+  this.maxRange();
 };
 
 // CSI P m SP ~
 // Delete P s Column(s) (default = 1) (DECDC), VT420 and up
 // NOTE: xterm doesn't enable this code by default.
 Terminal.prototype.deleteColumns = function() {
-  param = params[0];
-
-  var l = this.ybase + this.rows
+  var param = params[0]
+    , l = this.ybase + this.rows
+    , ch = [this.curAttr, ' '] // xterm?
     , i;
 
   while (param--) {
     for (i = this.ybase; i < l; i++) {
       this.lines[i].splice(this.x, 1);
-      // xterm behavior uses curAttr?
-      this.lines[i].push([this.curAttr, ' ']);
+      this.lines[i].push(ch);
     }
   }
+
+  this.maxRange();
 };
 
 /**
  * Character Sets
  */
 
+Terminal.charsets = {};
+
 // DEC Special Character and Line Drawing Set.
 // http://vt100.net/docs/vt102-ug/table5-13.html
 // A lot of curses apps use this if they see TERM=xterm.
 // testing: echo -e '\e(0a\e(B'
-// The real xterm output seems to conflict with the
-// reference above. The table below uses
-// the exact same charset xterm outputs.
-var SCLD = {
-  '_': '\u005f', // '_' - blank ? should this be ' ' ?
+// The xterm output sometimes seems to conflict with the
+// reference above. xterm seems in line with the reference
+// when running vttest however.
+// The table below now uses xterm's output from vttest.
+Terminal.charsets.SCLD = { // (0
   '`': '\u25c6', // '◆'
   'a': '\u2592', // '▒'
-  'b': '\u0062', // 'b' - should this be: '\t' ?
-  'c': '\u0063', // 'c' - should this be: '\f' ?
-  'd': '\u0064', // 'd' - should this be: '\r' ?
-  'e': '\u0065', // 'e' - should this be: '\n' ?
+  'b': '\u0009', // '\t'
+  'c': '\u000c', // '\f'
+  'd': '\u000d', // '\r'
+  'e': '\u000a', // '\n'
   'f': '\u00b0', // '°'
   'g': '\u00b1', // '±'
-  'h': '\u2592', // '▒' - NL ? should this be '\n' ?
-  'i': '\u2603', // '☃' - VT ? should this be '\v' ?
+  'h': '\u2424', // '\u2424' (NL)
+  'i': '\u000b', // '\v'
   'j': '\u2518', // '┘'
   'k': '\u2510', // '┐'
   'l': '\u250c', // '┌'
@@ -3504,6 +4094,20 @@ var SCLD = {
   '~': '\u00b7'  // '·'
 };
 
+Terminal.charsets.UK = null; // (A
+Terminal.charsets.US = null; // (B (USASCII)
+Terminal.charsets.Dutch = null; // (4
+Terminal.charsets.Finnish = null; // (C or (5
+Terminal.charsets.French = null; // (R
+Terminal.charsets.FrenchCanadian = null; // (Q
+Terminal.charsets.German = null; // (K
+Terminal.charsets.Italian = null; // (Y
+Terminal.charsets.NorwegianDanish = null; // (E or (6
+Terminal.charsets.Spanish = null; // (Z
+Terminal.charsets.Swedish = null; // (H or (7
+Terminal.charsets.Swiss = null; // (=
+Terminal.charsets.ISOLatin = null; // /A
+
 /**
  * Helpers
  */
@@ -3524,6 +4128,14 @@ function cancel(ev) {
   return false;
 }
 
+function inherits(child, parent) {
+  function f() {
+    this.constructor = child;
+  }
+  f.prototype = parent.prototype;
+  child.prototype = new f;
+}
+
 var isMac = ~navigator.userAgent.indexOf('Mac');
 
 // if bold is broken, we can't
@@ -3540,12 +4152,26 @@ function isBoldBroken() {
 }
 
 var String = this.String;
-var Math = this.Math;
+var setTimeout = this.setTimeout;
+var setInterval = this.setInterval;
 
 /**
  * Expose
  */
 
-this.Terminal = Terminal;
+Terminal.EventEmitter = EventEmitter;
+Terminal.isMac = isMac;
+Terminal.inherits = inherits;
+Terminal.on = on;
+Terminal.off = off;
+Terminal.cancel = cancel;
 
-}).call(this);
+if (typeof module !== 'undefined') {
+  module.exports = Terminal;
+} else {
+  this.Terminal = Terminal;
+}
+
+}).call(function() {
+  return this || (typeof window !== 'undefined' ? window : global);
+}());
