@@ -344,7 +344,7 @@ Terminal.prototype.open = function(container) {
 
   this.refresh(0, this.rows - 1);
 
-  Terminal.bindKeys();
+  // Terminal.bindKeys();
   this.focus();
 
   this.startBlink();
