@@ -9,6 +9,10 @@ require 'turnip/capybara'
 require 'database_cleaner'
 require 'rspec/rails'
 
+Capybara.register_driver :selenium do |app|
+  Capybara::Selenium::Driver.new(app, :browser => :chrome)
+end
+
 Spork.prefork do
   # The Spork.prefork block is run only once when the spork server is started.
   # You typically want to place most of your (slow) initializer code in here, in
