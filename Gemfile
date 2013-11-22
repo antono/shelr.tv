@@ -67,6 +67,7 @@ group :development, :test do
 
   gem 'turnip'
   gem 'capybara'
+  gem "chromedriver-helper"
   gem 'database_cleaner'
 
   gem 'rspec'
