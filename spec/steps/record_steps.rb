@@ -104,5 +104,6 @@ step "I click -1 button" do
 end
 
 step "rating of :title should be :rating" do |title, rating|
+  sleep 0.5 # FIXME
   @_records[title].reload.rating.should == rating.to_i
 end
