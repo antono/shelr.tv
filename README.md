@@ -29,3 +29,7 @@ Ruby 1.9.1+ required.
 
 
 [TV]: http://shelr.tv/
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/shelr/shelr.tv/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
