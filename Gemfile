@@ -75,6 +75,9 @@ group :development, :test do
   gem 'mongoid-rspec'
   gem 'shoulda-matchers'
   gem 'sunspot_matchers'
+
+  gem 'test-unit'
+  gem 'minitest'
 end
 
 group :development do

@@ -11,7 +11,7 @@ GitHub: [shelr/shelr.tv](https://github.com/shelr/shelr.tv) [issues](https://git
 
 # Quickstart for Developers
 
-Ruby 1.9.1+ required.
+Ruby 2.2.2+ required.
 
     sudo apt-get install mongodb-server openjdk-6-jre python-pygments
     bundle install
