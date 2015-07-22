@@ -60,7 +60,6 @@ group :development, :test do
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-bundler'
-  gem 'guard-ctags-bundler'
 
   gem 'pry'
   gem 'pry-nav'

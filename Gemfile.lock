@@ -126,8 +126,6 @@ GEM
     guard-bundler (1.0.0)
       bundler (~> 1.0)
       guard (~> 1.1)
-    guard-ctags-bundler (0.1.1)
-      guard (>= 1.0.0)
     guard-rspec (1.2.0)
       guard (>= 1.1)
     guard-spork (1.1.0)
@@ -374,7 +372,6 @@ DEPENDENCIES
   fivemat
   foreman
   guard-bundler
-  guard-ctags-bundler
   guard-rspec
   guard-spork
   haml-rails

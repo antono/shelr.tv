@@ -48,8 +48,3 @@ guard 'bundler' do
   # Uncomment next line if Gemfile contain `gemspec' command
   # watch(/^.+\.gemspec/)
 end
-
-guard 'ctags-bundler', :emacs => true do
-  watch(%r{^(app|lib|spec/support)/.*\.rb$})  { ["app", "lib", "spec/support"] }
-  watch('Gemfile.lock')
-end
