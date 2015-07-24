@@ -1,9 +1,9 @@
 source 'http://rubygems.org'
 
-gem 'rake', '0.9.2' # https://twitter.com/#!/dhh/status/71966528744071169
+gem 'rake'
 gem 'unicorn'
 
-gem 'rails', '= 3.2.11'
+gem 'rails', '~> 4.2'
 gem 'haml-rails'
 gem 'rdiscount'
 gem 'kaminari'
@@ -17,7 +17,7 @@ gem 'omniauth-twitter'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-openid'
 
-gem 'mongoid', '~> 2.0'
+gem 'mongoid'
 gem 'mongoid_rails_migrations'
 gem 'bson_ext'
 
@@ -29,8 +29,8 @@ gem 'sunspot_solr'
 gem 'sunspot_mongo', git: 'https://github.com/derekharmel/sunspot_mongo.git'
 gem 'progress_bar'
 
-gem 'sass-rails', '~> 3.2.3'
-gem 'uglifier', '>= 1.0.3'
+gem 'sass-rails'
+gem 'uglifier'
 
 gem 'airbrake'
 
@@ -44,9 +44,9 @@ group :assets do
   gem 'rails-backbone'
   gem 'underscore-rails'
   gem 'jquery-rails'
-  gem 'coffee-rails',  '~> 3.2.1'
-  gem 'compass-rails', '>= 1.0.0.rc.1'
-  gem 'compass_twitter_bootstrap', '>= 2.0.1'
+  gem 'coffee-rails'
+  gem 'compass-rails'
+  gem 'compass_twitter_bootstrap'
 end
 
 group :linux do
@@ -71,7 +71,7 @@ group :development, :test do
 
   gem 'rspec'
   gem 'rspec-rails'
-  gem 'mongoid-rspec'
+  # gem 'mongoid-rspec'
   gem 'shoulda-matchers'
   gem 'sunspot_matchers'
 
