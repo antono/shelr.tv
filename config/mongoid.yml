@@ -7,18 +7,27 @@ defaults: &defaults
   #     port: 27019
 
 development:
-  host: localhost
-  database: shelr-dev
+  sessions:
+    default:
+      database: shelr-dev
+      hosts:
+        - localhost:27017
+
 
 test:
-  <<: *defaults
-  database: shelr-test
+  sessions:
+    default:
+      database: shelr-test
+      hosts:
+        - localhost:27017
 
 # set these environment variables on your prod server
 production:
-  uri: <%= ENV['MONGOHQ_URL'] %>
-  #host: <%= ENV['MONGOID_HOST'] %>
-  #port: <%= ENV['MONGOID_PORT'] %>
-  #username: <%= ENV['MONGOID_USERNAME'] %>
-  #password: <%= ENV['MONGOID_PASSWORD'] %>
-  #database: <%= ENV['MONGOID_DATABASE'] %>
+  sessions:
+    default:
+      uri: <%= ENV['MONGOHQ_URL'] %>
+      #host: <%= ENV['MONGOID_HOST'] %>
+      #port: <%= ENV['MONGOID_PORT'] %>
+      #username: <%= ENV['MONGOID_USERNAME'] %>
+      #password: <%= ENV['MONGOID_PASSWORD'] %>
+      #database: <%= ENV['MONGOID_DATABASE'] %>
