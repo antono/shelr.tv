@@ -323,6 +323,8 @@ GEM
     rdiscount (2.1.8)
     redcarpet (3.3.2)
     request_store (1.2.0)
+    responders (2.1.0)
+      railties (>= 4.2.0, < 5)
     rsolr (1.0.12)
       builder (>= 2.1.2)
     rspec (3.3.0)
@@ -456,6 +458,7 @@ DEPENDENCIES
   rake
   rdiscount
   redcarpet
+  responders (~> 2.0)
   rspec
   rspec-rails
   sass-rails

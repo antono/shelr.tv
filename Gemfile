@@ -7,6 +7,7 @@ gem 'rails', '~> 4.2'
 gem 'haml-rails'
 gem 'rdiscount'
 gem 'kaminari'
+gem 'responders', '~> 2.0'
 
 gem 'draper'
 gem 'simple_form'
