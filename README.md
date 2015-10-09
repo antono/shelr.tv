@@ -2,9 +2,9 @@
 
 [![Build Status](https://secure.travis-ci.org/antono/shelr.tv.png?branch=master)](http://travis-ci.org/antono/shelr.tv)
 
-[Shelr.tv][TV] is a service and a
+[Shelr.tv][TV] was a service and a
 [tool for terminal screencasting](https://github.com/shelr/shelr).
-Service allow you to share your terminal records like
+Service allowed you to share your terminal records like
 [this](http://shelr.tv/records/4f427daf96a5690001000003).
 
 GitHub: [shelr/shelr.tv](https://github.com/shelr/shelr.tv) [issues](https://github.com/shelr/shelr.tv/issues)
