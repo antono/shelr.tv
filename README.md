@@ -31,5 +31,3 @@ Ruby 2.2.2+ required.
 [TV]: http://shelr.tv/
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/shelr/shelr.tv/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
